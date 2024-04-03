@@ -1,7 +1,7 @@
 #![no_std]
 
 use gstd::{ prelude::*, ActorId, CodeId };
-use gmeta::{In,Out,InOut,Metadata};
+use gmeta::{In,InOut,Metadata};
 
 pub type MemeId = u64;
 
@@ -11,48 +11,24 @@ pub type MemeId = u64;
 #[scale_info(crate = gstd::scale_info)]
 pub enum MemeFactoryAction {
     CreateMeme{
-        name: String,      
-        symbol: String,    
-        decimals: u8,
-        admin: ActorId,
-        image:String
+        init_config: InitConfig 
     },
-    MintMeme{
-        amount: u128,
-        to:ActorId,
-        meme_id:MemeId
+    CodeIdUpdate { 
+        new_code_id: CodeId
     },
-    BurnMeme{
-        amount: u128,
-        from:ActorId,
-        meme_id:MemeId
-    },
-    TransferMeme {
-        from: ActorId,
-        to: ActorId,
-        amount: u128,
-        meme_id:MemeId
-    },
-    ApproveMeme {
-        to: ActorId,
-        amount: u128,
-        meme_id:MemeId
-    },
+    UpdateGasProgram(u64),
     AddAdmin {
-        meme_id: MemeId, 
         admin_actor_id:ActorId
     },
 }
 
-#[derive(Encode, Decode, TypeInfo,Clone, Debug)]
+#[derive(Encode, Decode, TypeInfo, Clone, Debug)]
 #[codec(crate = gstd::codec)]
 #[scale_info(crate = gstd::scale_info)]
 pub struct MemeRecord {
   pub  name: String,      
   pub  symbol: String,    
   pub  decimals: u8,
-  pub  image: String ,
-  pub  creator:ActorId,
   pub  meme_program_id: ActorId,
   pub  admins: Vec<ActorId>
 }
@@ -64,28 +40,21 @@ pub enum MemeFactoryEvent {
     MemeCreated { 
         meme_id: MemeId, 
         meme_address: ActorId },
-    TokensMinted { 
-        amount: u128, 
-        actor_id: ActorId 
+    GasUpdatedSuccessfully {
+        updated_by: ActorId,  
+        new_gas_amount: u64, 
     },
-    TokensBurned { 
-        amount: u128, 
-        actor_id: ActorId 
+    CodeIdUpdatedSuccessfully { 
+        updated_by: ActorId, 
+        new_code_id: CodeId
     },
-    TokensTransferred { 
-        amount: u128, 
-        from_actor_id:ActorId,
-        to_actor_id: ActorId
+    AdminAdded {
+        updated_by:ActorId,
+        admin_actor_id: ActorId,
     },
-    TokensApproved 
-    { 
-        amount: u128, 
-        approver_actor_id: ActorId, 
-        to_actor_id: ActorId }
-    ,
     MemeRegistered,
     MemeFailed,
-    AdminAdded
+
 }
 
 #[derive(Debug, Clone, Encode, Decode, TypeInfo)]
@@ -109,24 +78,6 @@ pub enum FTAction {
         amount: u128,
         to: ActorId,
     },
-    Burn {
-        amount: u128,
-        from: ActorId,
-    },
-    Transfer {
-        from: ActorId,
-        to: ActorId,
-        amount: u128,
-    },
-    Approve {
-        to: ActorId,
-        amount: u128,
-    },
-    TotalSupply,
-    BalanceOf(ActorId),
-    AddAdmin {
-        admin: ActorId,
-    }
 }
 
 #[derive(Debug, Encode, Decode, TypeInfo)]
@@ -149,36 +100,86 @@ pub enum FTEvent {
 }
 
 
-#[derive(Decode, Encode, TypeInfo, Clone)]
-#[codec(crate = gstd::codec)]
-#[scale_info(crate = gstd::scale_info)]
-pub struct IoMemeFactory{
-    pub meme_number: MemeId,
-    pub meme_code_id: CodeId,
-    pub all_memecoins:Vec<(MemeId,MemeRecord)>,
-    pub id_to_address: Vec<(MemeId, ActorId)>,
-    pub memecoins: Vec<(ActorId, Vec<(MemeId,MemeRecord)>)>, 
-}
-
-
 #[derive(Debug, Decode, Encode, TypeInfo)]
 #[codec(crate = gstd::codec)]
 #[scale_info(crate = gstd::scale_info)]
 pub struct InitConfig {
     pub name: String,
     pub symbol: String,
-    pub admin: ActorId,
     pub decimals: u8,
+    pub description:Description,
+    pub initial_supply:u128,
+    pub admin:ActorId,
+    pub initial_capacity: Option<u32>,
+    pub config: Config,
+}
+
+#[derive(Debug, Decode, Encode, TypeInfo, Default, Clone)]
+#[codec(crate = gstd::codec)]
+#[scale_info(crate = gstd::scale_info)]
+pub struct Config {
+    pub tx_storage_period: u64,
+    pub tx_payment: u128,
+}
+
+
+
+#[derive(Debug, Decode, Encode, TypeInfo,Default, Clone)]
+#[codec(crate = gstd::codec)]
+#[scale_info(crate = gstd::scale_info)]
+pub struct Description {
+    pub website: Option<String>,
+    pub telegram: Option<String>,
+    pub twiter: Option<String>,
+    pub discord: Option<String>,
+}
+
+
+#[derive(Debug, Decode, Encode, TypeInfo)]
+#[codec(crate = gstd::codec)]
+#[scale_info(crate = gstd::scale_info)]
+pub struct InitConfigFactory {
+    pub meme_code_id: CodeId,
+    pub factory_admin_account: Vec<ActorId>,
+    pub gas_for_program:u64,
 }
 
 pub struct ContractMetadata;
 
 impl Metadata for ContractMetadata{
-     type Init = In<CodeId>;
+     type Init = In<InitConfigFactory>;
      type Handle = InOut<MemeFactoryAction, Result<MemeFactoryEvent,MemeError>>;
      type Others = ();
      type Reply=();
      type Signal = ();
-     type State = Out<IoMemeFactory>;
+     type State = InOut<Query, QueryReply>;
 
+}
+
+#[derive(Encode, Decode, TypeInfo)]
+#[codec(crate = gstd::codec)]
+#[scale_info(crate = gstd::scale_info)]
+pub enum Query {
+    MemeNumber,
+    MemeCodeId,
+    FactoryAdminAccount,
+    GasForProgram,
+    AllMemecoins,
+    IdToAddress,
+    Memecoins, 
+   
+}
+
+#[derive(Encode, Decode, TypeInfo)]
+#[codec(crate = gstd::codec)]
+#[scale_info(crate = gstd::scale_info)]
+pub enum QueryReply {
+    MemeNumber(MemeId),
+    MemeCodeId(CodeId),
+    FactoryAdminAccount(Vec<ActorId>),
+    GasForProgram(u64),
+    AllMemecoins(Vec<(MemeId,MemeRecord)>),
+    IdToAddress(Vec<(MemeId, ActorId)>),
+    Memecoins(Vec<(ActorId, Vec<(MemeId,MemeRecord)>)>), 
+  
 }
