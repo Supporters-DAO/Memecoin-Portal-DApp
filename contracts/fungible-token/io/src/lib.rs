@@ -1,17 +1,19 @@
 #![no_std]
 
-use gmeta::{In, InOut, Metadata, Out};
+use gmeta::{In, InOut, Metadata};
 use gstd::{prelude::*, ActorId};
 
+pub type TxId = u64;
+pub type ValidUntil = u64;
 pub struct FungibleTokenMetadata;
 
 impl Metadata for FungibleTokenMetadata {
     type Init = In<InitConfig>;
-    type Handle = InOut<FTAction, FTEvent>;
+    type Handle = InOut<FTAction, Result<FTReply, FTError>>;
     type Others = ();
     type Reply = ();
     type Signal = ();
-    type State = Out<IoFungibleToken>;
+    type State = InOut<Query, QueryReply>;
 }
 
 #[derive(Debug, Decode, Encode, TypeInfo)]
@@ -20,8 +22,30 @@ impl Metadata for FungibleTokenMetadata {
 pub struct InitConfig {
     pub name: String,
     pub symbol: String,
-    pub admin: ActorId,
     pub decimals: u8,
+    pub description:Description,
+    pub initial_supply:u128,
+    pub admin:ActorId,
+    pub initial_capacity: Option<u32>,
+    pub config: Config,
+}
+
+#[derive(Debug, Decode, Encode, TypeInfo,Default, Clone)]
+#[codec(crate = gstd::codec)]
+#[scale_info(crate = gstd::scale_info)]
+pub struct Description {
+    pub website: Option<String>,
+    pub telegram: Option<String>,
+    pub twiter: Option<String>,
+    pub discord: Option<String>,
+}
+
+#[derive(Debug, Decode, Encode, TypeInfo, Default, Clone)]
+#[codec(crate = gstd::codec)]
+#[scale_info(crate = gstd::scale_info)]
+pub struct Config {
+    pub tx_storage_period: u64,
+    pub tx_payment: u128,
 }
 
 #[derive(Debug, Decode, Encode, TypeInfo)]
@@ -34,52 +58,102 @@ pub enum FTAction {
     },
     Burn {
         amount: u128,
-        from: ActorId,
     },
     Transfer {
+        tx_id: Option<TxId>,
         from: ActorId,
         to: ActorId,
         amount: u128,
     },
     Approve {
+        tx_id: Option<TxId>,
         to: ActorId,
         amount: u128,
     },
-    TotalSupply,
     BalanceOf(ActorId),
     AddAdmin {
-        admin: ActorId,
-    }
+        admin_id: ActorId,
+    },
+    DeleteAdmin {
+        admin_id: ActorId,
+    },
 }
 
 #[derive(Debug, Encode, Decode, TypeInfo)]
 #[codec(crate = gstd::codec)]
 #[scale_info(crate = gstd::scale_info)]
-pub enum FTEvent {
-    Transfer {
+pub enum FTReply {
+    Burned {
+        amount:u128
+    },
+    Transferred {
         from: ActorId,
         to: ActorId,
         amount: u128,
     },
-    Approve {
+    Approved {
         from: ActorId,
         to: ActorId,
         amount: u128,
     },
-    TotalSupply(u128),
+    AdminAdded {
+        admin_id: ActorId,
+    },
+    AdminRemoved {
+        admin_id: ActorId,
+    },
     Balance(u128),
-    AdminAdded
 }
 
-#[derive(Debug, Clone, Default, Encode, Decode, TypeInfo)]
+#[derive(Debug, Encode, Decode, TypeInfo, MaxEncodedLen, Clone)]
 #[codec(crate = gstd::codec)]
 #[scale_info(crate = gstd::scale_info)]
-pub struct IoFungibleToken {
-    pub name: String,
-    pub symbol: String,
-    pub admins: Vec<ActorId>,
-    pub total_supply: u128,
-    pub balances: Vec<(ActorId, u128)>,
-    pub allowances: Vec<(ActorId, Vec<(ActorId, u128)>)>,
-    pub decimals: u8,
+pub enum FTError {
+    NotAdmin,
+    NotEnoughBalance,
+    ZeroAddress,
+    NotAllowedToTransfer,
+    AdminAlreadyExists,
+    CantDeleteYourself,
+    TxAlreadyExists,
+}
+
+#[derive(Encode, Decode, TypeInfo)]
+#[codec(crate = gstd::codec)]
+#[scale_info(crate = gstd::scale_info)]
+pub enum Query {
+    Name,
+    Symbol,
+    Decimals,
+    TotalSupply,
+    BalanceOf(ActorId),
+    AllowanceOfAccount {
+        account: ActorId,
+        approved_account: ActorId,
+    },
+    Admins,
+    GetTxValidityTime {
+        account: ActorId,
+        tx_id: TxId,
+    },
+    GetTxIdsForAccount {
+        account: ActorId,
+    }
+}
+
+#[derive(Encode, Decode, TypeInfo)]
+#[codec(crate = gstd::codec)]
+#[scale_info(crate = gstd::scale_info)]
+pub enum QueryReply {
+    Name(String),
+    Symbol(String),
+    Decimals(u8),
+    TotalSupply(u128),
+    Balance(u128),
+    AllowanceOfAccount(u128),
+    Admins(Vec<ActorId>),
+    TxValidityTime(ValidUntil),
+    TxIdsForAccount {
+        tx_ids: Vec<TxId>,
+    }
 }
