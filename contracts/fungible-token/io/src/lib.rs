@@ -23,20 +23,22 @@ pub struct InitConfig {
     pub name: String,
     pub symbol: String,
     pub decimals: u8,
-    pub description:Description,
-    pub initial_supply:u128,
-    pub admin:ActorId,
+    pub description: String,
+    pub external_links: ExternalLinks,
+    pub initial_supply: u128,
+    pub admin: ActorId,
     pub initial_capacity: Option<u32>,
     pub config: Config,
 }
 
-#[derive(Debug, Decode, Encode, TypeInfo,Default, Clone)]
+#[derive(Debug, Decode, Encode, TypeInfo, Default, Clone)]
 #[codec(crate = gstd::codec)]
 #[scale_info(crate = gstd::scale_info)]
-pub struct Description {
+pub struct ExternalLinks {
+    pub image: Option<String>,
     pub website: Option<String>,
     pub telegram: Option<String>,
-    pub twiter: Option<String>,
+    pub twitter: Option<String>,
     pub discord: Option<String>,
 }
 
@@ -83,9 +85,6 @@ pub enum FTAction {
 #[codec(crate = gstd::codec)]
 #[scale_info(crate = gstd::scale_info)]
 pub enum FTReply {
-    Burned {
-        amount:u128
-    },
     Transferred {
         from: ActorId,
         to: ActorId,
@@ -126,6 +125,8 @@ pub enum Query {
     Symbol,
     Decimals,
     TotalSupply,
+    Description,
+    ExternalLinks,
     BalanceOf(ActorId),
     AllowanceOfAccount {
         account: ActorId,
@@ -138,7 +139,7 @@ pub enum Query {
     },
     GetTxIdsForAccount {
         account: ActorId,
-    }
+    },
 }
 
 #[derive(Encode, Decode, TypeInfo)]
@@ -148,12 +149,12 @@ pub enum QueryReply {
     Name(String),
     Symbol(String),
     Decimals(u8),
+    Description(String),
+    ExternalLinks(ExternalLinks),
     TotalSupply(u128),
     Balance(u128),
     AllowanceOfAccount(u128),
     Admins(Vec<ActorId>),
     TxValidityTime(ValidUntil),
-    TxIdsForAccount {
-        tx_ids: Vec<TxId>,
-    }
+    TxIdsForAccount { tx_ids: Vec<TxId> },
 }

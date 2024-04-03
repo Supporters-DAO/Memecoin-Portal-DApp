@@ -22,10 +22,10 @@ struct FungibleToken {
     /// Token's decimals.
     decimals: u8,
     /// Description of the token
-    description:Description,
-     /// Initial supply of the token.
-    initial_supply: u128,
-     /// Total supply of the token.
+    description: String,
+    /// ExternalLinks
+    external_links: ExternalLinks,
+    /// Total supply of the token.
     total_supply: u128,
     /// Map to hold balances of token holders.
     balances: HashMap<ActorId, u128>,
@@ -43,8 +43,7 @@ struct FungibleToken {
 static mut FUNGIBLE_TOKEN: Option<FungibleToken> = None;
 
 impl FungibleToken {
-
-     fn mint(&mut self, amount: u128, to: ActorId) -> Result<FTReply, FTError> {
+    fn mint(&mut self, amount: u128, to: ActorId) -> Result<FTReply, FTError> {
         assert!(self.admins.contains(&msg::source()), "Not admin");
         self.balances
             .entry(to)
@@ -52,22 +51,23 @@ impl FungibleToken {
             .or_insert(amount);
         self.total_supply += amount;
 
-        Ok( FTReply::Transferred {
+        Ok(FTReply::Transferred {
             from: ZERO_ID,
             to,
             amount,
         })
     }
-   
-    fn burn(&mut self, amount: u128)  -> Result<FTReply, FTError>  {
-        
+
+    fn burn(&mut self, amount: u128) -> Result<FTReply, FTError> {
         assert!(self.admins.contains(&msg::source()), "Not admin");
         self.total_supply -= amount;
 
-        Ok( FTReply::Burned {amount: amount})
-
+        Ok(FTReply::Transferred {
+            from: ZERO_ID,
+            to: ZERO_ID,
+            amount,
+        })
     }
-    
 
     fn add_admin(&mut self, admin_id: &ActorId) -> Result<FTReply, FTError> {
         let source = msg::source();
@@ -116,9 +116,9 @@ impl FungibleToken {
             return Err(FTError::ZeroAddress);
         };
 
-        self.check_balance(&from, amount)?;
+        self.check_balance(from, amount)?;
 
-        self.can_transfer(&msg_source, &from, amount)?;
+        self.can_transfer(&msg_source, from, amount)?;
 
         self.balances
             .entry(*from)
@@ -239,7 +239,7 @@ impl FungibleToken {
 }
 
 #[no_mangle]
-extern fn handle() {
+extern "C" fn handle() {
     let action: FTAction = msg::load().expect("Could not load Action");
     let ft: &mut FungibleToken = unsafe {
         FUNGIBLE_TOKEN
@@ -247,8 +247,8 @@ extern fn handle() {
             .expect("The contract is not initialized")
     };
     let reply = match action {
-        FTAction::Mint { amount, to } => { ft.mint(amount, to)},
-        FTAction::Burn{amount} => { ft.burn(amount)},
+        FTAction::Mint { amount, to } => ft.mint(amount, to),
+        FTAction::Burn { amount } => ft.burn(amount),
         FTAction::AddAdmin { admin_id } => ft.add_admin(&admin_id),
         FTAction::DeleteAdmin { admin_id } => ft.delete_admin(&admin_id),
         FTAction::Transfer {
@@ -267,16 +267,16 @@ extern fn handle() {
 }
 
 #[no_mangle]
-extern fn init() {
+extern "C" fn init() {
     let init_config: InitConfig = msg::load().expect("Unable to decode InitConfig");
     let ft = FungibleToken {
         name: init_config.name,
         symbol: init_config.symbol,
         decimals: init_config.decimals,
         description: init_config.description,
-        initial_supply:init_config.initial_supply,
-        total_supply:init_config.initial_supply,
-        admins:vec![init_config.admin],
+        external_links: init_config.external_links,
+        total_supply: init_config.initial_supply,
+        admins: vec![init_config.admin],
         config: init_config.config,
         ..Default::default()
     };
@@ -284,7 +284,7 @@ extern fn init() {
 }
 
 #[no_mangle]
-extern fn state() {
+extern "C" fn state() {
     let token = unsafe {
         FUNGIBLE_TOKEN
             .take()
@@ -292,18 +292,12 @@ extern fn state() {
     };
     let query: Query = msg::load().expect("Unable to decode the query");
     let reply = match query {
-        Query::Name => {
-            QueryReply::Name(token.name)
-        }
-        Query::Symbol => {
-            QueryReply::Symbol(token.symbol)
-        }
-        Query::Decimals => {
-            QueryReply::Decimals(token.decimals)
-        }
-        Query::TotalSupply => {
-            QueryReply::TotalSupply(token.total_supply)
-        }
+        Query::Name => QueryReply::Name(token.name),
+        Query::Symbol => QueryReply::Symbol(token.symbol),
+        Query::Decimals => QueryReply::Decimals(token.decimals),
+        Query::Description => QueryReply::Description(token.description),
+        Query::ExternalLinks => QueryReply::ExternalLinks(token.external_links),
+        Query::TotalSupply => QueryReply::TotalSupply(token.total_supply),
         Query::BalanceOf(account) => {
             let balance = if let Some(balance) = token.balances.get(&account) {
                 *balance
@@ -327,19 +321,18 @@ extern fn state() {
             };
             QueryReply::AllowanceOfAccount(allowance)
         }
-        Query::Admins => {
-            QueryReply::Admins(token.admins)
-        }
+        Query::Admins => QueryReply::Admins(token.admins),
         Query::GetTxValidityTime { account, tx_id } => {
             let valid_until = token.tx_ids.get(&(account, tx_id)).unwrap_or(&0);
             QueryReply::TxValidityTime(*valid_until)
         }
         Query::GetTxIdsForAccount { account } => {
-            let tx_ids: Vec<TxId> = if let Some(tx_ids) =  token.account_to_tx_ids.get(&account).cloned() {
-                tx_ids.into_iter().collect()
-            } else {
-                Vec::new()
-            };
+            let tx_ids: Vec<TxId> =
+                if let Some(tx_ids) = token.account_to_tx_ids.get(&account).cloned() {
+                    tx_ids.into_iter().collect()
+                } else {
+                    Vec::new()
+                };
             QueryReply::TxIdsForAccount { tx_ids }
         }
     };
