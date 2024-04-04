@@ -43,6 +43,28 @@ struct FungibleToken {
 static mut FUNGIBLE_TOKEN: Option<FungibleToken> = None;
 
 impl FungibleToken {
+
+
+    fn airdrop_mint(&mut self, amount: u128, to_users: Vec<ActorId>) -> Result<FTReply, FTError> {
+        assert!(self.admins.contains(&msg::source()), "Not admin");
+    
+        for to in to_users.clone() {
+            self.balances
+                .entry(to)
+                .and_modify(|balance| *balance += amount)
+                .or_insert(amount);
+            self.total_supply += amount;
+    
+        }
+    
+        Ok(FTReply::AirdropTransferred {
+            from: ZERO_ID,
+            to_users,
+            amount
+        })
+    }
+
+
     fn mint(&mut self, amount: u128, to: ActorId) -> Result<FTReply, FTError> {
         assert!(self.admins.contains(&msg::source()), "Not admin");
         self.balances
@@ -247,6 +269,7 @@ extern "C" fn handle() {
             .expect("The contract is not initialized")
     };
     let reply = match action {
+        FTAction::Airdrop{  amount, to_users } => ft.airdrop_mint(amount, to_users),
         FTAction::Mint { amount, to } => ft.mint(amount, to),
         FTAction::Burn { amount } => ft.burn(amount),
         FTAction::AddAdmin { admin_id } => ft.add_admin(&admin_id),
@@ -281,6 +304,8 @@ extern "C" fn init() {
         ..Default::default()
     };
     unsafe { FUNGIBLE_TOKEN = Some(ft) };
+
+    msg::reply(FTReply::Initialized, 0).expect("Error in sending a reply");
 }
 
 #[no_mangle]

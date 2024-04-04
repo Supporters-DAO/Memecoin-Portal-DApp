@@ -1,6 +1,6 @@
 #![no_std]
 
-use gmeta::{In, InOut, Metadata};
+use gmeta::{InOut, Metadata};
 use gstd::{prelude::*, ActorId};
 
 pub type TxId = u64;
@@ -8,7 +8,7 @@ pub type ValidUntil = u64;
 pub struct FungibleTokenMetadata;
 
 impl Metadata for FungibleTokenMetadata {
-    type Init = In<InitConfig>;
+    type Init = InOut<InitConfig, FTReply>;
     type Handle = InOut<FTAction, Result<FTReply, FTError>>;
     type Others = ();
     type Reply = ();
@@ -54,6 +54,11 @@ pub struct Config {
 #[codec(crate = gstd::codec)]
 #[scale_info(crate = gstd::scale_info)]
 pub enum FTAction {
+    Airdrop {
+        amount: u128, 
+        to_users: Vec<ActorId>
+
+    },
     Mint {
         amount: u128,
         to: ActorId,
@@ -81,10 +86,16 @@ pub enum FTAction {
     },
 }
 
-#[derive(Debug, Encode, Decode, TypeInfo)]
+#[derive(Debug, Encode, Decode,TypeInfo)]
 #[codec(crate = gstd::codec)]
 #[scale_info(crate = gstd::scale_info)]
 pub enum FTReply {
+    Initialized,
+    AirdropTransferred {
+        from: ActorId,
+        to_users: Vec<ActorId>,
+        amount: u128
+    },
     Transferred {
         from: ActorId,
         to: ActorId,

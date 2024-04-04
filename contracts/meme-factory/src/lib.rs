@@ -64,6 +64,18 @@ impl MemeFactory {
             admins: [init_config.admin.clone()].to_vec(),
         };
 
+        // Name Validation
+        let new_meme_record = meme_record.clone();
+        
+        for meme_records in self.memecoins.values() {
+            for (_, meme_record) in meme_records {
+                if meme_record.name == new_meme_record.name {
+                    return Err(MemeError::Unauthorized);
+                }
+            }
+        }
+
+
         let memecoins_for_actor = self.memecoins.entry(msg::source()).or_default();
         memecoins_for_actor.push((self.meme_number, meme_record.clone()));
 
