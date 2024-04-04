@@ -99,6 +99,7 @@ pub struct InitConfig {
     pub description: String,
     pub external_links: ExternalLinks,
     pub initial_supply: u128,
+    pub total_supply: u128,
     pub admin: ActorId,
     pub initial_capacity: Option<u32>,
     pub config: Config,
