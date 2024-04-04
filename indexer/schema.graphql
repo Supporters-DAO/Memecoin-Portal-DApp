@@ -1,0 +1,52 @@
+type Factory @entity {
+  id: ID!
+  address: String!
+  meta: String!
+  coinMeta: String!
+  coins: [Coin!]! @derivedFrom(field: "factory")
+}
+
+type Coin @entity {
+  "Coin address"
+  id: ID!
+  name: String!
+  symbol: String!
+  decimals: Int!
+  initialSupply: BigInt!
+  maxSupply: BigInt!
+  website: String
+  telegram: String
+  twitter: String
+  discord: String
+  description: String!
+  image: String
+  screenshots: [String!]!
+  admins: [String!]!
+  distributed: BigInt!
+  factory: Factory!
+  createdBy: String!
+  timestamp: DateTime! @index
+  transfers: [Transfer!]! @derivedFrom(field: "coin")
+}
+
+type Transfer @entity {
+  id: ID!
+  coin: Coin!
+  blockNumber: Int! @index
+  timestamp: DateTime! @index
+  extrinsicHash: String @index
+  from: String!
+  to: String!
+  amount: BigInt! @index
+  factory: Factory
+}
+
+type MemcoinFactoryEvent @entity {
+  id: ID!
+  type: String!
+  raw: String!
+  blockNumber: Int!
+  txHash: String!
+  factory: Factory
+  timestamp: DateTime!
+}
