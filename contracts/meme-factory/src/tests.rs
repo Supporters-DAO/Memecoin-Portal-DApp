@@ -10,16 +10,23 @@ fn create_meme() {
     let factory = Program::current(&sys);
 
     let init_config = InitConfig {
-        name: "MemeName".into(),
-        symbol: "MemeName".into(),
-        decimals: 2.into(),
-        description: "Description".into(),
-        external_links: "MemeName".into(),
-        initial_supply: "MemeName".into(),
-        admin: "MemeName".into(),
-        initial_capacity: "MemeName".into(),
-        config: "MemeName".into(),
-        
+        name: "MemeName".to_string(),
+        symbol: "MEME".to_string(),
+        decimals: 2,
+        description: "Description".to_string(),
+        external_links: ExternalLinks {
+            website: Some("http://".to_string()),
+            telegram: Some("http://telegram.me/".to_string()),
+            twitter: Some("http://twitter.com/".to_string()),
+            discord: Some("http://discord.gg/".to_string()),
+        },
+        initial_supply: 1000,
+        admin: ActorId::new([0; 32]),
+        initial_capacity: Some(100), 
+        config: Config {
+            tx_storage_period: 30, 
+            tx_payment: 100_000,
+        },
     };
 
     let res = factory.send(
@@ -37,6 +44,7 @@ fn create_meme() {
         .encode()
     )));
 }
+
 
 #[test]
 fn code_id_update() {
