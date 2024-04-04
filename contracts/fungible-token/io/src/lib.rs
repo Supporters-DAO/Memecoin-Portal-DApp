@@ -54,7 +54,7 @@ pub struct Config {
 #[codec(crate = gstd::codec)]
 #[scale_info(crate = gstd::scale_info)]
 pub enum FTAction {
-    Airdrop {
+    TransferToUsers {
         amount: u128, 
         to_users: Vec<ActorId>
 
@@ -91,7 +91,7 @@ pub enum FTAction {
 #[scale_info(crate = gstd::scale_info)]
 pub enum FTReply {
     Initialized,
-    AirdropTransferred {
+    TransferredToUsers {
         from: ActorId,
         to_users: Vec<ActorId>,
         amount: u128
