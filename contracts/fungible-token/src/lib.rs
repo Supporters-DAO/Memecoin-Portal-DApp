@@ -25,6 +25,8 @@ struct FungibleToken {
     description: String,
     /// ExternalLinks
     external_links: ExternalLinks,
+    /// Initial supply of the token.
+    initial_supply: u128,
     /// Total supply of the token.
     total_supply: u128,
     /// Map to hold balances of token holders.
@@ -43,27 +45,27 @@ struct FungibleToken {
 static mut FUNGIBLE_TOKEN: Option<FungibleToken> = None;
 
 impl FungibleToken {
-
-
-    fn transfer_to_users(&mut self, amount: u128, to_users: Vec<ActorId>) -> Result<FTReply, FTError> {
+    fn transfer_to_users(
+        &mut self,
+        amount: u128,
+        to_users: Vec<ActorId>,
+    ) -> Result<FTReply, FTError> {
         assert!(self.admins.contains(&msg::source()), "Not admin");
-    
+
         for to in to_users.clone() {
             self.balances
                 .entry(to)
                 .and_modify(|balance| *balance += amount)
                 .or_insert(amount);
             self.total_supply += amount;
-    
         }
-    
+
         Ok(FTReply::TransferredToUsers {
             from: ZERO_ID,
             to_users,
-            amount
+            amount,
         })
     }
-
 
     fn mint(&mut self, amount: u128, to: ActorId) -> Result<FTReply, FTError> {
         assert!(self.admins.contains(&msg::source()), "Not admin");
@@ -269,7 +271,7 @@ extern "C" fn handle() {
             .expect("The contract is not initialized")
     };
     let reply = match action {
-        FTAction::TransferToUsers{  amount, to_users } => ft.transfer_to_users(amount, to_users),
+        FTAction::TransferToUsers { amount, to_users } => ft.transfer_to_users(amount, to_users),
         FTAction::Mint { amount, to } => ft.mint(amount, to),
         FTAction::Burn { amount } => ft.burn(amount),
         FTAction::AddAdmin { admin_id } => ft.add_admin(&admin_id),
@@ -292,13 +294,19 @@ extern "C" fn handle() {
 #[no_mangle]
 extern "C" fn init() {
     let init_config: InitConfig = msg::load().expect("Unable to decode InitConfig");
+
+    if init_config.initial_supply > init_config.total_supply {
+        msg::reply(FTError::SupplyError, 0).expect("Error in sending a reply");
+    } 
+
     let ft = FungibleToken {
         name: init_config.name,
         symbol: init_config.symbol,
         decimals: init_config.decimals,
         description: init_config.description,
         external_links: init_config.external_links,
-        total_supply: init_config.initial_supply,
+        initial_supply: init_config.initial_supply,
+        total_supply: init_config.total_supply,
         admins: vec![init_config.admin],
         config: init_config.config,
         ..Default::default()

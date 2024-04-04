@@ -26,6 +26,7 @@ pub struct InitConfig {
     pub description: String,
     pub external_links: ExternalLinks,
     pub initial_supply: u128,
+    pub total_supply: u128,
     pub admin: ActorId,
     pub initial_capacity: Option<u32>,
     pub config: Config,
@@ -55,9 +56,8 @@ pub struct Config {
 #[scale_info(crate = gstd::scale_info)]
 pub enum FTAction {
     TransferToUsers {
-        amount: u128, 
-        to_users: Vec<ActorId>
-
+        amount: u128,
+        to_users: Vec<ActorId>,
     },
     Mint {
         amount: u128,
@@ -86,7 +86,7 @@ pub enum FTAction {
     },
 }
 
-#[derive(Debug, Encode, Decode,TypeInfo)]
+#[derive(Debug, Encode, Decode, TypeInfo)]
 #[codec(crate = gstd::codec)]
 #[scale_info(crate = gstd::scale_info)]
 pub enum FTReply {
@@ -94,7 +94,7 @@ pub enum FTReply {
     TransferredToUsers {
         from: ActorId,
         to_users: Vec<ActorId>,
-        amount: u128
+        amount: u128,
     },
     Transferred {
         from: ActorId,
@@ -119,6 +119,7 @@ pub enum FTReply {
 #[codec(crate = gstd::codec)]
 #[scale_info(crate = gstd::scale_info)]
 pub enum FTError {
+    SupplyError,
     NotAdmin,
     NotEnoughBalance,
     ZeroAddress,
