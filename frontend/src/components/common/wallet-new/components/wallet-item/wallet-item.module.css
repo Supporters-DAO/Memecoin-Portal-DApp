@@ -1,0 +1,18 @@
+.wallet {
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 120%;
+  letter-spacing: 0.02em;
+  color: #FDFDFD;
+  padding: 12px 0;
+}
+
+.icon {
+  margin-right: 8px;
+  background-color: #0F1B34;
+  border-radius: 50%;
+  height: 40px;
+  width: 40px;
+}
