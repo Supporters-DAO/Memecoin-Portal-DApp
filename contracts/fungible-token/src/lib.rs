@@ -83,11 +83,17 @@ impl FungibleToken {
     }
 
     fn burn(&mut self, amount: u128) -> Result<FTReply, FTError> {
-        assert!(self.admins.contains(&msg::source()), "Not admin");
+        let source = msg::source();
+        if self.balances.get(&source).unwrap_or(&0) < &amount {
+            return Err(FTError::NotEnoughBalance);
+        }
+        self.balances
+            .entry(source)
+            .and_modify(|balance| *balance -= amount);
         self.total_supply -= amount;
 
         Ok(FTReply::Transferred {
-            from: ZERO_ID,
+            from: source,
             to: ZERO_ID,
             amount,
         })
@@ -297,7 +303,7 @@ extern "C" fn init() {
 
     if init_config.initial_supply > init_config.total_supply {
         msg::reply(FTError::SupplyError, 0).expect("Error in sending a reply");
-    } 
+    }
 
     let ft = FungibleToken {
         name: init_config.name,
