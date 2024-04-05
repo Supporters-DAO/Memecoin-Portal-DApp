@@ -32,6 +32,7 @@ export type CreatedConfig = {
   decimals: number;
   description: string;
   initialSupply: bigint;
+  totalSupply: bigint;
   admin: string;
   initialCapacity: bigint;
   image?: string | null;
@@ -53,6 +54,7 @@ export interface FactoryEventPlain extends Enum {
       decimals: u8;
       description: Text;
       initialSupply: u128;
+      totalSupply: u128;
       admin: Hash;
       initialCapacity: Option<u128>;
       externalLinks: {
@@ -83,6 +85,9 @@ export function getFactoryEvent(
         description: event.memeCreated.initConfig.description.toString(),
         initialSupply: safeUnwrapToBigInt(
           event.memeCreated.initConfig.initialSupply
+        )!,
+        totalSupply: safeUnwrapToBigInt(
+          event.memeCreated.initConfig.totalSupply
         )!,
         admin: event.memeCreated.initConfig.admin.toString(),
         initialCapacity: safeUnwrapToBigInt(capacity)!,
