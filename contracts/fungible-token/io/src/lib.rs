@@ -25,7 +25,7 @@ pub struct InitConfig {
     pub decimals: u8,
     pub description: String,
     pub external_links: ExternalLinks,
-    pub initial_supply: u128,
+    pub current_supply: u128,
     pub total_supply: u128,
     pub admin: ActorId,
     pub initial_capacity: Option<u32>,
@@ -119,6 +119,9 @@ pub enum FTReply {
 #[codec(crate = gstd::codec)]
 #[scale_info(crate = gstd::scale_info)]
 pub enum FTError {
+    DecimalsError,
+    DescriptionError,
+    MaxSupplyReached,
     SupplyError,
     NotAdmin,
     NotEnoughBalance,

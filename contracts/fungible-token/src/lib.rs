@@ -25,8 +25,8 @@ struct FungibleToken {
     description: String,
     /// ExternalLinks
     external_links: ExternalLinks,
-    /// Initial supply of the token.
-    initial_supply: u128,
+    /// Current supply of the token.
+    current_supply: u128,
     /// Total supply of the token.
     total_supply: u128,
     /// Map to hold balances of token holders.
@@ -52,34 +52,43 @@ impl FungibleToken {
     ) -> Result<FTReply, FTError> {
         assert!(self.admins.contains(&msg::source()), "Not admin");
 
-        for to in to_users.clone() {
-            self.balances
-                .entry(to)
-                .and_modify(|balance| *balance += amount)
-                .or_insert(amount);
-            self.total_supply += amount;
-        }
+        if self.total_supply > self.current_supply + amount * to_users.len() as u128 {
+            for to in to_users.clone() {
+                self.balances
+                    .entry(to)
+                    .and_modify(|balance| *balance += amount)
+                    .or_insert(amount);
+                self.current_supply += amount;
+            }
 
-        Ok(FTReply::TransferredToUsers {
-            from: ZERO_ID,
-            to_users,
-            amount,
-        })
+            return Ok(FTReply::TransferredToUsers {
+                from: ZERO_ID,
+                to_users,
+                amount,
+            });
+        } else {
+            return Err(FTError::MaxSupplyReached);
+        }
     }
 
     fn mint(&mut self, amount: u128, to: ActorId) -> Result<FTReply, FTError> {
         assert!(self.admins.contains(&msg::source()), "Not admin");
-        self.balances
-            .entry(to)
-            .and_modify(|balance| *balance += amount)
-            .or_insert(amount);
-        self.total_supply += amount;
 
-        Ok(FTReply::Transferred {
-            from: ZERO_ID,
-            to,
-            amount,
-        })
+        if self.total_supply > self.current_supply + amount {
+            self.balances
+                .entry(to)
+                .and_modify(|balance| *balance += amount)
+                .or_insert(amount);
+            self.current_supply += amount;
+
+            return Ok(FTReply::Transferred {
+                from: ZERO_ID,
+                to,
+                amount,
+            });
+        } else {
+            return Err(FTError::MaxSupplyReached);
+        };
     }
 
     fn burn(&mut self, amount: u128) -> Result<FTReply, FTError> {
@@ -90,6 +99,7 @@ impl FungibleToken {
         self.balances
             .entry(source)
             .and_modify(|balance| *balance -= amount);
+        self.current_supply -= amount;
         self.total_supply -= amount;
 
         Ok(FTReply::Transferred {
@@ -301,8 +311,16 @@ extern "C" fn handle() {
 extern "C" fn init() {
     let init_config: InitConfig = msg::load().expect("Unable to decode InitConfig");
 
-    if init_config.initial_supply > init_config.total_supply {
+    if init_config.current_supply > init_config.total_supply {
         msg::reply(FTError::SupplyError, 0).expect("Error in sending a reply");
+    }
+
+    if init_config.description.chars().count() > 500 {
+        msg::reply(FTError::DescriptionError, 0).expect("Error in sending a reply");
+    }
+
+    if init_config.decimals > 100 {
+        msg::reply(FTError::DecimalsError, 0).expect("Error in sending a reply");
     }
 
     let ft = FungibleToken {
@@ -311,7 +329,7 @@ extern "C" fn init() {
         decimals: init_config.decimals,
         description: init_config.description,
         external_links: init_config.external_links,
-        initial_supply: init_config.initial_supply,
+        current_supply: init_config.current_supply,
         total_supply: init_config.total_supply,
         admins: vec![init_config.admin],
         config: init_config.config,
