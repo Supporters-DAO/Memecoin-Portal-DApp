@@ -31,6 +31,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Downcase REGISTRY
+        run: |
+          echo "REPO=${REGISTRY,,}" >>${GITHUB_ENV}
+
       - name: Get branch
         id: branch
         run: |
@@ -46,7 +50,7 @@ jobs:
       - name: Set IMAGE_NAME
         id: image
         run: |
-          image_name=${{ env.REGISTRY }}-${{ env.KUBE_DEPLOYMENT_PREFIX }}:${{ env.branch_name }}-${{ env.sha_short }}
+          image_name=${{ env.REPO }}-${{ env.KUBE_DEPLOYMENT_PREFIX }}:${{ env.branch_name }}-${{ env.sha_short }}
           echo "image_name=$image_name" >> $GITHUB_OUTPUT
 
   build-and-push-image:
@@ -63,7 +67,7 @@ jobs:
       - name: Log in to the github container registry
         uses: docker/login-action@v3
         with:
-          registry: ${{ env.REGISTRY }}
+          registry: ${{ env.REPO  }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
