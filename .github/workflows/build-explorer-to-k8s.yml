@@ -31,9 +31,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Downcase REGISTRY
+      - name: Lowercase github.repository
         run: |
-          echo "REPO=${REGISTRY,,}" >>${GITHUB_ENV}
+          echo "REPO=`echo ${{env.REGISTRY}} | tr '[:upper:]' '[:lower:]'`" >>${GITHUB_ENV}
 
       - name: Get branch
         id: branch
@@ -64,6 +64,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Lowercase github.repository
+        run: |
+          echo "REPO=`echo ${{env.REGISTRY}} | tr '[:upper:]' '[:lower:]'`" >>${GITHUB_ENV}
+
       - name: Log in to the github container registry
         uses: docker/login-action@v3
         with:
@@ -74,6 +78,7 @@ jobs:
       - name: Build and push image
         uses: docker/build-push-action@v5
         with:
+          context: indexer
           file: indexer/Dockerfile-explorer
           push: true
           tags: ${{ needs.prepair.outputs.image_name }}
