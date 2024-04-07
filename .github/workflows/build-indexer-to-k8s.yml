@@ -32,7 +32,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: lowercase github.repository
+      - name: Lowercase github.repository
         run: |
           echo "REPO=`echo ${{env.REGISTRY}} | tr '[:upper:]' '[:lower:]'`" >>${GITHUB_ENV}
 
@@ -65,7 +65,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: lowercase github.repository
+      - name: Lowercase github.repository
         run: |
           echo "REPO=`echo ${{env.REGISTRY}} | tr '[:upper:]' '[:lower:]'`" >>${GITHUB_ENV}
 
@@ -79,7 +79,8 @@ jobs:
       - name: Build and push image
         uses: docker/build-push-action@v5
         with:
-          file: indexer/Dockerfile-indexer
+          context: indexer
+          file: Dockerfile-indexer
           push: true
           tags: ${{ needs.prepair.outputs.image_name }}
 
