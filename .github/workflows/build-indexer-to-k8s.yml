@@ -33,7 +33,7 @@ jobs:
 
       - name: Downcase REGISTRY
         run: |
-          echo "REPO=${REGISTRY,,}" >> ${GITHUB_ENV}
+          echo "REPO=${${{ env.REGISTRY }},,}" >> ${GITHUB_ENV}
           echo "${{ env.REPO }}"
 
       - name: Get branch
