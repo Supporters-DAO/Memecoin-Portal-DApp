@@ -311,7 +311,7 @@ extern "C" fn handle() {
 extern "C" fn init() {
     let init_config: InitConfig = msg::load().expect("Unable to decode InitConfig");
 
-    if init_config.current_supply > init_config.total_supply {
+    if init_config.initial_supply > init_config.total_supply {
         msg::reply(FTError::SupplyError, 0).expect("Error in sending a reply");
     }
 
@@ -323,14 +323,18 @@ extern "C" fn init() {
         msg::reply(FTError::DecimalsError, 0).expect("Error in sending a reply");
     }
 
+    let mut balances = HashMap::new();
+    balances.insert(init_config.admin, init_config.initial_supply);
+
     let ft = FungibleToken {
         name: init_config.name,
         symbol: init_config.symbol,
         decimals: init_config.decimals,
         description: init_config.description,
         external_links: init_config.external_links,
-        current_supply: init_config.current_supply,
+        current_supply: init_config.initial_supply,
         total_supply: init_config.total_supply,
+        balances,
         admins: vec![init_config.admin],
         config: init_config.config,
         ..Default::default()
@@ -354,6 +358,7 @@ extern "C" fn state() {
         Query::Decimals => QueryReply::Decimals(token.decimals),
         Query::Description => QueryReply::Description(token.description),
         Query::ExternalLinks => QueryReply::ExternalLinks(token.external_links),
+        Query::CurrentSupply  => QueryReply::CurrentSupply(token.current_supply),
         Query::TotalSupply => QueryReply::TotalSupply(token.total_supply),
         Query::BalanceOf(account) => {
             let balance = if let Some(balance) = token.balances.get(&account) {

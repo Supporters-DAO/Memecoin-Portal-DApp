@@ -43,7 +43,7 @@ impl MemeFactory {
                     decimals: init_config.decimals.clone(),
                     description: init_config.description.clone(),
                     external_links: init_config.external_links.clone(),
-                    current_supply: init_config.current_supply.clone(),
+                    initial_supply: init_config.initial_supply.clone(),
                     total_supply: init_config.total_supply.clone(),
                     admin: init_config.admin.clone(),
                     initial_capacity: init_config.initial_capacity.clone(),

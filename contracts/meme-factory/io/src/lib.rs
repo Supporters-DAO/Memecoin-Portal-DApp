@@ -98,7 +98,7 @@ pub struct InitConfig {
     pub decimals: u8,
     pub description: String,
     pub external_links: ExternalLinks,
-    pub current_supply: u128,
+    pub initial_supply: u128,
     pub total_supply: u128,
     pub admin: ActorId,
     pub initial_capacity: Option<u32>,
