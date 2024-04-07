@@ -27,6 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       image_name: ${{ steps.image.outputs.image_name }}
+      repository: ${{ steps.image.outputs.image_name }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -63,6 +64,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: lowercase github.repository
+        run: |
+          echo "REPO=`echo ${{env.REGISTRY}} | tr '[:upper:]' '[:lower:]'`" >>${GITHUB_ENV}
 
       - name: Log in to the github container registry
         uses: docker/login-action@v3
