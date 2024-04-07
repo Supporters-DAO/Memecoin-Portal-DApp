@@ -31,10 +31,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Downcase REGISTRY
+      - name: lowercase github.repository
         run: |
-          echo "REPO=${${{ env.REGISTRY }},,}" >> ${GITHUB_ENV}
-          echo "${{ env.REPO }}"
+          echo "REPO=`echo ${{env.REGISTRY}} | tr '[:upper:]' '[:lower:]'`" >>${GITHUB_ENV}
 
       - name: Get branch
         id: branch
