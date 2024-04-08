@@ -1,144 +1,72 @@
-import { z } from 'zod'
-import { useForm, SubmitHandler } from 'react-hook-form'
+import { Link } from 'react-router-dom'
+import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Input } from '@/components/ui/input'
 import { Sprite } from '@/components/ui/sprite'
-import Link from 'next/link'
-
-const defaultValues = {
-	name: '',
-	symbol: '',
-	decimals: 0,
-	description: '',
-	external_links: {
-		image: '',
-		website: '',
-		telegram: '',
-		twitter: '',
-		discord: '',
-	},
-	initial_supply: '',
-	total_supply: '',
-	admin: '',
-	initial_capacity: '',
-	config: {
-		tx_storage_period: '',
-		tx_payment: '',
-	},
-}
-
-type Inputs = {
-	name: string
-	symbol: string
-	decimals: number
-	description: string
-	external_links: {
-		image: string
-		website: string
-		telegram: string
-		twitter: string
-		discord: string
-	}
-	initial_supply: string
-	total_supply: string
-	admin: string
-	initial_capacity: string
-	config: {
-		tx_storage_period: string
-		tx_payment: string
-	}
-}
-
-const InputsSchema = z.object({
-	name: z
-		.string()
-		.min(2, { message: 'Name must be at least 2 characters' })
-		.max(10, { message: 'Name must be no more than 10 characters' }),
-	symbol: z
-		.string()
-		.regex(/^[A-Za-z]+$/, { message: 'Only Latin letters are allowed' })
-		.min(3, { message: 'Symbol must be at least 3 characters long' })
-		.max(15, { message: 'Symbol must be no more than 15 characters long' }),
-	decimals: z.number().max(100, { message: 'Max number of decimals is 100' }),
-	description: z
-		.string()
-		.min(2, { message: 'Description must be at least 2 characters long' })
-		.max(500, {
-			message: 'Description must be no more than 500 characters long',
-		}),
-	external_links: z.object({
-		image: z.string().url({ message: 'Invalid URL' }),
-		website: z.string().url({ message: 'Invalid URL' }).optional(),
-		telegram: z.string().url({ message: 'Invalid URL' }).optional(),
-		twitter: z.string().url({ message: 'Invalid URL' }).optional(),
-		discord: z.string().url({ message: 'Invalid URL' }).optional(),
-	}),
-	initial_supply: z
-		.string()
-		.min(2, { message: 'Initial Supply must be at least 2 characters long' })
-		.max(10, {
-			message: 'Initial Supply must be no more than 10 characters long',
-		}),
-	total_supply: z
-		.string()
-		.min(2, { message: 'Total Supply must be at least 2 characters long' })
-		.max(10, {
-			message: 'Total Supply must be no more than 10 characters long',
-		}),
-})
-
-const resolver = zodResolver(InputsSchema)
+import {
+	createTokenDefault,
+	createTokenSchema,
+	ICreateTokenForm,
+} from '@/components/sections/create/schema.ts'
 
 export const CreateForm = () => {
-	const { register, handleSubmit, formState, control } = useForm<Inputs>({
+	const {
+		register,
+		handleSubmit,
+		formState: { errors },
+		control,
+	} = useForm<ICreateTokenForm>({
 		mode: 'onChange',
-		defaultValues,
-		resolver,
+		defaultValues: createTokenDefault,
+		resolver: zodResolver(createTokenSchema),
 	})
 
-	const { errors } = formState
-
-	const onSubmit: SubmitHandler<Inputs> = (data) => {
+	const onSubmit = (data: ICreateTokenForm) => {
 		console.log(data)
 		console.log('errors: ', errors)
 	}
 
 	return (
-		<div className="ju my-10 flex items-start">
-			<Link href="/" className="mr-40 flex items-center gap-3 text-xl">
-				<Sprite name="arrow-left" className="size-6 " />
+		<div className="flex items-start ju my-10">
+			<Link to="/" className="text-xl mr-40 flex items-center gap-3">
+				<Sprite name="arrow-left" className="w-6 h-6 " />
 				Main page
 			</Link>
 			<div className="flex flex-col items-center gap-3">
 				<h1 className="text-[28px] text-primary">Memecoin Creator</h1>
-				<div className="flex w-[660px] flex-col gap-6 rounded-[40px] bg-blue-light p-10">
-					<div className="flex justify-center gap-12">
-						<div className="flex w-8  items-center justify-center rounded-full bg-primary">
-							<span className="text-sm leading-none text-[#0F1B34]">1</span>
+				<div className="flex flex-col gap-6 bg-blue-light p-10 rounded-[40px] w-[660px]">
+					<div className="flex gap-12 justify-center">
+						<div className="bg-primary w-8  rounded-full flex items-center justify-center">
+							<span className="text-[#0F1B34] text-sm leading-none">1</span>
 						</div>
-						<div className="flex size-8 items-center justify-center rounded-full bg-[#D0D3D9]">
-							<span className="text-sm leading-none text-[#1D2C4B]">2</span>
+						<div className="bg-[#D0D3D9] w-8 h-8 rounded-full flex items-center justify-center">
+							<span className="text-[#1D2C4B] text-sm leading-none">2</span>
 						</div>
-						<div className="flex size-8 items-center justify-center rounded-full bg-[#D0D3D9]">
-							<span className="text-sm leading-none text-[#1D2C4B]">3</span>
+						<div className="bg-[#D0D3D9] w-8 h-8 rounded-full flex items-center justify-center">
+							<span className="text-[#1D2C4B] text-sm leading-none">3</span>
 						</div>
 					</div>
 					<h3 className="text-center uppercase">Memecoin Details</h3>
 					<form
-						className="flex flex-col gap-5 font-poppins"
+						className="font-poppins flex flex-col gap-5"
 						onSubmit={handleSubmit(onSubmit)}
 					>
 						<div className="flex flex-col gap-2">
-							<Input
-								label="Memecoin’s Name"
-								placeholder="My Vara Coin"
-								{...register('name')}
-								error={errors.name?.message}
+							<Controller
+								name="name"
+								control={control}
+								render={({ field }) => (
+									<Input
+										{...field}
+										label="Memecoin’s Name"
+										placeholder="My Vara Coin"
+									/>
+								)}
 							/>
 						</div>
 
 						<div className="flex justify-between gap-5">
-							<div className="flex w-full flex-col gap-2">
+							<div className="flex flex-col gap-2 w-full">
 								<Input
 									label="Symbol"
 									placeholder="HUM"
@@ -146,7 +74,7 @@ export const CreateForm = () => {
 									error={errors?.symbol?.message}
 								/>
 							</div>
-							<div className="flex w-full flex-col gap-2">
+							<div className="flex flex-col gap-2 w-full">
 								<Input
 									label="Decimals"
 									placeholder="4"
@@ -167,7 +95,7 @@ export const CreateForm = () => {
 						</div>
 
 						<div className="flex justify-between gap-5">
-							<div className="flex w-full flex-col gap-2">
+							<div className="flex flex-col gap-2 w-full">
 								<Input
 									label="Initial Supply"
 									placeholder="Initial number of your memecoins"
@@ -175,7 +103,7 @@ export const CreateForm = () => {
 									error={errors?.initial_supply?.message}
 								/>
 							</div>
-							<div className="flex w-full flex-col gap-2">
+							<div className="flex flex-col gap-2 w-full">
 								<Input
 									label="Total Supply"
 									placeholder="Total number of your memecoins"
@@ -186,7 +114,7 @@ export const CreateForm = () => {
 						</div>
 
 						<div className="flex justify-between gap-5">
-							<div className="flex w-full flex-col gap-2">
+							<div className="flex flex-col gap-2 w-full">
 								<Input
 									label="Website (optional)"
 									placeholder="Add a link to website"
@@ -194,7 +122,7 @@ export const CreateForm = () => {
 									error={errors?.external_links?.website?.message}
 								/>
 							</div>
-							<div className="flex w-full flex-col gap-2">
+							<div className="flex flex-col gap-2 w-full">
 								<Input
 									label="Telegram (optional)"
 									placeholder="Add a link to Telegram"
@@ -205,7 +133,7 @@ export const CreateForm = () => {
 						</div>
 
 						<div className="flex justify-between gap-5">
-							<div className="flex w-full flex-col gap-2">
+							<div className="flex flex-col gap-2 w-full">
 								<Input
 									label="Twitter (optional)"
 									placeholder="Add a link to Twitter"
@@ -213,7 +141,7 @@ export const CreateForm = () => {
 									error={errors?.external_links?.twitter?.message}
 								/>
 							</div>
-							<div className="flex w-full flex-col gap-2">
+							<div className="flex flex-col gap-2 w-full">
 								<Input
 									label="Discord (optional)"
 									placeholder="Add a link to Discord"
@@ -249,7 +177,7 @@ export const CreateForm = () => {
 						</div> */}
 						<button
 							type="submit"
-							className="mx-auto rounded-lg bg-[#D0D3D9] px-35 py-3 text-black hover:bg-primary"
+							className="mx-auto bg-[#D0D3D9] py-3 px-35 text-black rounded-lg hover:bg-primary"
 						>
 							Next
 						</button>
