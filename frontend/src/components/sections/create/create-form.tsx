@@ -8,10 +8,6 @@ import {
 	useWatch,
 } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-
-import clsx from 'clsx'
-
-import { InputArea } from '@/components/ui/InputArea'
 import { Input } from '@/components/ui/input'
 import { Sprite } from '@/components/ui/sprite'
 
@@ -114,28 +110,28 @@ export const CreateForm = () => {
 	}
 
 	return (
-		<div className="flex items-start ju my-10">
-			<Link to="/" className="text-xl mr-40 flex items-center gap-3">
-				<Sprite name="arrow-left" className="w-6 h-6 " />
+		<div className="ju my-10 flex items-start">
+			<Link to="/" className="mr-40 flex items-center gap-3 text-xl">
+				<Sprite name="arrow-left" className="h-6 w-6 " />
 				Main page
 			</Link>
 			<div className="flex flex-col items-center gap-3">
 				<h1 className="text-[28px] text-primary">Memecoin Creator</h1>
-				<div className="flex flex-col gap-6 bg-blue-light p-10 rounded-[40px] w-[660px]">
-					<div className="flex gap-12 justify-center">
-						<div className="bg-primary w-8  rounded-full flex items-center justify-center">
-							<span className="text-[#0F1B34] text-sm leading-none">1</span>
+				<div className="flex w-[660px] flex-col gap-6 rounded-[40px] bg-blue-light p-10">
+					<div className="flex justify-center gap-12">
+						<div className="flex w-8  items-center justify-center rounded-full bg-primary">
+							<span className="text-sm leading-none text-[#0F1B34]">1</span>
 						</div>
-						<div className="bg-[#D0D3D9] w-8 h-8 rounded-full flex items-center justify-center">
-							<span className="text-[#1D2C4B] text-sm leading-none">2</span>
+						<div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#D0D3D9]">
+							<span className="text-sm leading-none text-[#1D2C4B]">2</span>
 						</div>
-						<div className="bg-[#D0D3D9] w-8 h-8 rounded-full flex items-center justify-center">
-							<span className="text-[#1D2C4B] text-sm leading-none">3</span>
+						<div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#D0D3D9]">
+							<span className="text-sm leading-none text-[#1D2C4B]">3</span>
 						</div>
 					</div>
 					<h3 className="text-center uppercase">Memecoin Details</h3>
 					<form
-						className="font-poppins flex flex-col gap-5"
+						className="flex flex-col gap-5 font-poppins"
 						onSubmit={handleSubmit(onSubmit)}
 					>
 						<div className="flex flex-col gap-2">
@@ -148,7 +144,7 @@ export const CreateForm = () => {
 						</div>
 
 						<div className="flex justify-between gap-5">
-							<div className="flex flex-col gap-2 w-full">
+							<div className="flex w-full flex-col gap-2">
 								<Input
 									label="Symbol"
 									placeholder="HUM"
@@ -156,7 +152,7 @@ export const CreateForm = () => {
 									error={errors?.symbol?.message}
 								/>
 							</div>
-							<div className="flex flex-col gap-2 w-full">
+							<div className="flex w-full flex-col gap-2">
 								<Input
 									label="Decimals"
 									placeholder="4"
@@ -177,7 +173,7 @@ export const CreateForm = () => {
 						</div>
 
 						<div className="flex justify-between gap-5">
-							<div className="flex flex-col gap-2 w-full">
+							<div className="flex w-full flex-col gap-2">
 								<Input
 									label="Initial Supply"
 									placeholder="Initial number of your memecoins"
@@ -185,7 +181,7 @@ export const CreateForm = () => {
 									error={errors?.initial_supply?.message}
 								/>
 							</div>
-							<div className="flex flex-col gap-2 w-full">
+							<div className="flex w-full flex-col gap-2">
 								<Input
 									label="Total Supply"
 									placeholder="Total number of your memecoins"
@@ -196,7 +192,7 @@ export const CreateForm = () => {
 						</div>
 
 						<div className="flex justify-between gap-5">
-							<div className="flex flex-col gap-2 w-full">
+							<div className="flex w-full flex-col gap-2">
 								<Input
 									label="Website (optional)"
 									placeholder="Add a link to website"
@@ -204,7 +200,7 @@ export const CreateForm = () => {
 									error={errors?.external_links?.website?.message}
 								/>
 							</div>
-							<div className="flex flex-col gap-2 w-full">
+							<div className="flex w-full flex-col gap-2">
 								<Input
 									label="Telegram (optional)"
 									placeholder="Add a link to Telegram"
@@ -215,7 +211,7 @@ export const CreateForm = () => {
 						</div>
 
 						<div className="flex justify-between gap-5">
-							<div className="flex flex-col gap-2 w-full">
+							<div className="flex w-full flex-col gap-2">
 								<Input
 									label="Twitter (optional)"
 									placeholder="Add a link to Twitter"
@@ -223,7 +219,7 @@ export const CreateForm = () => {
 									error={errors?.external_links?.twitter?.message}
 								/>
 							</div>
-							<div className="flex flex-col gap-2 w-full">
+							<div className="flex w-full flex-col gap-2">
 								<Input
 									label="Discord (optional)"
 									placeholder="Add a link to Discord"
@@ -259,7 +255,7 @@ export const CreateForm = () => {
 						</div> */}
 						<button
 							type="submit"
-							className="mx-auto bg-[#D0D3D9] py-3 px-35 text-black rounded-lg hover:bg-primary"
+							className="mx-auto rounded-lg bg-[#D0D3D9] px-35 py-3 text-black hover:bg-primary"
 						>
 							Next
 						</button>

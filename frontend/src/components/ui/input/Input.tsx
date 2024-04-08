@@ -1,7 +1,6 @@
-import { useFormContext } from 'react-hook-form'
 import React from 'react' // Добавляем импорт React
-import clsx from 'clsx'
 import styles from './Input.module.scss'
+import { cn } from '@/lib/utils'
 
 type Props = {
 	name: string
@@ -20,11 +19,11 @@ const Input: React.FC<Props> = ({
 	return (
 		<>
 			<span className={styles.label}>{label}</span>
-			<div className={clsx(styles.wrapper, error && styles.error)}>
+			<div className={cn(styles.wrapper, error && styles.error)}>
 				<label className="w-full">
 					<input
 						type={type}
-						className={clsx(styles.input, error && styles.inputError)}
+						className={cn(styles.input, error && styles.inputError)}
 						placeholder={placeholder}
 					/>
 				</label>

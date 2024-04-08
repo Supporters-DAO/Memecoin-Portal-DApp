@@ -1,16 +1,11 @@
-const defaultTheme = require('tailwindcss/defaultTheme')
-const plugin = require('tailwindcss/plugin')
+import type { Config } from 'tailwindcss'
+import defaultTheme from 'tailwindcss/defaultTheme'
+import plugin from 'tailwindcss/plugin'
 
-// create default values
-const screenKeys = Array.from({ length: 100 }, (_, i) => i)
-const screenSizes = screenKeys.reduce(
-	(v, key) => Object.assign(v, { [key]: key }),
-	{}
-)
-
-/** @type {import("tailwindcss").Config} */
-module.exports = {
-	content: ['./src/**/*.{ts,tsx}'],
+const config: Config = {
+	content: ['./src/pages/**/*.{js,ts,jsx,tsx,mdx}',
+		'./src/components/**/*.{js,ts,jsx,tsx,mdx}',
+		'./src/app/**/*.{js,ts,jsx,tsx,mdx}'],
 	darkMode: 'class',
 	theme: {
 		screens: {
@@ -94,6 +89,8 @@ module.exports = {
 			},
 			backgroundImage: {
 				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+				'gradient-conic':
+					'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
 			},
 			borderWidth: {
 				3: '3px',
@@ -105,9 +102,9 @@ module.exports = {
 			colors: {
 				brand: 'rgb(var(--brand) / <alpha-value>)',
 				primary: 'rgb(var(--primary) / <alpha-value>)',
-				"blue-dark": 'rgb(var(--blue-dark) / <alpha-value>)',
-				"blue-light": 'rgb(var(--blue-light) / <alpha-value>)',
-				"white": 'rgb(var(--white) / <alpha-value>)',
+				'blue-dark': 'rgb(var(--blue-dark) / <alpha-value>)',
+				'blue-light': 'rgb(var(--blue-light) / <alpha-value>)',
+				'white': 'rgb(var(--white) / <alpha-value>)',
 				error: 'rgb(var(--error) / <alpha-value>)',
 				contrast: 'rgb(var(--contrast) / <alpha-value>)',
 			},
@@ -222,44 +219,6 @@ module.exports = {
 			opacity: {
 				15: '.15',
 			},
-			typography: ({ theme }) => ({
-				DEFAULT: {
-					css: {
-						'--tw-prose-body': theme('colors.neutral[800]'),
-						'--tw-prose-headings': theme('colors.neutral[900]'),
-						'--tw-prose-lead': theme('colors.neutral[700]'),
-						'--tw-prose-links': theme('colors.neutral[900]'),
-						'--tw-prose-bold': theme('colors.neutral[900]'),
-						'--tw-prose-counters': theme('colors.neutral[600]'),
-						'--tw-prose-bullets': theme('colors.neutral[400]'),
-						'--tw-prose-hr': theme('colors.neutral[300]'),
-						'--tw-prose-quotes': theme('colors.neutral[900]'),
-						'--tw-prose-quote-borders': theme('colors.neutral[300]'),
-						'--tw-prose-captions': theme('colors.neutral[700]'),
-						'--tw-prose-code': theme('colors.neutral[900]'),
-						'--tw-prose-pre-code': theme('colors.neutral[100]'),
-						'--tw-prose-pre-bg': theme('colors.neutral[900]'),
-						'--tw-prose-th-borders': theme('colors.neutral[300]'),
-						'--tw-prose-td-borders': theme('colors.neutral[200]'),
-						'--tw-prose-invert-body': theme('colors.neutral[100]'),
-						'--tw-prose-invert-headings': theme('colors.white'),
-						'--tw-prose-invert-lead': theme('colors.neutral[300]'),
-						'--tw-prose-invert-links': theme('colors.white'),
-						'--tw-prose-invert-bold': theme('colors.white'),
-						'--tw-prose-invert-counters': theme('colors.neutral[400]'),
-						'--tw-prose-invert-bullets': theme('colors.neutral[600]'),
-						'--tw-prose-invert-hr': theme('colors.neutral[700]'),
-						'--tw-prose-invert-quotes': theme('colors.neutral[100]'),
-						'--tw-prose-invert-quote-borders': theme('colors.neutral[700]'),
-						'--tw-prose-invert-captions': theme('colors.neutral[400]'),
-						'--tw-prose-invert-code': theme('colors.white'),
-						'--tw-prose-invert-pre-code': theme('colors.neutral[300]'),
-						'--tw-prose-invert-pre-bg': 'rgb(0 0 0 / 50%)',
-						'--tw-prose-invert-th-borders': theme('colors.neutral[600]'),
-						'--tw-prose-invert-td-borders': theme('colors.neutral[700]'),
-					},
-				},
-			}),
 		},
 	},
 	corePlugins: {
@@ -269,19 +228,11 @@ module.exports = {
 		require('tailwindcss-animate'),
 		require('@tailwindcss/typography'),
 		require('tailwind-scrollbar'),
-		plugin(function ({ matchUtilities, theme }) {
-			matchUtilities(
-				{
-					't-vh': (value, extra) => ({
-						top: `calc(var(--vh,1vh) * ${value})`,
-					}),
-				},
-				{ values: Object.assign(screenSizes, theme('topVh', {})) }
-			)
-		}),
-		plugin(function ({ addVariant }) {
+		plugin(function({ addVariant }) {
 			addVariant('hocus', ['&:hover', '&:focus-visible'])
 		}),
 		require('tailwindcss-radix'),
 	],
 }
+
+export default config
