@@ -1,15 +1,9 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
 import { z } from 'zod'
-import {
-	useForm,
-	SubmitHandler,
-	useFieldArray,
-	useWatch,
-} from 'react-hook-form'
+import { useForm, SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Input } from '@/components/ui/input'
 import { Sprite } from '@/components/ui/sprite'
+import Link from 'next/link'
 
 const defaultValues = {
 	name: '',
@@ -111,8 +105,8 @@ export const CreateForm = () => {
 
 	return (
 		<div className="ju my-10 flex items-start">
-			<Link to="/" className="mr-40 flex items-center gap-3 text-xl">
-				<Sprite name="arrow-left" className="h-6 w-6 " />
+			<Link href="/" className="mr-40 flex items-center gap-3 text-xl">
+				<Sprite name="arrow-left" className="size-6 " />
 				Main page
 			</Link>
 			<div className="flex flex-col items-center gap-3">
@@ -122,10 +116,10 @@ export const CreateForm = () => {
 						<div className="flex w-8  items-center justify-center rounded-full bg-primary">
 							<span className="text-sm leading-none text-[#0F1B34]">1</span>
 						</div>
-						<div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#D0D3D9]">
+						<div className="flex size-8 items-center justify-center rounded-full bg-[#D0D3D9]">
 							<span className="text-sm leading-none text-[#1D2C4B]">2</span>
 						</div>
-						<div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#D0D3D9]">
+						<div className="flex size-8 items-center justify-center rounded-full bg-[#D0D3D9]">
 							<span className="text-sm leading-none text-[#1D2C4B]">3</span>
 						</div>
 					</div>

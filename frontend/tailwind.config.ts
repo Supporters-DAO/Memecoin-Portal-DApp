@@ -3,9 +3,11 @@ import defaultTheme from 'tailwindcss/defaultTheme'
 import plugin from 'tailwindcss/plugin'
 
 const config: Config = {
-	content: ['./src/pages/**/*.{js,ts,jsx,tsx,mdx}',
+	content: [
+		'./src/pages/**/*.{js,ts,jsx,tsx,mdx}',
 		'./src/components/**/*.{js,ts,jsx,tsx,mdx}',
-		'./src/app/**/*.{js,ts,jsx,tsx,mdx}'],
+		'./src/app/**/*.{js,ts,jsx,tsx,mdx}',
+	],
 	darkMode: 'class',
 	theme: {
 		screens: {
@@ -61,8 +63,8 @@ const config: Config = {
 					},
 				},
 				hide: {
-					from: { opacity: 1 },
-					to: { opacity: 0 },
+					from: { opacity: '1' },
+					to: { opacity: '0' },
 				},
 				slideIn: {
 					from: {
@@ -75,12 +77,12 @@ const config: Config = {
 					to: { transform: 'translateX(calc(100% + var(--viewport-padding)))' },
 				},
 				'accordion-down': {
-					from: { height: 0 },
+					from: { height: '0' },
 					to: { height: 'var(--radix-accordion-content-height)' },
 				},
 				'accordion-up': {
 					from: { height: 'var(--radix-accordion-content-height)' },
-					to: { height: 0 },
+					to: { height: '0' },
 				},
 				'running-text': {
 					from: { transform: 'translate3d(100vw,0,0)' },
@@ -104,7 +106,7 @@ const config: Config = {
 				primary: 'rgb(var(--primary) / <alpha-value>)',
 				'blue-dark': 'rgb(var(--blue-dark) / <alpha-value>)',
 				'blue-light': 'rgb(var(--blue-light) / <alpha-value>)',
-				'white': 'rgb(var(--white) / <alpha-value>)',
+				white: 'rgb(var(--white) / <alpha-value>)',
 				error: 'rgb(var(--error) / <alpha-value>)',
 				contrast: 'rgb(var(--contrast) / <alpha-value>)',
 			},
@@ -228,7 +230,7 @@ const config: Config = {
 		require('tailwindcss-animate'),
 		require('@tailwindcss/typography'),
 		require('tailwind-scrollbar'),
-		plugin(function({ addVariant }) {
+		plugin(function ({ addVariant }) {
 			addVariant('hocus', ['&:hover', '&:focus-visible'])
 		}),
 		require('tailwindcss-radix'),
