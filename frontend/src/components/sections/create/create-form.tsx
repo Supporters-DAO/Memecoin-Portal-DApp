@@ -1,114 +1,27 @@
-import React from 'react'
 import { Link } from 'react-router-dom'
-import { z } from 'zod'
-import {
-	useForm,
-	SubmitHandler,
-	useFieldArray,
-	useWatch,
-} from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-
-import clsx from 'clsx'
-
-import { InputArea } from '@/components/ui/InputArea'
 import { Input } from '@/components/ui/input'
 import { Sprite } from '@/components/ui/sprite'
-
-const defaultValues = {
-	name: '',
-	symbol: '',
-	decimals: 0,
-	description: '',
-	external_links: {
-		image: '',
-		website: '',
-		telegram: '',
-		twitter: '',
-		discord: '',
-	},
-	initial_supply: '',
-	total_supply: '',
-	admin: '',
-	initial_capacity: '',
-	config: {
-		tx_storage_period: '',
-		tx_payment: '',
-	},
-}
-
-type Inputs = {
-	name: string
-	symbol: string
-	decimals: number
-	description: string
-	external_links: {
-		image: string
-		website: string
-		telegram: string
-		twitter: string
-		discord: string
-	}
-	initial_supply: string
-	total_supply: string
-	admin: string
-	initial_capacity: string
-	config: {
-		tx_storage_period: string
-		tx_payment: string
-	}
-}
-
-const InputsSchema = z.object({
-	name: z
-		.string()
-		.min(2, { message: 'Name must be at least 2 characters' })
-		.max(10, { message: 'Name must be no more than 10 characters' }),
-	symbol: z
-		.string()
-		.regex(/^[A-Za-z]+$/, { message: 'Only Latin letters are allowed' })
-		.min(3, { message: 'Symbol must be at least 3 characters long' })
-		.max(15, { message: 'Symbol must be no more than 15 characters long' }),
-	decimals: z.number().max(100, { message: 'Max number of decimals is 100' }),
-	description: z
-		.string()
-		.min(2, { message: 'Description must be at least 2 characters long' })
-		.max(500, {
-			message: 'Description must be no more than 500 characters long',
-		}),
-	external_links: z.object({
-		image: z.string().url({ message: 'Invalid URL' }),
-		website: z.string().url({ message: 'Invalid URL' }).optional(),
-		telegram: z.string().url({ message: 'Invalid URL' }).optional(),
-		twitter: z.string().url({ message: 'Invalid URL' }).optional(),
-		discord: z.string().url({ message: 'Invalid URL' }).optional(),
-	}),
-	initial_supply: z
-		.string()
-		.min(2, { message: 'Initial Supply must be at least 2 characters long' })
-		.max(10, {
-			message: 'Initial Supply must be no more than 10 characters long',
-		}),
-	total_supply: z
-		.string()
-		.min(2, { message: 'Total Supply must be at least 2 characters long' })
-		.max(10, {
-			message: 'Total Supply must be no more than 10 characters long',
-		}),
-})
-
-const resolver = zodResolver(InputsSchema)
+import {
+	createTokenDefault,
+	createTokenSchema,
+	ICreateTokenForm,
+} from '@/components/sections/create/schema.ts'
 
 export const CreateForm = () => {
-	const { register, handleSubmit, formState, control } = useForm<Inputs>({
+	const {
+		register,
+		handleSubmit,
+		formState: { errors },
+		control,
+	} = useForm<ICreateTokenForm>({
 		mode: 'onChange',
-		defaultValues,
-		resolver,
+		defaultValues: createTokenDefault,
+		resolver: zodResolver(createTokenSchema),
 	})
 
-	const { errors } = formState
-
-	const onSubmit: SubmitHandler<Inputs> = (data) => {
+	const onSubmit = (data: ICreateTokenForm) => {
 		console.log(data)
 		console.log('errors: ', errors)
 	}
@@ -139,11 +52,16 @@ export const CreateForm = () => {
 						onSubmit={handleSubmit(onSubmit)}
 					>
 						<div className="flex flex-col gap-2">
-							<Input
-								label="Memecoin’s Name"
-								placeholder="My Vara Coin"
-								{...register('name')}
-								error={errors.name?.message}
+							<Controller
+								name="name"
+								control={control}
+								render={({ field }) => (
+									<Input
+										{...field}
+										label="Memecoin’s Name"
+										placeholder="My Vara Coin"
+									/>
+								)}
 							/>
 						</div>
 

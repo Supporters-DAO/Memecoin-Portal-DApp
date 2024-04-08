@@ -1,30 +1,28 @@
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import { withProviders } from "./app/hocs";
-import { Home } from "./pages/Home";
-import { useAccount, useApi } from "@gear-js/react-hooks";
-import Create from "./pages/Create";
+import { RouterProvider, createBrowserRouter } from 'react-router-dom'
+import { withProviders } from './app/hocs'
+import { Home } from './pages/Home'
+import { useAccount, useApi } from '@gear-js/react-hooks'
+import Create from './pages/Create'
 
 const router = createBrowserRouter([
 	{
-		path: "/",
-		element: <Home />
-		,
+		path: '/',
+		element: <Home />,
 	},
 	{
-		path: "/create",
-		element: <Create />
-		,
+		path: '/create',
+		element: <Create />,
 	},
-]);
+])
 
 function App() {
-	const { isApiReady } = useApi();
-	const { isAccountReady } = useAccount();
+	const { isApiReady } = useApi()
+	const { isAccountReady } = useAccount()
 
 	// useWalletSync();
 	// useAccountAvailableBalanceSync();
 
-	const isAppReady = isApiReady && isAccountReady;
+	const isAppReady = isApiReady && isAccountReady
 
 	return (
 		<main>
@@ -33,10 +31,12 @@ function App() {
 					<RouterProvider router={router} />
 				</>
 			) : (
-				<div className="h-screen flex items-center justify-center">Loading...</div>
+				<div className="h-screen flex items-center justify-center">
+					Loading...
+				</div>
 			)}
 		</main>
-	);
+	)
 }
 
-export const AppWithProviders = withProviders(App);
+export const AppWithProviders = withProviders(App)
