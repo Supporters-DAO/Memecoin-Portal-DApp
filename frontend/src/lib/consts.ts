@@ -1,3 +1,3 @@
 export const ADDRESS = {
-	NODE: import.meta.env.VITE_NODE_ADDRESS,
+	NODE: process.env.NEXT_PUBLIC_NODE_ADDRESS,
 }
