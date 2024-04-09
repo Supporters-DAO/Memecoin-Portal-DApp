@@ -106,7 +106,6 @@ const config: Config = {
 				primary: 'rgb(var(--primary) / <alpha-value>)',
 				'blue-dark': 'rgb(var(--blue-dark) / <alpha-value>)',
 				'blue-light': 'rgb(var(--blue-light) / <alpha-value>)',
-				white: 'rgb(var(--white) / <alpha-value>)',
 				error: 'rgb(var(--error) / <alpha-value>)',
 				contrast: 'rgb(var(--contrast) / <alpha-value>)',
 			},

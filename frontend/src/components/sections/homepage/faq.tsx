@@ -184,7 +184,7 @@ const QA = [
 						className="link link-primary"
 					>
 						Existential Deposit
-					</Link>
+					</Link>{' '}
 					on the Vara network is 10 VARA. Therefore, your account must have at
 					least 11 VARA (and never less than 10 VARA) to ensure you can pay the
 					gas fees while maintaining your network presence.
