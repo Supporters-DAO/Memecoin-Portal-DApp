@@ -1,6 +1,6 @@
-[![Open in Gitpod](https://img.shields.io/badge/Open_in-Gitpod-white?logo=gitpod)]
+[![Open in Gitpod](https://img.shields.io/badge/Open_in-Gitpod-white?logo=gitpod)]( https://gitpod.io/)
 
-# Fungible Token Smart Contractv (gRC-20)
+# Fungible Token Smart Contract (gRC-20)
 
 ## Description
 
