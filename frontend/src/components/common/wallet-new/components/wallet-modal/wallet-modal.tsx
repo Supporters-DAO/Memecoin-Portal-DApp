@@ -1,22 +1,21 @@
+'use client'
+
 import { AnimatePresence, motion } from 'framer-motion'
 import { decodeAddress } from '@gear-js/api'
 import { useAccount, useAlert } from '@gear-js/react-hooks'
 import { Dialog } from '@headlessui/react'
-import { cn, copyToClipboard, isMobileDevice } from '@/lib/utils.ts'
-import CopyIcon from '../../assets/copy.svg?react'
-import EditIcon from '../../assets/edit-icon.svg?react'
-import ExitIcon from '../../assets/exit.svg?react'
-import CrossIcon from '../../assets/cross-icon.svg?react'
+import { cn, copyToClipboard, isMobileDevice } from '@/lib/utils'
 import { WALLETS } from '../../consts'
 import { useWallet } from '../../hooks'
 import { WalletItem } from '../wallet-item'
-import styles from './wallet-modal.module.css'
+import styles from './wallet-modal.module.scss'
 import { WalletModalProps } from './wallet-modal.interface'
 import { AccountIcon } from '../account-icon'
 import { variantsPanel, variantsOverlay } from './wallet-modal.variants'
 import { ScrollArea } from '@/components/common/scroll-area'
-import { ArrayElement } from '@/lib/types.ts'
+import { ArrayElement } from '@/lib/types'
 import { Wallets } from '../../types'
+import { Sprite } from '@/components/ui/sprite'
 
 function WalletModal({ onClose, open, setOpen }: WalletModalProps) {
 	const alert = useAlert()
@@ -81,7 +80,7 @@ function WalletModal({ onClose, open, setOpen }: WalletModalProps) {
 						onClick={onClick}
 						disabled={!isEnabled}
 					>
-						<WalletItem Icon={SVG} name={name} />
+						<WalletItem icon={SVG} name={name} />
 
 						<span className={styles.status}>
 							<span className={styles.statusText}>{status}</span>
@@ -130,7 +129,7 @@ function WalletModal({ onClose, open, setOpen }: WalletModalProps) {
 						</button>
 
 						<button className={styles.textButton} onClick={handleCopyClick}>
-							<CopyIcon className={styles.svgIcon} />
+							<Sprite name="copy" size={16} className={styles.svgIcon} />
 						</button>
 					</div>
 				</li>
@@ -173,7 +172,7 @@ function WalletModal({ onClose, open, setOpen }: WalletModalProps) {
 										Wallet connection
 									</Dialog.Title>
 									<button className={styles.close} onClick={onClose}>
-										<CrossIcon />
+										<Sprite name="close" size={24} className={styles.svgIcon} />
 									</button>
 								</div>
 								{accounts?.length ? (
@@ -192,7 +191,7 @@ function WalletModal({ onClose, open, setOpen }: WalletModalProps) {
 									</ScrollArea>
 								) : (
 									<>
-										{isMobileDevice ? (
+										{isMobileDevice() ? (
 											<p>
 												To use this application on the mobile devices, open this
 												page inside the compatible wallets like SubWallet or
@@ -223,9 +222,18 @@ function WalletModal({ onClose, open, setOpen }: WalletModalProps) {
 											className={styles.walletButton}
 											onClick={resetWalletId}
 										>
-											<WalletItem Icon={wallet.SVG} name={wallet.name} />
+											<WalletItem
+												icon={wallet.SVG}
+												name={wallet.name}
+												size={24}
+												className="!w-6"
+											/>
 
-											<EditIcon />
+											<Sprite
+												name="wallet-edit"
+												size={14}
+												className={styles.svgIcon}
+											/>
 										</button>
 
 										{account && (
@@ -233,7 +241,11 @@ function WalletModal({ onClose, open, setOpen }: WalletModalProps) {
 												className={styles.textButton}
 												onClick={handleLogoutButtonClick}
 											>
-												<ExitIcon className={styles.svgIcon} />
+												<Sprite
+													name="wallet-exit"
+													size={14}
+													className={styles.svgIcon}
+												/>
 												<span>Exit</span>
 											</button>
 										)}

@@ -1,17 +1,19 @@
+'use client'
+
 import {
 	useAccount,
 	useApi,
 	useBalanceFormat,
 	useDeriveBalancesAll,
 } from '@gear-js/react-hooks'
-import styles from './vara-balance.module.css'
+import styles from './vara-balance.module.scss'
 import { cn } from '@/lib/utils'
 
 type Props = {
 	className?: string
 }
 
-function VaraBalance({ className }: Props) {
+export function VaraBalance({ className }: Props) {
 	const { account } = useAccount()
 	const { isApiReady } = useApi()
 	const { isAccountReady } = useAccount()
@@ -32,5 +34,3 @@ function VaraBalance({ className }: Props) {
 		</div>
 	) : null
 }
-
-export { VaraBalance }

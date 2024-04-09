@@ -1,32 +1,42 @@
-import ImageBg from '@/assets/hero-bg.png'
-import { Header } from '@/components/common/header'
-import { Wallet } from '@/components/common/wallet-new'
-import { useAccount } from '@gear-js/react-hooks'
-import { Link } from 'react-router-dom'
+'use client'
+
+import HeroBG from '@/components/assets/hero-bg.png'
+import Link from 'next/link'
+import Image from 'next/image'
 
 export function Hero() {
-	const { account } = useAccount()
-
 	return (
-		<div className='h-screen bg-cover bg-center flex flex-col justify-start'
-			style={{ backgroundImage: `url(${ImageBg})` }}
-		>
-			<Header />
-
-			<div className='flex flex-col gap-7 ml-auto w-2/4 mt-vh-30'>
-				<h1 className='text-[64px] text-[#FDFDFD]'>Vara Memecoins</h1>
-				<p className='text-[#FDFDFD] text-xl'>Create your own memecoin in # minutes</p>
-				{account ?
-					<Link to={"/create"}>
-						<button
-							type='button'
-							className='text-xs bg-primary p-5 px-7 font-bold rounded-lg cursor-pointer mt-5 text-[#242424]'
-						>
-							Create now
-						</button>
-					</Link> : <Wallet />
-				}
+		<>
+			{/*<HeroBackground />*/}
+			<div className="container relative z-1">
+				<div className="">
+					<h1 className="text-[64px] text-[#FDFDFD]">Vara Memecoins</h1>
+					<p className="text-xl text-[#FDFDFD]">
+						Create your own memecoin in # minutes
+					</p>
+					<Link
+						href={'/create-token'}
+						className="mt-5 cursor-pointer rounded-lg bg-primary p-5 px-7 text-xs font-bold text-[#242424]"
+					>
+						Create now
+					</Link>
+				</div>
 			</div>
+		</>
+	)
+}
+
+function HeroBackground() {
+	return (
+		<div className="pointer-events-none absolute inset-0 -z-1">
+			<Image
+				src={HeroBG}
+				alt={'Background image'}
+				placeholder={'blur'}
+				width={1440}
+				height={934}
+				className="size-full object-cover"
+			/>
 		</div>
 	)
 }

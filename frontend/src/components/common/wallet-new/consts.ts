@@ -1,10 +1,16 @@
-import EnkryptSVG from './assets/enkrypt.svg?react'
-import PolkadotSVG from './assets/polkadot.svg?react'
-import SubWalletSVG from './assets/subwallet.svg?react'
-import TalismanSVG from './assets/talisman.svg?react'
+import EnkryptSVG from './assets/enkrypt.svg'
+import PolkadotSVG from './assets/polkadot.svg'
+import SubWalletSVG from './assets/subwallet.svg'
+import TalismanSVG from './assets/talisman.svg'
 import NovaSVG from './assets/nova.svg'
 
 import { Wallets } from './types'
+
+declare global {
+	interface Window {
+		walletExtension: { isNovaWallet: boolean }
+	}
+}
 
 const isNovaWallet = !!window?.walletExtension?.isNovaWallet
 

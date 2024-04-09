@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 import * as ScrollAreaPrimitive from '@radix-ui/react-scroll-area'
-import styles from './scroll-area.module.css'
+import styles from './scroll-area.module.scss'
 import { cn } from '@/lib/utils'
 
 const ScrollBar = React.forwardRef<

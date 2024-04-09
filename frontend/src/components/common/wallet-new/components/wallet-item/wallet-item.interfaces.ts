@@ -1,6 +1,8 @@
-import { FunctionComponent, SVGProps } from 'react';
+import { StaticImageData } from 'next/image'
 
 export type WalletItemProps = {
-  Icon: FunctionComponent<SVGProps<SVGSVGElement> & { title?: string | undefined }>;
-  name: string;
-};
+	icon: StaticImageData
+	name: string
+	size?: number
+	className?: string
+}

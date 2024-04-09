@@ -1,13 +1,13 @@
-import { FunctionComponent, SVGProps } from 'react';
-import { WALLET } from './consts';
+import { WALLET } from './consts'
+import { StaticImageData } from 'next/image'
 
 export type WalletValue = {
-  name: string;
-  SVG: FunctionComponent<SVGProps<SVGSVGElement> & { title?: string | undefined }>;
-};
+	name: string
+	SVG: StaticImageData
+}
 
-type WalletId = keyof typeof WALLET;
+type WalletId = keyof typeof WALLET
 
-type Wallets = [WalletId, WalletValue][];
+type Wallets = [WalletId, WalletValue][]
 
-export type { WalletId, Wallets };
+export type { WalletId, Wallets }

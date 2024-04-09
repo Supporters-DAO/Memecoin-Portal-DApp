@@ -1,13 +1,21 @@
-import styles from './wallet-item.module.css';
-import { WalletItemProps } from './wallet-item.interfaces';
+import styles from './wallet-item.module.scss'
+import { WalletItemProps } from './wallet-item.interfaces'
+import Image from 'next/image'
+import { cn } from '@/lib/utils'
 
-function WalletItem({ Icon, name }: WalletItemProps) {
-  return (
-    <span className={styles.wallet}>
-      <Icon className={styles.icon} />
-      {name}
-    </span>
-  );
+function WalletItem({ icon, name, size = 40, className }: WalletItemProps) {
+	return (
+		<span className={styles.wallet}>
+			<Image
+				src={icon}
+				alt={name}
+				width={size}
+				height={size}
+				className={cn(styles.icon, className)}
+			/>
+			{name}
+		</span>
+	)
 }
 
-export { WalletItem };
+export { WalletItem }

@@ -1,19 +1,33 @@
-import cx from 'clsx';
-import styles from './InputArea.module.scss';
-import { InputProps } from './InputArea.interfaces';
+import styles from './InputArea.module.scss'
+import { cn } from '@/lib/utils'
+import { TextareaHTMLAttributes } from 'react'
 
-function InputArea({ size = 'medium', error, label, ...props }: InputProps) {
-  return (
-    <>
-      <span className={styles.label}>{label}</span>
-      <div className={cx(styles.wrapper, styles[`size-${size}`], error && styles.error)}>
-        <textarea {...props} className={cx(styles.input, error && styles.inputError)} />
-      </div>
-      {error && <p className={styles.error}>{error}</p>}
-    </>
-
-
-  );
+export interface Props
+	extends Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'size'> {
+	size?: 'large' | 'medium' | 'small'
+	label?: string
+	error?: any
 }
 
-export { InputArea };
+function InputArea({ size = 'medium', error, label, ...props }: Props) {
+	return (
+		<>
+			<span className={styles.label}>{label}</span>
+			<div
+				className={cn(
+					styles.wrapper,
+					styles[`size-${size}`],
+					error && styles.error
+				)}
+			>
+				<textarea
+					{...props}
+					className={cn(styles.input, error && styles.inputError)}
+				/>
+			</div>
+			{error && <p className={styles.error}>{error}</p>}
+		</>
+	)
+}
+
+export { InputArea }

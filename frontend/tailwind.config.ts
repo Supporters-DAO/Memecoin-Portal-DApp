@@ -111,9 +111,9 @@ const config: Config = {
 				contrast: 'rgb(var(--contrast) / <alpha-value>)',
 			},
 			fontFamily: {
-				primary: ['"Press Start 2P"', ...defaultTheme.fontFamily.sans],
-				second: ['"Silkscreen"', ...defaultTheme.fontFamily.sans],
-				poppins: ['"Poppins"', ...defaultTheme.fontFamily.sans],
+				ps2p: ['var(--font-ps2p)', ...defaultTheme.fontFamily.sans],
+				silkscreen: ['var(--font-silkscreen)', ...defaultTheme.fontFamily.sans],
+				poppins: ['var(--font-poppins)', ...defaultTheme.fontFamily.sans],
 			},
 			fontSize: {
 				// sm: ['14px', '20px'],

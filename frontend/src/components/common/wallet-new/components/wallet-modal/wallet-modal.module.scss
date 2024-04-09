@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-
 .content {
   flex: 1 1 100%;
   max-height: 430px;
@@ -19,8 +17,8 @@
     border: none;
     border-radius: 8px;
     outline: none;
-    background-color: #111E37;
-    color: #FDFDFD;
+    background-color: #111e37;
+    color: #fdfdfd;
     display: flex;
     align-items: center;
     transition: 0.3s;
@@ -66,7 +64,7 @@
     font-size: 11px;
     line-height: 10px;
     letter-spacing: 0.02em;
-    color: #B4FF69;
+    color: #b4ff69;
     transition: color 250ms ease;
   }
 }
@@ -75,7 +73,7 @@
   display: flex;
   align-items: center;
 
-  &>*:not(:last-child) {
+  & > *:not(:last-child) {
     margin-right: 10px;
   }
 
@@ -90,13 +88,13 @@
     padding-left: 24px;
     font-weight: 600;
     font-size: 16px;
-    background: #111E37;
+    background: #111e37;
     cursor: pointer;
     transition: 0.3s;
     outline: none;
     border: none;
 
-    &>*:not(:last-child) {
+    & > *:not(:last-child) {
       margin-right: 12px;
     }
 
@@ -105,7 +103,7 @@
     }
 
     &:disabled {
-      color: #FDFDFD;
+      color: #fdfdfd;
     }
 
     & span {
@@ -142,7 +140,7 @@
     outline: none;
     cursor: pointer;
 
-    &>*:not(:last-child) {
+    & > *:not(:last-child) {
       margin-right: 8px;
     }
 
@@ -172,7 +170,7 @@
   transition: opacity 300ms ease;
   cursor: pointer;
 
-  &>*:not(:last-child) {
+  & > *:not(:last-child) {
     margin-right: 10px;
   }
 
@@ -229,8 +227,8 @@
     position: relative;
     width: 100%;
     max-width: 400px;
-    background-color: #0F1B34;
-    color: #FDFDFD;
+    background-color: #0f1b34;
+    color: #fdfdfd;
 
     @media screen and (min-width: 768px) {
       --scale-closed: 90%;
@@ -262,7 +260,7 @@
     line-height: 120%;
     letter-spacing: 0.02em;
     text-transform: capitalize;
-    color: #FDFDFD;
+    color: #fdfdfd;
   }
 
   & .close {
@@ -283,7 +281,7 @@
 
     svg {
       & path {
-        fill: #FDFDFD
+        fill: #fdfdfd
       }
     }
   }
@@ -291,6 +289,6 @@
 
 .svgIcon {
   & path {
-    fill: #FDFDFD
+    fill: #fdfdfd
   }
 }
