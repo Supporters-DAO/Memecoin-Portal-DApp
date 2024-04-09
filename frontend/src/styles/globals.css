@@ -51,15 +51,19 @@
 
 @layer components {
   .btn {
-    @apply inline-flex cursor-pointer rounded-lg px-10 py-6 bg-primary text-[#242424] leading-none transition-colors;
+    @apply inline-flex cursor-pointer rounded-lg px-10 py-6 bg-primary text-[#242424] leading-none transition select-none;
   }
 
   .btn--primary {
-    @apply bg-primary text-[#242424] hocus:bg-[#98FF37];
+    @apply bg-primary text-[#242424] hover:bg-[#98FF37] focus-visible:bg-[#98FF37] active:bg-[#86E031];
   }
 
   .btn--outline {
-    @apply bg-[#0F1B34] text-[#242424] ring-2 ring-primary ring-inset;
+    @apply bg-[#0F1B34] text-[#242424] ring-2 ring-inset ring-opacity-80 ring-current hover:text-[#98FF37] focus-visible:text-[#98FF37] active:text-[#86E031];
+  }
+
+  .link-primary {
+    @apply transition-colors text-primary hover:text-[#98FF37] focus-visible:text-[#98FF37] active:text-[#86E031]
   }
 }
 

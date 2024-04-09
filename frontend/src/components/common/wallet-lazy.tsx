@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic'
 import { useEffect, useState } from 'react'
-import { GearApiProvider } from '@/components/providers'
+import { GearApiProvider } from '@/components/providers/gear-api'
 
 const LazyWallet = dynamic(
 	() => import('@/components/common/wallet-new').then((mod) => mod.Wallet),

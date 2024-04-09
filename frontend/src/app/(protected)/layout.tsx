@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import { GearApiProvider } from '@/components/providers'
+import { GearApiProvider } from '@/components/providers/gear-api'
 
 export default function Layout({ children }: { children: ReactNode }) {
 	return (

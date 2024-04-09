@@ -6,6 +6,7 @@ import { Sprite } from '@/components/ui/sprite'
 import { useScrollDirection } from '@/lib/hooks/use-scroll-direction'
 import { useScrollLock } from '@/lib/hooks/use-scroll-prevent'
 import { cn } from '@/lib/utils'
+import { HeaderMenu } from '@/components/common/header-menu'
 
 export function Header() {
 	const [basicDown, basicScroll] = useScrollDirection()
@@ -36,7 +37,10 @@ export function Header() {
 						<Sprite name="logo-tokenator" className="h-[86px] w-[156px]" />
 					</Link>
 
-					<WalletLazy />
+					<div className="flex items-center space-x-6 text-primary">
+						<WalletLazy />
+						<HeaderMenu />
+					</div>
 				</div>
 			</div>
 		</header>
