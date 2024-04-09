@@ -44,8 +44,8 @@ Updates the `CodeId` of the contract. This action can only be performed by autho
 - `new_code_id`: The new `CodeId` to which the contract should be updated. This ID is critical for identifying the version or instance of the contract code in the blockchain.
 
 ### UpdateGasProgram
-Updates the amount of gas used for the contract's transactions and operations.
-- `new_gas_amount`: The new gas amount to be used for the operations. It's a crucial parameter to ensure that transactions are processed efficiently and without unnecessary cost.
+Updates the amount of gas used for the contract.
+- `new_gas_amount`: The new gas amount to be used for the grc-20 contract. It's a crucial parameter to ensure that transactions are processed efficiently and without unnecessary cost.
 
 ### AddAdmin
 Allows adding a new administrator to the contract. Only current administrators can add new ones.
@@ -64,7 +64,7 @@ Emitted when a new meme has been successfully created. It includes identifiers a
 ### GasUpdatedSuccessfully
 Indicates that the gas amount for the contract has been successfully updated. It includes details about the updater and the new gas settings.
 - `updated_by`: The `ActorId` of the individual who performed the update.
-- `new_gas_amount`: The new gas amount set for contract operations, ensuring that transactions are processed efficiently.
+- `new_gas_amount`: The new gas amount set for the gRC-20 contract.
 
 ### CodeIdUpdatedSuccessfully
 Emitted when the `CodeId` has been successfully updated. It includes the updater's details and the new code identifier.
