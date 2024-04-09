@@ -1,6 +1,6 @@
 [![Open in Gitpod](https://img.shields.io/badge/Open_in-Gitpod-white?logo=gitpod)]( https://gitpod.io/)
 
-# MemeCoin Factory Smart Contracts
+# MemeCoin Factory Smart Contract
 
 ### 🏗️ Building
 
@@ -8,7 +8,7 @@
 cargo build --release
 ```
 
-Welcome to the MemeCoin Factory Smart Contracts! This project is dedicated to creating and managing digital assets in the form of Memecoins, utilizing blockchain technology for secure and decentralized transactions.
+Welcome to the MemeCoin Factory Smart Contract! This project is dedicated to creating and managing digital assets in the form of Memecoins, utilizing blockchain technology for secure and decentralized transactions.
 
 ## Overview
 
