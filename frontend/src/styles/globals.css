@@ -49,6 +49,21 @@
 }
 
 
+@layer components {
+  .btn {
+    @apply inline-flex cursor-pointer rounded-lg px-10 py-6 bg-primary text-[#242424] leading-none transition-colors;
+  }
+
+  .btn--primary {
+    @apply bg-primary text-[#242424] hocus:bg-[#98FF37];
+  }
+
+  .btn--outline {
+    @apply bg-[#0F1B34] text-[#242424] ring-2 ring-primary ring-inset;
+  }
+}
+
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;

@@ -31,7 +31,7 @@ export function Header() {
 				data-menu-open={state}
 			>
 				<div className="container flex items-center justify-between">
-					<Link href="/" className="">
+					<Link href="/" className="transition-opacity hocus:opacity-80">
 						<span className="sr-only">Tokenator Logo</span>
 						<Sprite name="logo-tokenator" className="h-[86px] w-[156px]" />
 					</Link>

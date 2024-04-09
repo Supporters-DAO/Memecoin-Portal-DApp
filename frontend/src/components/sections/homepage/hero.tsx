@@ -13,18 +13,17 @@ export function Hero() {
 					<HeroTokenator />
 				</div>
 				<div className="pb-6">
-					<h1 className="text-[64px]/[80px] text-[#FDFDFD]">
+					<h1 className="text-[64px]/[80px] text-[#FDFDFD] drop-shadow-[0_6px_0_#242424]">
 						Vara <br /> Meme&shy;coins
 					</h1>
-					<p className="mt-6 font-silkscreen text-xl text-[#FDFDFD]">
+					<p className="mt-6 font-silkscreen text-xl text-[#FDFDFD] drop-shadow-[0_2px_0_#242424]">
 						Create your own memecoin in # minutes
 					</p>
-					<Link
-						href={'/create-token'}
-						className="mt-10 inline-flex cursor-pointer rounded-lg bg-primary p-5 px-7 text-xs font-bold text-[#242424]"
-					>
-						Create now
-					</Link>
+					<div className="mt-10">
+						<Link href={'/create-token'} className="btn btn--primary">
+							Create now
+						</Link>
+					</div>
 				</div>
 			</div>
 		</div>
