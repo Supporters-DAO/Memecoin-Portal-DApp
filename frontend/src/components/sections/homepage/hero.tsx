@@ -9,7 +9,7 @@ export function Hero() {
 		<>
 			{/*<HeroBackground />*/}
 			<div className="container relative z-1">
-				<div className="">
+				<div className="font-silkscreen">
 					<h1 className="text-[64px] text-[#FDFDFD]">Vara Memecoins</h1>
 					<p className="text-xl text-[#FDFDFD]">
 						Create your own memecoin in # minutes

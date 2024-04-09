@@ -44,9 +44,9 @@ export default function RootLayout({
 	return (
 		<html
 			lang="en"
-			className={`${silkscreen.className} ${poppins.className} ${pressStart2P.className}`}
+			className={`${silkscreen.variable} ${poppins.variable} ${pressStart2P.variable}`}
 		>
-			<body className="font-ps2p flex min-h-screen flex-col">
+			<body className="flex min-h-screen flex-col font-ps2p">
 				<Header />
 				{children}
 			</body>
