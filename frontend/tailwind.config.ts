@@ -232,6 +232,8 @@ const config: Config = {
 		require('tailwind-scrollbar'),
 		plugin(function ({ addVariant }) {
 			addVariant('hocus', ['&:hover', '&:focus-visible'])
+			addVariant('group-hocus', ':merge(.group):hocus &')
+			addVariant('peer-hocus', ':merge(.peer):hocus ~ &')
 		}),
 		require('tailwindcss-radix'),
 	],

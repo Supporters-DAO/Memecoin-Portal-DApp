@@ -6,7 +6,7 @@ import { Sprite } from '@/components/ui/sprite'
 import { useScrollDirection } from '@/lib/hooks/use-scroll-direction'
 import { useScrollLock } from '@/lib/hooks/use-scroll-prevent'
 import { cn } from '@/lib/utils'
-import { HeaderMenu } from '@/components/common/header-menu'
+import { HeaderMenu } from '@/components/layouts/base/header-menu'
 
 export function Header() {
 	const [basicDown, basicScroll] = useScrollDirection()

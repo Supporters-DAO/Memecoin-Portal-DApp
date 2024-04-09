@@ -1,7 +1,7 @@
 import '@/styles/globals.css'
 import type { Metadata } from 'next'
 import { Silkscreen, Poppins, Press_Start_2P } from 'next/font/google'
-import { Header } from '@/components/common/header'
+import { Header } from '@/components/layouts/base/header'
 import { ReactNode } from 'react'
 
 const silkscreen = Silkscreen({

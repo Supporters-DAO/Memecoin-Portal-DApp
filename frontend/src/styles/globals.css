@@ -62,8 +62,16 @@
     @apply bg-[#0F1B34] text-[#242424] ring-2 ring-inset ring-opacity-80 ring-current hover:text-[#98FF37] focus-visible:text-[#98FF37] active:text-[#86E031];
   }
 
+  .link {
+    @apply hocus:underline underline-offset-4
+  }
+
   .link-primary {
     @apply transition-colors text-primary hover:text-[#98FF37] focus-visible:text-[#98FF37] active:text-[#86E031]
+  }
+
+  .link-white {
+    @apply transition-opacity text-white hover:opacity-60 focus-visible:opacity-60 active:opacity-40
   }
 }
 
