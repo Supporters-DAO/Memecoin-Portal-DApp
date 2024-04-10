@@ -3,32 +3,39 @@
 import Link from 'next/link'
 import { WalletLazy } from '@/components/common/wallet-lazy'
 import { Sprite } from '@/components/ui/sprite'
-import { useScrollDirection } from '@/lib/hooks/use-scroll-direction'
 import { useScrollLock } from '@/lib/hooks/use-scroll-prevent'
 import { cn } from '@/lib/utils'
 import { HeaderMenu } from '@/components/layouts/base/header-menu'
+import { motion, useScroll, useMotionValueEvent } from 'framer-motion'
+import { useState } from 'react'
 
 export function Header() {
-	const [basicDown, basicScroll] = useScrollDirection()
-	const { state } = useScrollLock()
+	const [hidden, setHidden] = useState<boolean>(false)
+	const [scrolling, setScrolling] = useState<boolean>(false)
 
-	const isDown = basicDown
-	const isScroll = basicScroll
+	const { state } = useScrollLock()
+	const { scrollY } = useScroll()
+
+	useMotionValueEvent(scrollY, 'change', (latest) => {
+		const previous = scrollY.getPrevious() || 0
+		setHidden(latest > previous && latest > window.innerHeight / 2)
+		setScrolling(latest > 0)
+	})
 
 	return (
-		<header
-			className={cn(
-				'sticky inset-x-0 top-0 z-40 transform-gpu transition-transform duration-300',
-				isDown && 'pointer-events-none -translate-y-full'
-			)}
+		<motion.header
+			variants={{ visible: { y: 0 }, hidden: { y: '-100%' } }}
+			animate={hidden ? 'hidden' : 'visible'}
+			transition={{ duration: 0.35, ease: 'easeInOut' }}
+			className="sticky inset-x-0 top-0 z-40"
 		>
 			<div
 				className={cn(
 					'group grid min-h-[--header-height] items-center',
 					'before:absolute before:inset-0 before:-z-1 before:border-b before:border-[#FDFDFD]/10 before:bg-[#0F1B34] before:opacity-0 before:transition-opacity',
-					isScroll && 'before:opacity-100'
+					scrolling && 'before:opacity-100'
 				)}
-				data-scroll-active={isScroll}
+				data-scroll-active={scrolling}
 				data-menu-open={state}
 			>
 				<div className="container flex items-center justify-between">
@@ -43,6 +50,6 @@ export function Header() {
 					</div>
 				</div>
 			</div>
-		</header>
+		</motion.header>
 	)
 }
