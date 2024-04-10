@@ -50,7 +50,7 @@ export class MemeCreatedHandler implements IFactoryEventHandler {
         admins: [admin],
         screenshots: [],
         maxSupply: totalSupply,
-        createdBy: admin,
+        createdBy: admin || eventInfo.destination,
         timestamp: eventInfo.timestamp,
       })
     );
