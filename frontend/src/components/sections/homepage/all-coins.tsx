@@ -1,5 +1,6 @@
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
+import Image from 'next/image'
 
 type Props = {
 	className?: string
@@ -37,7 +38,15 @@ export function AllCoins({ className }: Props) {
 									Distributed: 43.71%
 								</p>
 							</div>
-							<div className="size-8 bg-[#8B2786]" />
+							<div className="size-8">
+								<Image
+									src="/images/coin.gif"
+									alt="Coin Image"
+									width={32}
+									height={32}
+									className="size-full"
+								/>
+							</div>
 						</Link>
 					</li>
 				</ul>

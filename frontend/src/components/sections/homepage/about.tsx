@@ -2,13 +2,15 @@ import About1x from '@/components/assets/homepage/about.jpeg'
 import About2x from '@/components/assets/homepage/about@2x.jpg'
 import About1xWebp from '@/components/assets/homepage/about@2x.webp'
 import About2xWebp from '@/components/assets/homepage/about@2x.webp'
+import { motion } from 'framer-motion'
 import Image from 'next/image'
+import { AboutSplash } from '@/components/sections/homepage/about.splash'
 
 type Props = {
 	className?: string
 }
 
-export function About({ className }: Props) {
+export function About({}: Props) {
 	return (
 		<section className="grid grid-cols-2" id="about-memecoin">
 			<div>
@@ -32,7 +34,8 @@ export function About({ className }: Props) {
 					/>
 				</picture>
 			</div>
-			<div className="flex items-center justify-center font-silkscreen text-[18px]/[1.5] text-[#FDFDFD]">
+			<div className="relative flex items-center justify-center font-silkscreen text-[18px]/[1.5] text-[#FDFDFD]">
+				<AboutSplash />
 				<div className="m-auto max-w-[480px]">
 					<p>
 						A memecoin is like a digital pet rock that gains value through

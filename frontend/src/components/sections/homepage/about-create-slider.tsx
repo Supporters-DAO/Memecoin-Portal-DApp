@@ -7,7 +7,6 @@ import {
 	CarouselContent,
 	CarouselItem,
 } from '@/components/ui/carousel'
-import { Sprite } from '@/components/ui/sprite'
 import { cn } from '@/lib/utils'
 import Slide1 from '@/components/assets/homepage/create-01.png'
 import Slide1x2 from '@/components/assets/homepage/create-01@2x.png'
