@@ -11,7 +11,7 @@ type Props = {
 export function HeroTicker({}: Props) {
 	return (
 		<>
-			<div className="bg-[#C3C5EA] py-5 text-[20px]/5 text-[#242424]">
+			<div className="relative z-1 bg-[#C3C5EA] py-5 text-[20px]/5 text-[#242424]">
 				<Ticker duration={20}>
 					{Array.from({ length: 10 }).map((_, i) => (
 						<p key={i} className="ml-12.5">
