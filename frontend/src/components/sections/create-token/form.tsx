@@ -2,6 +2,7 @@
 
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+
 import { Input } from '@/components/ui/input'
 import { Sprite } from '@/components/ui/sprite'
 import {
@@ -10,8 +11,16 @@ import {
 	ICreateTokenForm,
 } from '@/components/sections/create-token/schema'
 import Link from 'next/link'
+import { InputArea } from '@/components/ui/InputArea'
+import { useAtom } from 'jotai'
+
+import { dataTokenAtom, stepAtom } from '.'
+import { cn } from '@/lib/utils'
 
 export const CreateForm = () => {
+	const [step, setStep] = useAtom(stepAtom)
+	const [dataToken, setDataToken] = useAtom(dataTokenAtom)
+
 	const {
 		register,
 		handleSubmit,
@@ -24,8 +33,10 @@ export const CreateForm = () => {
 	})
 
 	const onSubmit = (data: ICreateTokenForm) => {
-		console.log(data)
-		console.log('errors: ', errors)
+		if (data) {
+			setDataToken(data)
+			setStep('confirm')
+		}
 	}
 
 	return (
@@ -57,11 +68,12 @@ export const CreateForm = () => {
 							<Controller
 								name="name"
 								control={control}
-								render={({ field }) => (
+								render={({ field, fieldState: { error } }) => (
 									<Input
 										{...field}
 										label="Memecoin’s Name"
 										placeholder="My Vara Coin"
+										error={error?.message}
 									/>
 								)}
 							/>
@@ -69,78 +81,140 @@ export const CreateForm = () => {
 
 						<div className="flex justify-between gap-5">
 							<div className="flex w-full flex-col gap-2">
-								<Input
-									label="Symbol"
-									placeholder="HUM"
-									{...register('symbol')}
-									error={errors?.symbol?.message}
+								<Controller
+									name="symbol"
+									control={control}
+									render={({ field, fieldState: { error } }) => (
+										<Input
+											{...field}
+											label="Symbol"
+											placeholder="HUM"
+											error={error?.message}
+										/>
+									)}
 								/>
 							</div>
 							<div className="flex w-full flex-col gap-2">
-								<Input
-									label="Decimals"
-									placeholder="4"
-									type="number"
-									{...register('decimals')}
-									error={errors?.decimals?.message}
+								<Controller
+									name="decimals"
+									control={control}
+									render={({ field, fieldState: { error } }) => (
+										<Input
+											{...field}
+											label="Decimals"
+											placeholder="18"
+											type="number"
+											onChange={(e) => {
+												const value = e.target.value
+												field.onChange(value ? parseInt(value) : null)
+											}}
+											error={error?.message}
+										/>
+									)}
 								/>
 							</div>
 						</div>
 
 						<div className="flex flex-col gap-2">
-							<Input
-								label="Image URL"
-								placeholder="Add a link to meme image"
-								{...register('external_links.image')}
-								error={errors?.external_links?.image?.message}
+							<Controller
+								name="external_links.image"
+								control={control}
+								render={({ field, fieldState: { error } }) => (
+									<Input
+										{...field}
+										label="Image URL"
+										placeholder="Add a link to meme image"
+										error={error?.message}
+									/>
+								)}
 							/>
 						</div>
 
 						<div className="flex justify-between gap-5">
 							<div className="flex w-full flex-col gap-2">
-								<Input
-									label="Initial Supply"
-									placeholder="Initial number of your memecoins"
-									{...register('initial_supply')}
-									error={errors?.initial_supply?.message}
+								<Controller
+									name="initial_supply"
+									control={control}
+									render={({ field, fieldState: { error } }) => (
+										<Input
+											{...field}
+											label="Initial Supply"
+											placeholder="Initial number of your memecoins"
+											type="number"
+											onChange={(e) => {
+												const value = e.target.value
+												field.onChange(value ? parseInt(value) : null)
+											}}
+											error={error?.message}
+										/>
+									)}
 								/>
 							</div>
 							<div className="flex w-full flex-col gap-2">
-								<Input
-									label="Total Supply"
-									placeholder="Total number of your memecoins"
-									{...register('total_supply')}
-									error={errors?.total_supply?.message}
+								<Controller
+									name="total_supply"
+									control={control}
+									render={({ field, fieldState: { error } }) => (
+										<Input
+											{...field}
+											label="Total Supply"
+											placeholder="Total number of your memecoins"
+											error={error?.message}
+											type="number"
+											onChange={(e) => {
+												const value = e.target.value
+												field.onChange(value ? parseInt(value) : null)
+											}}
+										/>
+									)}
 								/>
 							</div>
 						</div>
 
 						<div className="flex justify-between gap-5">
 							<div className="flex w-full flex-col gap-2">
-								<Input
-									label="Website (optional)"
-									placeholder="Add a link to website"
-									{...register('external_links.website')}
-									error={errors?.external_links?.website?.message}
+								<Controller
+									name="external_links.website"
+									control={control}
+									render={({ field, fieldState: { error } }) => (
+										<Input
+											{...field}
+											label="Website (optional)"
+											placeholder="Add a link to website"
+											error={error?.message}
+										/>
+									)}
 								/>
 							</div>
 							<div className="flex w-full flex-col gap-2">
-								<Input
-									label="Telegram (optional)"
-									placeholder="Add a link to Telegram"
-									{...register('external_links.telegram')}
-									error={errors?.external_links?.telegram?.message}
+								<Controller
+									name="external_links.telegram"
+									control={control}
+									render={({ field, fieldState: { error } }) => (
+										<Input
+											{...field}
+											label="Telegram (optional)"
+											placeholder="Add a link to Telegram"
+											error={error?.message}
+										/>
+									)}
 								/>
 							</div>
 						</div>
 
 						<div className="flex justify-between gap-5">
 							<div className="flex w-full flex-col gap-2">
-								<Input
-									label="Twitter (optional)"
-									placeholder="Add a link to Twitter"
-									{...register('external_links.twitter')}
-									error={errors?.external_links?.twitter?.message}
+								<Controller
+									name="external_links.twitter"
+									control={control}
+									render={({ field, fieldState: { error } }) => (
+										<Input
+											{...field}
+											label="Twitter (optional)"
+											placeholder="Add a link to Twitter"
+											error={error?.message}
+										/>
+									)}
 								/>
 							</div>
 							<div className="flex w-full flex-col gap-2">
@@ -153,22 +227,48 @@ export const CreateForm = () => {
 							</div>
 						</div>
 
-						{/* <div className="flex flex-col gap-2">
-							<InputArea
-								label="Description"
-								placeholder="Tell people more about your memecoin"
-								{...register('description')}
-							/>
-							<span
-								className={clsx(
-									'text-right text-[13px] text-[#767F92]'
-									// register('description'). && 'text-[#FF4F4F]'
+						<div className="flex justify-between gap-5">
+							<div className="flex w-full flex-col gap-2">
+								<Controller
+									name="external_links.tokenomics"
+									control={control}
+									render={({ field, fieldState: { error } }) => (
+										<Input
+											{...field}
+											label="Tokenomics (optional)"
+											placeholder="Add a link to tokenomics"
+											error={error?.message}
+										/>
+									)}
+								/>
+							</div>
+						</div>
+
+						<div className="flex flex-col gap-2">
+							<Controller
+								name="description"
+								control={control}
+								render={({ field, fieldState: { error } }) => (
+									<>
+										<InputArea
+											{...field}
+											label="Description"
+											placeholder="Tell people more about your memecoin"
+											error={error?.message}
+										/>
+										<span
+											className={cn(
+												'text-right text-[13px] text-[#767F92]',
+												error?.message && 'text-[#FF4F4F]'
+											)}
+										>
+											{field?.value?.length || 0}
+											/500
+										</span>
+									</>
 								)}
-							>
-								{register('description').name.length}
-								/500
-							</span>
-						</div> */}
+							/>
+						</div>
 
 						{/* TODO */}
 						{/* <div className='font-poppins'>
