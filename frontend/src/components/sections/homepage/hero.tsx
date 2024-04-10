@@ -1,8 +1,7 @@
-'use client'
-
 import Link from 'next/link'
 import { HeroBackground } from '@/components/sections/homepage/hero-background'
 import { HeroTokenator } from '@/components/sections/homepage/hero-tokenator'
+import { HeroTicker } from '@/components/sections/homepage/hero-ticker'
 
 export function Hero() {
 	return (
@@ -26,6 +25,7 @@ export function Hero() {
 					</div>
 				</div>
 			</div>
+			<HeroTicker />
 		</div>
 	)
 }

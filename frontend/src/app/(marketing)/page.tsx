@@ -7,6 +7,7 @@ export default function Page() {
 	return (
 		<>
 			<Hero />
+			<div className="py-25"></div>
 			<div className="space-y-25 bg-[#C3C5EA] pb-25 pt-55">
 				<AllCoins />
 				<CreateTokenBanner className="" />
