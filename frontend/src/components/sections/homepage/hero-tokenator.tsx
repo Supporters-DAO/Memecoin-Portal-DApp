@@ -1,5 +1,5 @@
-import HeroT from '@/components/assets/homepage/hero/hero-t.webp'
-import HeroT2 from '@/components/assets/homepage/hero/hero-t.png'
+import HeroT from '@/components/sections/homepage/assets/hero-t.webp'
+import HeroT2 from '@/components/sections/homepage/assets/hero-t.png'
 import Image from 'next/image'
 import { cn } from '@/lib/utils'
 

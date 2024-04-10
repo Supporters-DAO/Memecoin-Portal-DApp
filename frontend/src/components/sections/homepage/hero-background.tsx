@@ -1,5 +1,5 @@
-import HeroBG from '@/components/assets/homepage/hero/hero-bg.webp'
-import HeroBG2 from '@/components/assets/homepage/hero/hero-bg.jpg'
+import HeroBG from '@/components/sections/homepage/assets/hero-bg.webp'
+import HeroBG2 from '@/components/sections/homepage/assets/hero-bg.jpg'
 import Image from 'next/image'
 import { cn } from '@/lib/utils'
 

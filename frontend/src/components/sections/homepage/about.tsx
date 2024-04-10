@@ -1,8 +1,7 @@
-import About1x from '@/components/assets/homepage/about.jpeg'
-import About2x from '@/components/assets/homepage/about@2x.jpg'
-import About1xWebp from '@/components/assets/homepage/about@2x.webp'
-import About2xWebp from '@/components/assets/homepage/about@2x.webp'
-import { motion } from 'framer-motion'
+import About1x from '@/components/sections/homepage/assets/about.jpeg'
+import About2x from '@/components/sections/homepage/assets/about@2x.jpg'
+import About1xWebp from '@/components/sections/homepage/assets/about@2x.webp'
+import About2xWebp from '@/components/sections/homepage/assets/about@2x.webp'
 import Image from 'next/image'
 import { AboutSplash } from '@/components/sections/homepage/about.splash'
 
