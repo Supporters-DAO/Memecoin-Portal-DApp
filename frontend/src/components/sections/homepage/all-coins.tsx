@@ -43,7 +43,7 @@ export function AllCoins({ className }: Props) {
 				</ul>
 				<div className="mt-6">
 					<Link href="/all-coins" className="btn btn--white w-full">
-						Load more
+						Show all
 					</Link>
 				</div>
 			</div>

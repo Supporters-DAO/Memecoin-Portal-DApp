@@ -3,7 +3,6 @@
 import Link from 'next/link'
 import { WalletLazy } from '@/components/common/wallet-lazy'
 import { Sprite } from '@/components/ui/sprite'
-import { useScrollLock } from '@/lib/hooks/use-scroll-prevent'
 import { cn } from '@/lib/utils'
 import { HeaderMenu } from '@/components/layouts/base/header-menu'
 import { motion, useScroll, useMotionValueEvent } from 'framer-motion'
@@ -13,7 +12,6 @@ export function Header() {
 	const [hidden, setHidden] = useState<boolean>(false)
 	const [scrolling, setScrolling] = useState<boolean>(false)
 
-	const { state } = useScrollLock()
 	const { scrollY } = useScroll()
 
 	useMotionValueEvent(scrollY, 'change', (latest) => {
@@ -36,7 +34,6 @@ export function Header() {
 					scrolling && 'before:opacity-100'
 				)}
 				data-scroll-active={scrolling}
-				data-menu-open={state}
 			>
 				<div className="container flex items-center justify-between">
 					<Link href="/" className="transition-opacity hocus:opacity-80">

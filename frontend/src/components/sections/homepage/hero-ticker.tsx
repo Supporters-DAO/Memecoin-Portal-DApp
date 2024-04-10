@@ -1,6 +1,7 @@
 'use client'
 
 import Ticker from 'framer-motion-ticker'
+import Link from 'next/link'
 // import { Ticker2 } from '@/components/ui/ticker2'
 // import { Ticker as TickerC } from '@/components/ui/ticker'
 
@@ -11,7 +12,17 @@ type Props = {
 export function HeroTicker({}: Props) {
 	return (
 		<>
-			<div className="relative z-1 bg-[#C3C5EA] py-5 text-[20px]/5 text-[#242424]">
+			<Link
+				href="/#about-memecoin"
+				onClick={(e) => {
+					e.preventDefault()
+
+					console.log('test')
+					const element = document.getElementById('about-memecoin')
+					element?.scrollIntoView({ behavior: 'smooth' })
+				}}
+				className="relative z-1 select-none bg-[#C3C5EA] py-5 text-[20px]/5 text-[#242424]"
+			>
 				<Ticker duration={20}>
 					{Array.from({ length: 10 }).map((_, i) => (
 						<p key={i} className="ml-12.5">
@@ -19,7 +30,7 @@ export function HeroTicker({}: Props) {
 						</p>
 					))}
 				</Ticker>
-			</div>
+			</Link>
 			{/*<TickerC*/}
 			{/*	duration={20}*/}
 			{/*	className="whitespace-nowrap bg-[#C3C5EA] py-5 text-[20px]/5 text-[#242424]"*/}
