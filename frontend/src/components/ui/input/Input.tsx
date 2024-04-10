@@ -1,5 +1,5 @@
+import clsx from 'clsx'
 import styles from './Input.module.scss'
-import { cn } from '@/lib/utils'
 
 type Props = {
 	label: string
@@ -7,6 +7,7 @@ type Props = {
 	type?: string
 	error?: string | undefined
 	className?: string
+	onChange?: (e: any) => void
 }
 
 export function Input({
@@ -20,11 +21,11 @@ export function Input({
 	return (
 		<div className={className}>
 			<span className={styles.label}>{label}</span>
-			<div className={cn(styles.wrapper, error && styles.error)}>
+			<div className={clsx(styles.wrapper, error && styles.error)}>
 				<label className="w-full">
 					<input
 						type={type}
-						className={cn(styles.input, error && styles.inputError)}
+						className={clsx(styles.input, error && styles.inputError)}
 						placeholder={placeholder}
 						{...props}
 					/>
