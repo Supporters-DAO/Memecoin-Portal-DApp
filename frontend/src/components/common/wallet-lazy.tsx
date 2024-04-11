@@ -3,6 +3,7 @@
 import dynamic from 'next/dynamic'
 import { useEffect, useState } from 'react'
 import { GearApiProvider } from '@/components/providers/gear-api'
+import { useWalletOpenState } from '@/components/common/wallet-new/components/wallet/wallet.atoms'
 
 const LazyWallet = dynamic(
 	() => import('@/components/common/wallet-new').then((mod) => mod.Wallet),
@@ -10,6 +11,8 @@ const LazyWallet = dynamic(
 )
 
 export function WalletLazy() {
+	const [openState, setOpenState] = useWalletOpenState()
+
 	const [isReady, setIsReady] = useState(false)
 
 	useEffect(() => {
@@ -22,7 +25,10 @@ export function WalletLazy() {
 
 	return (
 		<GearApiProvider>
-			<LazyWallet />
+			<LazyWallet
+				walletModalHandler={setOpenState}
+				isWalletModalOpen={openState}
+			/>
 		</GearApiProvider>
 	)
 }

@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils'
 import { HeaderMenu } from '@/components/layouts/base/header-menu'
 import { motion, useScroll, useMotionValueEvent } from 'framer-motion'
 import { useState } from 'react'
+import { useWalletOpenState } from '@/components/common/wallet-new/components/wallet/wallet.atoms'
 
 export function Header() {
 	const [hidden, setHidden] = useState<boolean>(false)
@@ -20,6 +21,8 @@ export function Header() {
 		setScrolling(latest > 0)
 	})
 
+	const [isWalletOpen] = useWalletOpenState()
+
 	return (
 		<motion.header
 			variants={{ visible: { y: 0 }, hidden: { y: '-100%' } }}
@@ -31,7 +34,7 @@ export function Header() {
 				className={cn(
 					'group grid min-h-[--header-height] items-center',
 					'before:absolute before:inset-0 before:-z-1 before:border-b before:border-[#FDFDFD]/10 before:bg-[#0F1B34] before:opacity-0 before:transition-opacity',
-					scrolling && 'before:opacity-100'
+					scrolling && !isWalletOpen && 'before:opacity-100'
 				)}
 				data-scroll-active={scrolling}
 			>
