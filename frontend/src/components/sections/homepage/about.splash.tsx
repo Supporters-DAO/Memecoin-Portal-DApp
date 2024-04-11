@@ -10,7 +10,7 @@ type Props = {
 export function AboutSplash({}: Props) {
 	return (
 		<motion.div
-			className="absolute inset-0"
+			className="pointer-events-none absolute inset-0"
 			initial={{ opacity: 1 }}
 			whileInView={{ opacity: 0 }}
 			viewport={{ once: true, amount: 'some' }}

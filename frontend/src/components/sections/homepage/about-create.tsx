@@ -4,16 +4,16 @@ type Props = {
 	className?: string
 }
 
-export function AboutCreate({ className }: Props) {
+export function AboutCreate({}: Props) {
 	return (
-		<section className="-mb-17.5 mt-50">
-			<h2 className="text-center text-[32px] leading-none text-primary">
+		<section className="-mb-30 mt-25 px-4 sm:-mb-17.5 lg:mt-50">
+			<h2 className="text-center text-[22px] leading-none text-primary sm:text-[32px]">
 				How to create
 			</h2>
-			<p className="mx-auto mt-6 max-w-[420px] text-center font-silkscreen text-[20px] leading-normal">
+			<p className="mx-auto mt-5 max-w-[420px] text-center font-silkscreen text-[16px] leading-normal sm:mt-6 sm:text-[20px]">
 				Make memecoins easy and fast with Vara Memecoins Creator
 			</p>
-			<div className="mt-15">
+			<div className="-mx-4 mt-6 sm:mt-15">
 				<AboutCreateSlider />
 			</div>
 		</section>
