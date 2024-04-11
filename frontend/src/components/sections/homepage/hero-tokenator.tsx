@@ -16,12 +16,12 @@ export function HeroTokenator({ className }: Props) {
 		<div
 			className={cn(
 				'absolute inset-y-0 -bottom-9 flex sm:-bottom-15 lg:-left-4',
-				'[--h]:[586px] lg:[--h]:[784px]',
-				'[--w]:[447px] lg:[--w]:[591px]',
+				'[--h:447px] lg:[--h:784px]',
+				'[--w:586px] lg:[--w:591px]',
 				className
 			)}
 		>
-			<picture className="flex aspect-[var(--w)/var(--h)] h-[calc(min(100%,var(--h)))] w-[calc(min(100%,var(--2)))] self-end">
+			<picture className="flex aspect-[586/447] max-h-[calc(min(100%,var(--h)))] max-w-[calc(min(100%,var(--w)))] self-end lg:aspect-[591/784]">
 				<source
 					media="(max-width: 1023px)"
 					type="image/webp"
@@ -49,7 +49,7 @@ export function HeroTokenator({ className }: Props) {
 					height={784}
 					placeholder="blur"
 					quality={100}
-					className=" h-full object-contain"
+					className="h-full object-contain"
 				/>
 			</picture>
 		</div>

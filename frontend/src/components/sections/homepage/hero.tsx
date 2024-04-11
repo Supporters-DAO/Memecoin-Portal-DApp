@@ -8,7 +8,7 @@ export function Hero() {
 		<div className="relative mt-[calc(-1*var(--header-height))] flex min-h-svh grow flex-col pt-[--header-height]">
 			<HeroBackground />
 			<div className="relative z-1 grid grow gap-x-20 px-4 lg:grid-cols-2 lg:items-center xl:gap-x-30">
-				<div className="pointer-events-none absolute inset-x-0 bottom-0 self-stretch lg:relative lg:inset-0 lg:mt-12">
+				<div className="pointer-events-none absolute inset-0 self-stretch lg:relative lg:inset-0 lg:mt-12">
 					<HeroTokenator />
 				</div>
 				<div className="relative z-1 mt-19 text-center md:mt-32 lg:my-auto lg:pb-6 lg:text-left">
