@@ -38,10 +38,13 @@ export function Header() {
 				<div className="container flex items-center justify-between">
 					<Link href="/" className="transition-opacity hocus:opacity-80">
 						<span className="sr-only">Tokenator Logo</span>
-						<Sprite name="logo-tokenator" className="h-[86px] w-[156px]" />
+						<Sprite
+							name="logo-tokenator"
+							className="h-[49px] w-[68px] sm:h-[55px] sm:w-[98px] lg:h-[86px] lg:w-[156px]"
+						/>
 					</Link>
 
-					<div className="flex items-center space-x-6 text-primary">
+					<div className="flex items-center space-x-2 text-primary md:space-x-6">
 						<WalletLazy />
 						<HeaderMenu />
 					</div>

@@ -50,7 +50,7 @@ export function Wallet({
 					</div>
 				) : (
 					<button
-						className="btn btn--outline p-4 px-6 text-xs/3 text-primary"
+						className="btn btn--outline min-h-11 p-4 text-[9px] leading-none text-primary sm:min-h-0 sm:text-xs md:px-6"
 						onClick={openModal}
 					>
 						Connect Wallet

@@ -2,8 +2,6 @@
 
 import Ticker from 'framer-motion-ticker'
 import Link from 'next/link'
-// import { Ticker2 } from '@/components/ui/ticker2'
-// import { Ticker as TickerC } from '@/components/ui/ticker'
 
 type Props = {
 	className?: string
@@ -11,47 +9,22 @@ type Props = {
 
 export function HeroTicker({}: Props) {
 	return (
-		<>
-			<Link
-				href="/#about-memecoin"
-				onClick={(e) => {
-					e.preventDefault()
-
-					console.log('test')
-					const element = document.getElementById('about-memecoin')
-					element?.scrollIntoView({ behavior: 'smooth' })
-				}}
-				className="relative z-1 select-none bg-[#C3C5EA] py-5 text-[20px]/5 text-[#242424]"
-			>
-				<Ticker duration={20}>
-					{Array.from({ length: 10 }).map((_, i) => (
-						<p key={i} className="ml-12.5">
-							What is memecoin?
-						</p>
-					))}
-				</Ticker>
-			</Link>
-			{/*<TickerC*/}
-			{/*	duration={20}*/}
-			{/*	className="whitespace-nowrap bg-[#C3C5EA] py-5 text-[20px]/5 text-[#242424]"*/}
-			{/*	classNameContainer="space-x-12.5"*/}
-			{/*>*/}
-			{/*	{Array.from({ length: 10 }).map((_, i) => (*/}
-			{/*		<p key={i}>What is memecoin?</p>*/}
-			{/*	))}*/}
-			{/*</TickerC>*/}
-
-			{/*<div className="bg-[#C3C5EA] py-5 text-[20px]/5 text-[#242424]">*/}
-			{/*	<Ticker2 className="min-h-5">*/}
-			{/*		<div className="flex space-x-12">*/}
-			{/*			{Array.from({ length: 10 }).map((_, i) => (*/}
-			{/*				<p key={i} className="">*/}
-			{/*					What is memecoin?*/}
-			{/*				</p>*/}
-			{/*			))}*/}
-			{/*		</div>*/}
-			{/*	</Ticker2>*/}
-			{/*</div>*/}
-		</>
+		<Link
+			href="/#about-memecoin"
+			onClick={(e) => {
+				e.preventDefault()
+				const element = document.getElementById('about-memecoin')
+				element?.scrollIntoView({ behavior: 'smooth' })
+			}}
+			className="relative z-1 select-none bg-[#C3C5EA] py-3 text-[12px] leading-none text-[#242424] sm:py-5 sm:text-[20px]"
+		>
+			<Ticker duration={20}>
+				{Array.from({ length: 10 }).map((_, i) => (
+					<p key={i} className="ml-12.5">
+						What is memecoin?
+					</p>
+				))}
+			</Ticker>
+		</Link>
 	)
 }
