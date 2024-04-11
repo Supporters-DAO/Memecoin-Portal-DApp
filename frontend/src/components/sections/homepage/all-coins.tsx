@@ -8,37 +8,42 @@ type Props = {
 
 export function AllCoins({ className }: Props) {
 	return (
-		<section className={cn('mx-auto max-w-[576px] space-y-8', className)}>
-			<h2 className="text-center text-[32px] leading-none text-[#242424]">
+		<section
+			className={cn(
+				'container mx-auto w-full max-w-[608px] space-y-5 md:space-y-8',
+				className
+			)}
+		>
+			<h2 className="text-center text-[22px] leading-none text-[#242424] sm:text-[32px]">
 				All memecoins
 			</h2>
 			<div className="">
 				<input
 					type="text"
-					className="block w-full select-none rounded-lg bg-[#0F1B34]/[4%] px-6 py-3 font-silkscreen text-[16px]/[1.4] text-[#242424] ring-2 ring-inset ring-[#0F1B34]/[6%] placeholder:text-[#242424]/70 focus:outline-none"
+					className="block w-full select-none rounded-lg bg-[#0F1B34]/[4%] px-6 py-3 font-silkscreen text-[16px]/5 text-[#242424] ring-2 ring-inset ring-[#0F1B34]/[6%] placeholder:text-[#242424]/70 focus:outline-none"
 					placeholder="Search"
 				/>
 			</div>
 			<div className="">
-				<ul>
+				<ul className="space-y-2 md:space-y-4">
 					<li>
 						<Link
-							href="/coin-id"
-							className="flex select-none items-center space-x-10 rounded-2xl bg-[#FDFDFD] py-2 pl-5 pr-6 ring-2 ring-inset ring-primary transition-shadow hocus:ring-4"
+							href="/#"
+							className="flex select-none items-center space-x-3 rounded-lg bg-[#FDFDFD] py-2 pl-5 pr-6 ring-2 ring-inset ring-primary transition-shadow hocus:ring-4 md:space-x-10 md:rounded-2xl"
 						>
-							<div className="size-25 overflow-hidden rounded-full bg-[#8B2786]" />
-							<div className="grow space-y-3">
-								<h3 className="flex items-center space-x-4 text-[20px]/[1.1] text-[#242424]">
+							<div className="size-10 overflow-hidden rounded-full bg-[#8B2786] md:size-25" />
+							<div className="grow space-y-1 md:space-y-3">
+								<h3 className="flex items-center space-x-4 text-[14px]/[22px] text-[#242424] md:text-[20px]/[22px]">
 									<span>Lama Coin</span>{' '}
-									<span className="inline-flex font-silkscreen text-[18px]/[1.4] opacity-80">
+									<span className="inline-flex font-silkscreen text-[12px]/[22px] opacity-80 md:text-[18px]/[1.4]">
 										LAMA
 									</span>
 								</h3>
-								<p className="font-silkscreen text-[18px]/[1.4] text-[#8B2786]">
+								<p className="font-silkscreen text-[12px]/[15px] text-[#8B2786] md:text-[18px]/[1.4]">
 									Distributed: 43.71%
 								</p>
 							</div>
-							<div className="size-8">
+							<div className="size-6 md:size-8">
 								<Image
 									src="/images/coin.gif"
 									alt="Coin Image"
@@ -50,7 +55,7 @@ export function AllCoins({ className }: Props) {
 						</Link>
 					</li>
 				</ul>
-				<div className="mt-6">
+				<div className="mt-4 md:mt-6">
 					<Link href="/all-coins" className="btn btn--white w-full">
 						Show all
 					</Link>
