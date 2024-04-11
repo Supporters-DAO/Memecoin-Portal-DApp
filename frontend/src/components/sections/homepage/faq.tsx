@@ -14,35 +14,42 @@ type Props = {
 
 export function HomepageFAQ({ className }: Props) {
 	return (
-		<section className={cn('container py-25', className)}>
+		<section
+			className={cn('container pb-12.5 pt-25 sm:py-18 lg:py-25', className)}
+		>
 			<h2 className="text-center text-[32px] leading-none text-primary">FAQ</h2>
 			<Accordion
-				className="mx-auto mt-8 grid max-w-[920px] gap-y-5"
+				className="mx-auto mt-8 grid max-w-[920px] gap-y-4 sm:gap-y-8 lg:gap-y-5"
 				type="multiple"
 			>
 				{QA.map((item, i) => (
 					<AccordionItem key={i} value={`item-${i}`} className="">
 						<AccordionTrigger
 							noIcon
-							className="link-white py-[5px] font-silkscreen radix-state-open:opacity-100"
+							className="link-white font-silkscreen radix-state-open:opacity-100 sm:py-[5px]"
 						>
-							<span className="text-[24px] leading-none">{item.question}</span>
+							<span className="text-[16px] leading-none sm:text-[24px]">
+								{item.question}
+							</span>
 							<span className="shrink-0 grow-0">
 								<Sprite
 									name="accordion-minus"
-									className="hidden size-10 group-radix-state-open:block"
+									className="hidden size-8 group-radix-state-open:block sm:size-10"
 								/>
 								<Sprite
 									name="accordion-plus"
-									className="size-10 group-radix-state-open:hidden"
+									className="size-8 group-radix-state-open:hidden sm:size-10"
 								/>
 							</span>
 						</AccordionTrigger>
-						<AccordionContent className="font-poppins text-[22px] leading-normal">
+						<AccordionContent
+							className="font-poppins text-[14px] leading-normal text-[#FDFDFD]/80 sm:text-[22px]"
+							classNameInner="pt-3 sm:pt-4"
+						>
 							<div className="space-y-4">{item.answer}</div>
 						</AccordionContent>
 						{i !== QA.length - 1 && (
-							<div className="mt-5 h-px w-full bg-[#FDFDFD]/[2%]" />
+							<div className="mt-4 h-px w-full bg-[#FDFDFD]/[2%] sm:mt-8 lg:mt-5" />
 						)}
 					</AccordionItem>
 				))}

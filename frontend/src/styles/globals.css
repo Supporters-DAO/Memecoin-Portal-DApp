@@ -44,7 +44,7 @@
   }
 
   .container {
-    @apply w-full max-w-[1232px] px-4 mx-auto
+    @apply w-full max-w-[680px] lg:max-w-[1232px] px-4 mx-auto
   }
 }
 
