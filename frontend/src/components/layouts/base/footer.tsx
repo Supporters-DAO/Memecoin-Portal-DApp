@@ -80,15 +80,15 @@ const LINKS = [
 		menu: [
 			{
 				title: 'All Memecoins',
-				url: '/all-coins',
+				url: '/tokens',
 			},
 			{
 				title: 'My Coins – My Rules',
-				url: '/my-coins',
+				url: '/tokens/my',
 			},
 			{
 				title: 'Memecoin Creator',
-				url: '/create-token',
+				url: '/tokens/create',
 			},
 		],
 	},

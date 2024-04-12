@@ -4,18 +4,39 @@ import { AllCoins } from '@/components/sections/homepage/all-coins'
 import { CreateTokenBanner } from '@/components/banners/create-token'
 import { About } from '@/components/sections/homepage/about'
 import { AboutCreate } from '@/components/sections/homepage/about-create'
+import { EXPLORER } from '@/lib/consts'
+import { getLastCoinsQuery, ILastCoinsResponse } from '@/lib/requests'
 
-export default function Page() {
+export default async function Page() {
+	const { data } = await getData<ILastCoinsResponse>()
+
 	return (
 		<>
 			<Hero />
 			<About />
 			<AboutCreate />
 			<div className="space-y-25 overflow-hidden bg-[#C3C5EA] pb-25 pt-55">
-				<AllCoins />
+				<AllCoins coins={data.coins} />
 				<CreateTokenBanner />
 			</div>
 			<HomepageFAQ />
 		</>
 	)
+}
+
+async function getData<T>() {
+	const options = {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({ query: getLastCoinsQuery }),
+	}
+
+	const res = await fetch(EXPLORER.BACK, options)
+
+	if (!res.ok) {
+		// This will activate the closest `error.js` Error Boundary
+		throw new Error('Failed to fetch data')
+	}
+
+	return (await res.json()) as T
 }

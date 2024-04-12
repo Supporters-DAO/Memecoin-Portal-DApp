@@ -33,15 +33,15 @@ export function HeaderMenu({ className }: Props) {
 					side="bottom"
 					className="min-w-55 font-poppins text-[14px] leading-none tracking-[0.03em] md:mt-2"
 				>
-					<DropdownMenuItem onClick={() => router.push('/create-token')}>
+					<DropdownMenuItem onClick={() => router.push('/tokens/create')}>
 						Memecoins Creator
 					</DropdownMenuItem>
 					<DropdownMenuSeparator />
-					<DropdownMenuItem onClick={() => router.push('/my-coins')}>
+					<DropdownMenuItem onClick={() => router.push('/tokens/my')}>
 						My Coins – My Rules
 					</DropdownMenuItem>
 					<DropdownMenuSeparator />
-					<DropdownMenuItem onClick={() => router.push('/all-coins')}>
+					<DropdownMenuItem onClick={() => router.push('/tokens')}>
 						All Memecoins
 					</DropdownMenuItem>
 				</DropdownMenuContent>
