@@ -3,7 +3,7 @@ name: Tokenator - Build and Deploy
 on:
   workflow_dispatch:
   push:
-    branches: ['master', 'main', 'staging']
+    branches: ['master', 'main', 'frontend'] # frontend = build staging 
     paths:
       - frontend/**
 
@@ -80,7 +80,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: frontend
-          file: frontend/Dockerfile-indexer
+          file: frontend/Dockerfile
           push: true
           tags: ${{ needs.prepair.outputs.image_name }}
 
