@@ -1,6 +1,6 @@
 import { TableCell2, TableRow2 } from '@/components/ui/table'
 import { cn } from '@/lib/utils'
-import { Table as ITable } from '@tanstack/table-core/build/lib/types'
+import { Table as ITable } from '@tanstack/react-table'
 // import { SkeletonSingle } from '@/components/skeletons/skeleton-single'
 
 type TableRowSkeletonProps<T> = BaseComponentProps & {

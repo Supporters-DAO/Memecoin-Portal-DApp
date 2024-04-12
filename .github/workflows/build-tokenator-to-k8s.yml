@@ -3,7 +3,7 @@ name: Tokenator - Build and Deploy
 on:
   workflow_dispatch:
   push:
-    branches: ['master', 'main', 'frontend'] # frontend = build staging 
+    branches: ['master', 'main', 'frontend'] # frontend = build staging
     paths:
       - frontend/**
 
@@ -83,6 +83,10 @@ jobs:
           file: frontend/Dockerfile
           push: true
           tags: ${{ needs.prepair.outputs.image_name }}
+          build-args: |
+            NEXT_PUBLIC_NODE_ADDRESS=${{ secrets.NEXT_PUBLIC_NODE_ADDRESS }}
+            NEXT_PUBLIC_CONTRACT_ADDRESS=${{ secrets.NEXT_PUBLIC_CONTRACT_ADDRESS }}
+            NEXT_PUBLIC_EXPLORER=${{ secrets.NEXT_PUBLIC_EXPLORER }}
 
   deploy-to-k8s:
     needs: [prepair, build-and-push-image]

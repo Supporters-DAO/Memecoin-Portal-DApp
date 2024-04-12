@@ -4,7 +4,7 @@ import {
 	DropdownMenuLabel,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { ButtonNew } from '@/components/ui/button-new'
+// import { ButtonNew } from '@/components/ui/button-new'
 import { MoreHorizontal } from 'lucide-react'
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu'
 
@@ -21,10 +21,10 @@ export function TableRowActionsWrapper({
 	return (
 		<DropdownMenu open={open} onOpenChange={setOpen}>
 			<DropdownMenuTrigger asChild>
-				<ButtonNew variant="ghost" className="size-6 p-0 data-open:bg-black/5">
+				<button type="button" className="size-6 p-0 data-open:bg-black/5">
 					<span className="sr-only">Open menu</span>
 					<MoreHorizontal className="size-4" />
-				</ButtonNew>
+				</button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align="end">
 				<DropdownMenuLabel>Actions</DropdownMenuLabel>
