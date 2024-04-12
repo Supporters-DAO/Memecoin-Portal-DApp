@@ -2,8 +2,9 @@
 
 import React, { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
+import { EXPLORER } from '@/lib/consts'
 
-const endpoint = 'https://stg-memecoin-explorer.vara.network/graphql'
+const endpoint = EXPLORER.BACK
 
 interface Token {
 	description: string
