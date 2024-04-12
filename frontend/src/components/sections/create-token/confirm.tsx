@@ -65,7 +65,12 @@ export const ConfirmCreate = ({ data }: Props) => {
 					<div className="flex size-8 items-center justify-center rounded-full bg-primary">
 						<span className="text-sm leading-none text-[#1D2C4B]">2</span>
 					</div>
-					<div className={cn("flex size-8 items-center justify-center rounded-full bg-[#D0D3D9]", isCreated && "bg-primary")}>
+					<div
+						className={cn(
+							'flex size-8 items-center justify-center rounded-full bg-[#D0D3D9]',
+							isCreated && 'bg-primary'
+						)}
+					>
 						<span className="text-sm leading-none text-[#1D2C4B]">3</span>
 					</div>
 				</div>
@@ -88,7 +93,10 @@ export const ConfirmCreate = ({ data }: Props) => {
 								<div className="flex justify-between">
 									<div className="w-1/2">
 										<span className="text-sm text-[#A4AAB6]">Name/Symbol</span>
-										<p>{data.name}</p>
+										<p>
+											{data.name}
+											<span className="text-sm opacity-80"> {data.symbol}</span>
+										</p>
 									</div>
 
 									<div className="w-1/2">

@@ -56,3 +56,7 @@ export const isMobileDevice = () =>
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs))
 }
+
+export const prettyWord = (word: string) => {
+	return word.slice(0, 6) + '...' + word.slice(-4)
+}

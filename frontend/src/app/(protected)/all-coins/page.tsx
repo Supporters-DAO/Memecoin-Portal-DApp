@@ -1,9 +1,9 @@
-import { CreateToken } from '@/components/sections/create-token'
+import { AllCoins } from '@/components/sections/all-coins/all-coins'
 
 export default function Page() {
 	return (
 		<div className="container">
-			<CreateToken />
+			<AllCoins />
 		</div>
 	)
 }
