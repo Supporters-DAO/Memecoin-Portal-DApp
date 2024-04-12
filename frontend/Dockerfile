@@ -28,6 +28,7 @@ ENV NEXT_PUBLIC_EXPLORER=${NEXT_PUBLIC_EXPLORER}
 # Learn more here: https://nextjs.org/telemetry
 # Uncomment the following line in case you want to disable telemetry during the build.
 ENV NEXT_TELEMETRY_DISABLED 1
+ENV NODE_TLS_REJECT_UNAUTHORIZED 0
 
 RUN yarn build
 
@@ -48,6 +49,7 @@ ENV NEXT_PUBLIC_CONTRACT_ADDRESS=${NEXT_PUBLIC_CONTRACT_ADDRESS}
 ENV NEXT_PUBLIC_EXPLORER=${NEXT_PUBLIC_EXPLORER}
 # Uncomment the following line in case you want to disable telemetry during runtime.
 ENV NEXT_TELEMETRY_DISABLED 1
+ENV NODE_TLS_REJECT_UNAUTHORIZED 0
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
