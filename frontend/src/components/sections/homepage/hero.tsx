@@ -19,7 +19,7 @@ export function Hero() {
 						Create your own memecoin in&nbsp;#&nbsp;minutes
 					</p>
 					<div className="mt-10">
-						<Link href={'/create'} className="btn btn--primary">
+						<Link href={'/tokens/create'} className="btn btn--primary">
 							Create now
 						</Link>
 					</div>

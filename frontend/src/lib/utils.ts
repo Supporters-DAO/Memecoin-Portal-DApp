@@ -1,3 +1,4 @@
+import { HexString } from '@gear-js/api'
 import { AlertContainerFactory } from '@gear-js/react-hooks'
 import clsx, { ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
@@ -59,4 +60,8 @@ export function cn(...inputs: ClassValue[]) {
 
 export const prettyWord = (word: string) => {
 	return word.slice(0, 6) + '...' + word.slice(-4)
+}
+
+export const isValidHexString = (value: string): value is HexString => {
+	return /^0x[0-9A-Fa-f]+$/.test(value)
 }
