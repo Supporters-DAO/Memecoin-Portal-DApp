@@ -1,8 +1,8 @@
 import { TableCell2, TableRow2 } from '@/components/ui/table'
-import { Table as ITable } from '@tanstack/table-core/build/lib/types'
+import { Table } from '@tanstack/react-table'
 
 type TableRowNoResultsProps<T> = BaseComponentProps & {
-	table: ITable<T>
+	table: Table<T>
 }
 
 export function TableRowNoResults<TData>({
