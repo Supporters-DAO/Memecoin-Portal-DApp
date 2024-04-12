@@ -1,7 +1,4 @@
-import {
-	Token,
-	type IToken,
-} from '../../../components/sections/tokens/single-token'
+import { Token, type IToken } from '@/components/sections/tokens/single-token'
 import { notFound } from 'next/navigation'
 import { EXPLORER } from '@/lib/consts'
 
@@ -46,7 +43,8 @@ export default async function Page({
 	params: { id: string }
 }) {
 	const data = (await getData(id)) as ITokenResponse
-	if (!data) return notFound()
+
+	if (!data || !data.data.coinById) return notFound()
 
 	const {
 		data: { coinById },
