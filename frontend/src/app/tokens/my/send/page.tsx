@@ -1,3 +1,9 @@
+import { SendCoin } from '@/components/sections/send/send'
+
 export default function Page() {
-	return <>My coins | Send</>
+	return (
+		<div className="container">
+			<SendCoin />
+		</div>
+	)
 }

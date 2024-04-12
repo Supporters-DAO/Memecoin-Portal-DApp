@@ -37,11 +37,11 @@ export function HeaderMenu({ className }: Props) {
 						Memecoins Creator
 					</DropdownMenuItem>
 					<DropdownMenuSeparator />
-					<DropdownMenuItem onClick={() => router.push('/my-coins')}>
+					<DropdownMenuItem onClick={() => router.push('/tokens/my')}>
 						My Coins – My Rules
 					</DropdownMenuItem>
 					<DropdownMenuSeparator />
-					<DropdownMenuItem onClick={() => router.push('/all-coins')}>
+					<DropdownMenuItem onClick={() => router.push('/tokens')}>
 						All Memecoins
 					</DropdownMenuItem>
 				</DropdownMenuContent>
