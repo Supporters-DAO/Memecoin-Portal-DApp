@@ -1,7 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table'
-import { AlertContainerFactory, useAlert } from '@gear-js/react-hooks'
+import { type AlertContainerFactory, useAlert } from '@gear-js/react-hooks'
 import Image from 'next/image'
-
 import { Token } from './hooks/use-fetch-coins'
 import { copyToClipboard, prettyWord } from '@/lib/utils'
 import { Sprite } from '@/components/ui/sprite'
@@ -24,7 +23,7 @@ export const coinsTypesTableColumns: ColumnDef<Token>[] = [
 					alt={info.row.original.name}
 					width={60}
 					height={60}
-					className="h-15 w-15 rounded-full object-cover"
+					className="size-15 rounded-full object-cover"
 					unoptimized={true}
 				/>
 			</>

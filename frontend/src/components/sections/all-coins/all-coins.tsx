@@ -5,14 +5,12 @@ import { useFetchCoins } from './hooks/use-fetch-coins'
 import Link from 'next/link'
 import { Sprite } from '@/components/ui/sprite'
 import { Input } from '@/components/ui/input'
-import { Table } from '@/components/ui/table'
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table'
 import { coinsTypesTableColumns } from './table.columns'
 import { DataTable } from '@/components/common/data-table'
 
 export const AllCoins = () => {
 	const { tokenData } = useFetchCoins(10, 0)
-	console.log('tokenData', tokenData)
 
 	const table = useReactTable({
 		data: tokenData,

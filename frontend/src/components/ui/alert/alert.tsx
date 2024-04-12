@@ -1,9 +1,7 @@
-import clsx from 'clsx'
 import { AlertProps } from './alert.types'
 import styles from './alert.module.scss'
 import { Sprite } from '../sprite'
-// import { Button } from '../button';
-// import { CrossIcon } from '@/assets/images';
+import { cn } from '@/lib/utils'
 
 export function Alert({ alert, close }: AlertProps) {
 	const { content, options } = alert
@@ -11,7 +9,7 @@ export function Alert({ alert, close }: AlertProps) {
 
 	return (
 		<div className={styles.alert} style={style}>
-			<div className={clsx(styles.header, styles[type])}>
+			<div className={cn(styles.header, styles[type])}>
 				{title || type}
 				{isClosed && (
 					<Sprite
@@ -26,4 +24,5 @@ export function Alert({ alert, close }: AlertProps) {
 		</div>
 	)
 }
+
 export { styles as alertStyles }
