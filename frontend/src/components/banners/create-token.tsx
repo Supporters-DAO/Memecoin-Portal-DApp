@@ -19,7 +19,7 @@ export function CreateTokenBanner({ className }: Props) {
 						<p>Add a new one to Vara Memecoins collection</p>
 					</div>
 					<div className="mt-10 md:mt-12">
-						<Link href={'/create-token'} className="btn btn--primary">
+						<Link href={'/create'} className="btn btn--primary">
 							Create now
 						</Link>
 					</div>
