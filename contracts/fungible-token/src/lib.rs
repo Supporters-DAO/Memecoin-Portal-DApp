@@ -50,25 +50,26 @@ impl FungibleToken {
         amount: u128,
         to_users: Vec<ActorId>,
     ) -> Result<FTReply, FTError> {
-        assert!(self.admins.contains(&msg::source()), "Not admin");
+        let source = msg::source();
+        assert!(self.admins.contains(&source), "Not admin");
 
-        if self.total_supply > self.current_supply + amount * to_users.len() as u128 {
-            for to in to_users.clone() {
-                self.balances
-                    .entry(to)
-                    .and_modify(|balance| *balance += amount)
-                    .or_insert(amount);
-                self.current_supply += amount;
-            }
+        self.check_balance(&source, amount * to_users.len() as u128)?;
 
-            return Ok(FTReply::TransferredToUsers {
-                from: ZERO_ID,
-                to_users,
-                amount,
-            });
-        } else {
-            return Err(FTError::MaxSupplyReached);
+        for to in to_users.clone() {
+            self.balances
+                .entry(source)
+                .and_modify(|balance| *balance -= amount);
+            self.balances
+                .entry(to)
+                .and_modify(|balance| *balance += amount)
+                .or_insert(amount);
         }
+
+        Ok(FTReply::TransferredToUsers {
+            from: source,
+            to_users,
+            amount,
+        })
     }
 
     fn mint(&mut self, amount: u128, to: ActorId) -> Result<FTReply, FTError> {
@@ -358,7 +359,7 @@ extern "C" fn state() {
         Query::Decimals => QueryReply::Decimals(token.decimals),
         Query::Description => QueryReply::Description(token.description),
         Query::ExternalLinks => QueryReply::ExternalLinks(token.external_links),
-        Query::CurrentSupply  => QueryReply::CurrentSupply(token.current_supply),
+        Query::CurrentSupply => QueryReply::CurrentSupply(token.current_supply),
         Query::TotalSupply => QueryReply::TotalSupply(token.total_supply),
         Query::BalanceOf(account) => {
             let balance = if let Some(balance) = token.balances.get(&account) {
