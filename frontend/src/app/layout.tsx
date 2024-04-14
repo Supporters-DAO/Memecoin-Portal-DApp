@@ -25,7 +25,7 @@ const poppins = Poppins({
 	variable: '--font-poppins',
 })
 const siteConfig = {
-	name: 'Vara Memecoins',
+	name: 'Tokenator',
 }
 
 export const metadata: Metadata = {
