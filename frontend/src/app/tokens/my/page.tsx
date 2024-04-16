@@ -1,3 +1,9 @@
+import { MyCoins } from '@/components/sections/tokens/my-coins/my-coins'
+
 export default function Page() {
-	return <>My coins</>
+	return (
+		<div className="container">
+			<MyCoins />
+		</div>
+	)
 }

@@ -12,6 +12,7 @@ type ContentTableLayoutProps<T> = BaseComponentProps & {
 	setGlobalFilter?: Dispatch<SetStateAction<string>>
 	globalFilterPlaceholder?: string
 	isLoading?: boolean
+	onRowClick?: any
 }
 
 export function DataTable<TData>({
@@ -21,6 +22,7 @@ export function DataTable<TData>({
 	setGlobalFilter,
 	globalFilterPlaceholder,
 	isLoading,
+	onRowClick,
 }: ContentTableLayoutProps<TData>) {
 	return (
 		<TableLayoutWrapper>
@@ -36,6 +38,7 @@ export function DataTable<TData>({
 				table={table}
 				isLoading={isLoading}
 				className="rounded-2xl bg-[#1D2C4B] p-8 font-poppins"
+				onRowClick={onRowClick}
 			/>
 
 			<TableNavigation table={table} total={total} />

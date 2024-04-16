@@ -1,4 +1,4 @@
-import { CreateToken } from '@/components/sections/create-token'
+import { CreateToken } from '@/components/sections/tokens/create-token'
 
 export default function Page() {
 	return (

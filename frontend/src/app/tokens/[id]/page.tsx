@@ -1,4 +1,4 @@
-import { Token, type IToken } from '@/components/sections/tokens/single-token'
+import { Token, type IToken } from '@/components/sections/tokens/single-token/single-token'
 import { notFound } from 'next/navigation'
 import { EXPLORER } from '@/lib/consts'
 
@@ -12,6 +12,12 @@ async function getData(id: string) {
             id
             name
             symbol
+			telegram
+			twitter
+			website
+			discord
+			initialSupply
+			maxSupply
           }
       }`
 

@@ -1,18 +1,35 @@
 'use client'
 
 import React, { useState } from 'react'
-import Link from 'next/link'
+import { HexString } from '@gear-js/api'
+
 import { Sprite } from '@/components/ui/sprite'
 import { ScrollArea } from '@/components/common/scroll-area'
 import { Input } from '@/components/ui/input'
-import { HexString } from '@gear-js/api'
+import { BackButton } from '@/components/common/back-button'
 import { isValidHexString } from '@/lib/utils'
+import { useMessageToken } from './hooks/use-message'
 
-export const SendCoin = () => {
+export interface IToken {
+	admins: HexString[]
+	decimals: number
+	id: HexString
+	initialSupply: string
+	maxSupply: string
+	name: string
+	symbol: string
+}
+
+type Props = {
+	token: IToken
+}
+
+export const SendCoin = ({ token }: Props) => {
 	const [addresses, setAddresses] = useState<HexString[]>([])
 	const [inputValue, setInputValue] = useState<HexString | ''>('')
 	const [inputAmount, setInputAmount] = useState<number>()
 	const isScrollable = (addresses?.length || 0) > 6
+	const handleMessage = useMessageToken(token.id)
 
 	const handleAddAddress = () => {
 		if (inputValue && isValidHexString(inputValue)) {
@@ -39,21 +56,41 @@ export const SendCoin = () => {
 		)
 	}
 
+	const onSendCoins = () => {
+		if (inputAmount) {
+			handleMessage({
+				payload: {
+					TransferToUsers: {
+						amount: inputAmount,
+						to_users: [...addresses],
+					},
+				},
+				onInBlock: () => {
+					console.log('onInBlock')
+				},
+				onSuccess: () => {
+					// setIsCreated(true)
+					console.log('onSuccess')
+				},
+				onError: () => {
+					// setIsPending(false);
+				},
+			})
+		}
+	}
+
 	return (
 		<div className="ju my-10 flex items-start">
-			<Link href="/tokens" className="mr-20 flex items-center gap-3 text-xl">
-				<Sprite name="arrow-left" className="size-6 " />
-				My Coin - My Rules
-			</Link>
+			<BackButton />
 			<div className="flex flex-col items-center gap-3">
 				<div className="flex items-center justify-between">
 					<h1 className="text-[28px] text-primary">Send</h1>
 				</div>
 
 				<div className="flex w-[660px] flex-col gap-6 rounded-[40px] bg-blue-light p-10">
-					<h3 className="text-center uppercase">HUMSTER$</h3>
+					<h3 className="text-center uppercase">{token.name}</h3>
 					<p className="text-center font-poppins text-[16px] font-medium text-primary">
-						4 121 HUM
+						{token.initialSupply} {token.symbol}
 					</p>
 
 					<div className="flex flex-col gap-3 font-poppins">
@@ -103,6 +140,7 @@ export const SendCoin = () => {
 						disabled={
 							addresses.length === 0 || !inputAmount || inputAmount <= 0
 						}
+						onClick={onSendCoins}
 					>
 						Send
 					</button>

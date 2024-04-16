@@ -2,10 +2,11 @@
 
 import React, { useState } from 'react'
 import Image from 'next/image'
-import { ICreateTokenForm } from './schema'
-import { useMessage } from './hooks/state'
-import { useAccount } from '@gear-js/react-hooks'
 import { useAtom } from 'jotai'
+
+import { ICreateTokenForm } from './schema'
+import { useMessage } from './hooks/use-message'
+import { useAccount } from '@gear-js/react-hooks'
 import { stepAtom } from '.'
 import { Created } from './created'
 import { cn } from '@/lib/utils'
@@ -78,7 +79,7 @@ export const ConfirmCreate = ({ data }: Props) => {
 					<>
 						<h3 className="text-center uppercase">Confirm Details</h3>
 						{data && (
-							<div className="flex flex-col gap-5 font-poppins">
+							<div className="flex flex-col gap-5 break-words font-poppins">
 								<div className="flex justify-center">
 									<Image
 										src={data.external_links.image}
@@ -125,7 +126,7 @@ export const ConfirmCreate = ({ data }: Props) => {
 										{data.external_links.website && (
 											<div className="w-1/2">
 												<span className="text-sm text-[#A4AAB6]">Website</span>
-												<p>{data.external_links.website}</p>
+												<p className="">{data.external_links.website}</p>
 											</div>
 										)}
 

@@ -19,12 +19,11 @@ export const coinsTypesTableColumns: ColumnDef<Token>[] = [
 		cell: (info) => (
 			<>
 				<Image
-					src={info.row.original.image}
-					alt={info.row.original.name}
+					src={info?.row?.original?.image}
+					alt={info?.row?.original?.name}
 					width={60}
 					height={60}
 					className="size-15 rounded-full object-cover"
-					unoptimized={true}
 				/>
 			</>
 		),
@@ -112,7 +111,12 @@ function TokenId(id: string) {
 	return (
 		<div className="flex items-center justify-center gap-3 text-center">
 			{prettyWord(id)}
-			<button onClick={() => handleCopyClickAddress(id, alert)}>
+			<button
+				onClick={(e) => {
+					e.stopPropagation()
+					handleCopyClickAddress(id, alert)
+				}}
+			>
 				<Sprite name="copy" size={16} />
 			</button>
 		</div>

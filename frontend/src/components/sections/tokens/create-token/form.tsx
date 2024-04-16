@@ -9,13 +9,14 @@ import {
 	createTokenDefault,
 	createTokenSchema,
 	ICreateTokenForm,
-} from '@/components/sections/create-token/schema'
+} from '@/components/sections/tokens/create-token/schema'
 import Link from 'next/link'
 import { InputArea } from '@/components/ui/InputArea'
 import { useAtom } from 'jotai'
 
 import { dataTokenAtom, stepAtom } from '.'
 import { cn } from '@/lib/utils'
+import { BackButton } from '@/components/common/back-button'
 
 export const CreateForm = () => {
 	const [step, setStep] = useAtom(stepAtom)
@@ -41,10 +42,7 @@ export const CreateForm = () => {
 
 	return (
 		<div className="ju my-10 flex items-start">
-			<Link href="/" className="mr-40 flex items-center gap-3 text-xl">
-				<Sprite name="arrow-left" className="size-6 " />
-				Main page
-			</Link>
+			<BackButton />
 			<div className="flex flex-col items-center gap-3">
 				<h1 className="text-[28px] text-primary">Memecoin Creator</h1>
 				<div className="flex w-[660px] flex-col gap-6 rounded-[40px] bg-blue-light p-10">
@@ -218,11 +216,17 @@ export const CreateForm = () => {
 								/>
 							</div>
 							<div className="flex w-full flex-col gap-2">
-								<Input
-									label="Discord (optional)"
-									placeholder="Add a link to Discord"
-									{...register('external_links.discord')}
-									error={errors?.external_links?.discord?.message}
+								<Controller
+									name="external_links.discord"
+									control={control}
+									render={({ field, fieldState: { error } }) => (
+										<Input
+											{...field}
+											label="Discord (optional)"
+											placeholder="Add a link to Discord"
+											error={error?.message}
+										/>
+									)}
 								/>
 							</div>
 						</div>

@@ -1,4 +1,5 @@
 import { EXPLORER } from '@/lib/consts'
+import { HexString } from '@gear-js/api'
 import { useEffect, useState } from 'react'
 
 const endpoint = EXPLORER.BACK
@@ -13,9 +14,10 @@ export interface Token {
 	symbol: string
 	initialSupply: string
 	maxSupply: string
+	admins: HexString[]
 }
 
-export const useFetchCoins = (limit: 10, offset: 0) => {
+export const useFetchCoins = (limit: 20, offset: 0) => {
 	const [tokenData, setTokenData] = useState<Token[]>([])
 
 	const query = `{
@@ -29,6 +31,7 @@ export const useFetchCoins = (limit: 10, offset: 0) => {
             symbol
 			initialSupply
 			maxSupply
+			admins
           }
       }`
 

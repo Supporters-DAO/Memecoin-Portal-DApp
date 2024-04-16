@@ -1,4 +1,4 @@
-import { AllCoins } from '@/components/sections/all-coins/all-coins'
+import { AllCoins } from '@/components/sections/tokens/all-coins/all-coins'
 
 export default function Page() {
 	return (

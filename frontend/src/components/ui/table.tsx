@@ -66,6 +66,20 @@ const TableRow = React.forwardRef<
 ))
 TableRow.displayName = 'TableRow'
 
+const TableRowClickable = React.forwardRef<
+	HTMLTableRowElement,
+	React.HTMLAttributes<HTMLTableRowElement> & { onRowClick?: () => void }
+>(({ className, onRowClick, ...props }, ref) => (
+	<tr
+		ref={ref}
+		className={className}
+		{...props}
+		onClick={onRowClick}
+		style={{ cursor: 'pointer' }}
+	/>
+))
+TableRowClickable.displayName = 'TableRowClickable'
+
 const TableHead = React.forwardRef<
 	HTMLTableCellElement,
 	React.ThHTMLAttributes<HTMLTableCellElement>
@@ -102,11 +116,7 @@ const Table2 = React.forwardRef<
 	React.HTMLAttributes<HTMLTableElement>
 >(({ className, ...props }, ref) => (
 	<div className="relative w-full overflow-auto">
-		<table
-			ref={ref}
-			className={cn('w-full', className)}
-			{...props}
-		/>
+		<table ref={ref} className={cn('w-full', className)} {...props} />
 	</div>
 ))
 Table2.displayName = 'Table2'
@@ -188,6 +198,7 @@ export {
 	TableFooter,
 	TableHead,
 	TableRow,
+	TableRowClickable,
 	TableCell,
 	TableCaption,
 	Table2,

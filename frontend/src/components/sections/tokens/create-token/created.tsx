@@ -2,6 +2,7 @@
 
 import React from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 
 interface Props {
 	name: string
@@ -30,9 +31,11 @@ export const Created = ({ name, image }: Props) => {
 					art with friends
 				</p>
 				<div className="mt-7 flex gap-3 font-ps2p">
-					<button className="mx-auto rounded-lg bg-primary px-15 py-3 text-black">
-						My Memecoins
-					</button>
+					<Link href="/tokens/my" className="mx-auto">
+						<button className="rounded-lg bg-primary px-15 py-3 text-black">
+							My Memecoins
+						</button>
+					</Link>
 				</div>
 			</div>
 		</>

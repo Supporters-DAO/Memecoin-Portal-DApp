@@ -7,6 +7,7 @@ const lastCoinSchema = z.object({
 	timestamp: z.string().datetime(),
 	image: z.string().url(),
 	distributed: z.string(),
+	maxSupply: z.string(),
 	symbol: z.string(),
 })
 
@@ -25,6 +26,7 @@ export const getLastCoinsQuery = `{
 			timestamp
 			image
 			distributed
+			maxSupply
 			symbol
 		}
 	}`
