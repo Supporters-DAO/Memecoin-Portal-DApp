@@ -26,11 +26,12 @@ Allows a user to create a new meme with specific configurations.
   - `decimals`: The number of decimals for the meme's token representation.
   - `description`: A brief description of the meme.
   - `external_links`: A collection of external links related to the meme, including:
-    - `image`: An optional link to an image of the meme.
+    - `image`: A link to an image of the meme.
     - `website`: An optional link to a website associated with the meme.
     - `telegram`: An optional link to a Telegram group or channel for the meme.
     - `twitter`: An optional link to a Twitter page for the meme.
     - `discord`: An optional link to a Discord server for the meme.
+    - `tokenomics`: An optional link to a tokenomics for the meme.
   - `initial_supply`: The initial amount of tokens supplied for the meme.
   - `total_supply`: The total amount of tokens available for the meme.
   - `admin`: The `ActorId` of the meme's administrator.
@@ -50,6 +51,10 @@ Updates the amount of gas used for the contract.
 ### AddAdmin
 Allows adding a new administrator to the contract. Only current administrators can add new ones.
 - `admin_actor_id`: The `ActorId` of the new administrator being added to the contract. This allows the new admin to perform privileged operations on the contract.
+
+### RemoveMeme
+Removes a meme from the contract, typically an action restricted to administrators or the meme creator.
+- `meme_id`: The `MemeId` of the meme to be removed from the contract.
 
 ## Events
 
@@ -76,11 +81,10 @@ Indicates that a new administrator has been added to the contract. It includes d
 - `updated_by`: The `ActorId` of the existing administrator who added the new admin.
 - `admin_actor_id`: The `ActorId` of the new administrator added to the contract, granting them privileged access.
 
-### MemeRegistered
-Emitted when a meme has been successfully registered in the contract, confirming the meme's successful creation and storage.
-
-### MemeFailed
-Emitted when the creation or registration of a meme has failed, alerting users and administrators to take necessary actions.
+### MemeRemoved
+Indicates that a meme has been successfully removed from the contract. This event includes details of who performed the removal and the identifier of the meme removed.
+- `removed_by`: The `ActorId` of the individual who performed the removal.
+- `meme_id`: The `MemeId` of the meme that was removed from the contract.
 
 ## Queries
 
