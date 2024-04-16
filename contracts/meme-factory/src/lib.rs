@@ -125,6 +125,36 @@ impl MemeFactory {
             return Err(MemeError::Unauthorized);
         }
     }
+
+    pub fn remove_meme(&mut self, meme_id: MemeId) -> Result<MemeFactoryEvent, MemeError> {
+        let source = msg::source();
+        if self.factory_admin_account.contains(&source) {
+            if self.id_to_address.remove(&meme_id).is_none() {
+                return Err(MemeError::MemeIdNotFoundInAddress);
+            }
+
+            let mut is_meme_removed = false;
+
+            for (_actor_id, memes) in self.memecoins.iter_mut() {
+                if let Some(pos) = memes.iter().position(|(id, _)| *id == meme_id) {
+                    memes.remove(pos);
+                    is_meme_removed = true;
+                    break;
+                }
+            }
+
+            if !is_meme_removed {
+                return Err(MemeError::MemeIdNotFoundInMemeCoins);
+            }
+
+            Ok(MemeFactoryEvent::MemeRemoved {
+                removed_by: source,
+                meme_id,
+            })
+        } else {
+            return Err(MemeError::Unauthorized);
+        }
+    }
 }
 
 #[no_mangle]
@@ -165,6 +195,7 @@ async fn main() {
         MemeFactoryAction::CodeIdUpdate { new_code_id } => {
             factory_state.update_code_id(new_code_id)
         }
+        MemeFactoryAction::RemoveMeme { meme_id } => factory_state.remove_meme(meme_id),
     };
 
     msg::reply(result, 0)

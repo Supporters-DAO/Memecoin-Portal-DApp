@@ -13,6 +13,7 @@ pub enum MemeFactoryAction {
     CodeIdUpdate { new_code_id: CodeId },
     UpdateGasProgram(u64),
     AddAdmin { admin_actor_id: ActorId },
+    RemoveMeme { meme_id: MemeId },
 }
 
 #[derive(Encode, Decode, TypeInfo, Clone, Debug)]
@@ -47,8 +48,10 @@ pub enum MemeFactoryEvent {
         updated_by: ActorId,
         admin_actor_id: ActorId,
     },
-    MemeRegistered,
-    MemeFailed,
+    MemeRemoved {
+        removed_by: ActorId,
+        meme_id: MemeId,
+    },
 }
 
 #[derive(Debug, Clone, Encode, Decode, TypeInfo)]
@@ -61,6 +64,8 @@ pub enum MemeError {
     UnexpectedFTEvent,
     MessageSendError,
     MemeNotFound,
+    MemeIdNotFoundInAddress,
+    MemeIdNotFoundInMemeCoins,
 }
 
 #[derive(Debug, Decode, Encode, TypeInfo)]
@@ -117,11 +122,12 @@ pub struct Config {
 #[codec(crate = gstd::codec)]
 #[scale_info(crate = gstd::scale_info)]
 pub struct ExternalLinks {
-    pub image: Option<String>,
+    pub image: String,
     pub website: Option<String>,
     pub telegram: Option<String>,
     pub twitter: Option<String>,
     pub discord: Option<String>,
+    pub tokenomics:Option<String>
 }
 
 #[derive(Debug, Decode, Encode, TypeInfo)]
