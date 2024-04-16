@@ -20,6 +20,7 @@ import { IFactoryEventHandler } from "./factory/factory.handler";
 import { AdminDeletedHandler } from "./coin/admin-deleted.handler";
 import { AdminAddedHandler } from "./coin/admin-added.handler";
 import { TransferredHandler } from "./coin/transferred.handler";
+import { TransferredToUsersHandler } from "./coin/transferred-to-users.handler";
 
 const factoryEventsToHandler: Record<
   FactoryEventType,
@@ -35,6 +36,7 @@ const coinEventsToHandler: Record<
   [CoinEventType.AdminRemoved]: new AdminDeletedHandler(),
   [CoinEventType.AdminAdded]: new AdminAddedHandler(),
   [CoinEventType.Transferred]: new TransferredHandler(),
+  [CoinEventType.TransferredToUsers]: new TransferredToUsersHandler(),
 };
 
 export class EventsProcessing {

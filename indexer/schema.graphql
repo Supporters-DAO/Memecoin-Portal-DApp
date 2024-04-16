@@ -14,6 +14,7 @@ type Coin @entity {
   decimals: Int!
   initialSupply: BigInt!
   maxSupply: BigInt!
+  circulatingSupply: BigInt!
   website: String
   telegram: String
   twitter: String
@@ -23,10 +24,18 @@ type Coin @entity {
   screenshots: [String!]!
   admins: [String!]!
   distributed: BigInt!
+  burned: BigInt!
+  holders: Int!
   factory: Factory!
   createdBy: String!
   timestamp: DateTime! @index
   transfers: [Transfer!]! @derivedFrom(field: "coin")
+}
+
+type AccountBalance @entity {
+  address: String! @index
+  coin: Coin! @index
+  balance: BigInt!
 }
 
 type Transfer @entity {
@@ -37,7 +46,7 @@ type Transfer @entity {
   extrinsicHash: String @index
   from: String!
   to: String!
-  amount: BigInt! @index
+  amount: BigInt!
   factory: Factory
 }
 

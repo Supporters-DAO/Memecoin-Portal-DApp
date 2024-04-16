@@ -1,8 +1,9 @@
-import { Coin, Factory } from "../../model";
+import { AccountBalance, Coin, Factory } from "../../model";
 import { Store } from "@subsquid/typeorm-store";
 import { IStorage } from "./storage.inteface";
 import { readFileSync } from "fs";
 import { config } from "../../config";
+import { add } from "lodash";
 
 let storage: LocalStorage | undefined;
 
@@ -23,6 +24,8 @@ export class LocalStorage implements IStorage {
   private factory: Factory | undefined;
   // address -> Coin
   private coins: Record<string, Coin> = {};
+  // address-coin -> AccountBalance
+  private accounts: Record<string, AccountBalance> = {};
 
   constructor(private store: Store) {}
 
@@ -52,6 +55,24 @@ export class LocalStorage implements IStorage {
 
   async updateCoin(coin: Coin): Promise<void> {
     this.coins[coin.id] = coin;
+  }
+
+  async getAccountBalance(
+    address: string,
+    contract: string
+  ): Promise<AccountBalance | undefined> {
+    const key = `${address}-${contract}`;
+    if (this.accounts[key] !== undefined) {
+      return this.accounts[key];
+    }
+    return this.store.findOne(AccountBalance, {
+      where: { address, coin: { id: contract } },
+    });
+  }
+
+  async updateAccountBalance(balance: AccountBalance): Promise<void> {
+    const key = `${balance.address}-${balance.coin.id}`;
+    this.accounts[key] = balance;
   }
 
   private async loadEntities() {

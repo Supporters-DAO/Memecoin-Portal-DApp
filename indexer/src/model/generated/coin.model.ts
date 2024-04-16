@@ -43,6 +43,12 @@ export class Coin {
   })
   maxSupply!: bigint;
 
+  @Column_("numeric", {
+    transformer: marshal.bigintTransformer,
+    nullable: false,
+  })
+  circulatingSupply!: bigint;
+
   @Column_("text", { nullable: true })
   website!: string | undefined | null;
 
@@ -72,6 +78,15 @@ export class Coin {
     nullable: false,
   })
   distributed!: bigint;
+
+  @Column_("numeric", {
+    transformer: marshal.bigintTransformer,
+    nullable: false,
+  })
+  burned!: bigint;
+
+  @Column_("int4", { nullable: false })
+  holders!: number;
 
   @Index_()
   @ManyToOne_(() => Factory, { nullable: true })

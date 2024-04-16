@@ -40,7 +40,6 @@ export class Transfer {
   @Column_("text", { nullable: false })
   to!: string;
 
-  @Index_()
   @Column_("numeric", {
     transformer: marshal.bigintTransformer,
     nullable: false,

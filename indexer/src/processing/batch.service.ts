@@ -1,16 +1,18 @@
 import { Store } from "@subsquid/typeorm-store";
-import { Coin, MemcoinFactoryEvent, Transfer } from "../model";
+import { AccountBalance, Coin, MemcoinFactoryEvent, Transfer } from "../model";
 
 export class BatchService {
   private coins: Coin[] = [];
   private transfers: Transfer[] = [];
   private events: MemcoinFactoryEvent[] = [];
+  private accountBalances: AccountBalance[] = [];
 
   constructor(private readonly store: Store) {}
 
   async saveAll() {
     await this.store.save(this.coins);
     await Promise.all([
+      this.store.save(this.accountBalances),
       this.store.save(this.transfers),
       this.store.save(this.events),
     ]);
@@ -25,6 +27,10 @@ export class BatchService {
 
   addCoinUpdate(coin: Coin) {
     this.safelyPush("coins", coin);
+  }
+
+  addBalanceUpdate(balance: AccountBalance) {
+    this.safelyPush("accountBalances", balance);
   }
 
   addTransfer(transfer: Transfer) {

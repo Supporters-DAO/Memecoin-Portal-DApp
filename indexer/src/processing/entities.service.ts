@@ -1,7 +1,14 @@
-import { Coin, Factory, MemcoinFactoryEvent, Transfer } from "../model";
+import {
+  AccountBalance,
+  Coin,
+  Factory,
+  MemcoinFactoryEvent,
+  Transfer,
+} from "../model";
 import { IStorage } from "./storage/storage.inteface";
 import { BatchService } from "./batch.service";
 import { v4 as uuidv4 } from "uuid";
+import {NullAddress} from "../consts";
 
 export class EntitiesService {
   constructor(
@@ -17,8 +24,28 @@ export class EntitiesService {
     return this.storage.getFactory();
   }
 
-  async getCoin(collectionAddress: string) {
-    return this.storage.getCoin(collectionAddress);
+  async getCoin(contract: string) {
+    return this.storage.getCoin(contract);
+  }
+
+  async getAccountBalance(
+    address: string,
+    coin: Coin
+  ): Promise<AccountBalance> {
+    const accountBalance = await this.storage.getAccountBalance(
+      address,
+      coin.id
+    );
+    if (accountBalance === undefined) {
+      return new AccountBalance({
+        id: uuidv4(),
+        address,
+        coin,
+        balance: BigInt(0),
+      });
+    }
+    console.log(`[getAccountBalance] ${address} ${coin.id} ${accountBalance.balance}`)
+    return new AccountBalance({ ...accountBalance, coin });
   }
 
   async setCoin(coin: Coin) {
@@ -28,6 +55,14 @@ export class EntitiesService {
 
   addTransfer(transfer: Transfer) {
     this.batchService.addTransfer(transfer);
+  }
+
+  async setAccountBalance(balance: AccountBalance) {
+    if (balance.address !== NullAddress) {
+      console.log(`[setAccountBalance] ${balance.address} ${balance.coin.id} ${balance.balance}`)
+      await this.storage.updateAccountBalance(balance);
+      this.batchService.addBalanceUpdate(balance);
+    }
   }
 
   async addEvent(event: Omit<MemcoinFactoryEvent, "factory" | "id">) {
