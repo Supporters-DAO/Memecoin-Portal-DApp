@@ -49,7 +49,6 @@ export const ConfirmCreate = ({ data }: Props) => {
 			onInBlock: () => {},
 			onSuccess: () => {
 				setIsCreated(true)
-				setStep('create')
 				setIsPending(false)
 			},
 			onError: () => {
