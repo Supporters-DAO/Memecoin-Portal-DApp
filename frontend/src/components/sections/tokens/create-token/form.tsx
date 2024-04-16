@@ -46,16 +46,24 @@ export const CreateForm = () => {
 			<div className="flex flex-col items-center gap-3">
 				<h1 className="text-[28px] text-primary">Memecoin Creator</h1>
 				<div className="flex w-[660px] flex-col gap-6 rounded-[40px] bg-blue-light p-10">
-					<div className="flex justify-center gap-12">
-						<div className="flex w-8  items-center justify-center rounded-full bg-primary">
-							<span className="text-sm leading-none text-[#0F1B34]">1</span>
-						</div>
-						<div className="flex size-8 items-center justify-center rounded-full bg-[#D0D3D9]">
-							<span className="text-sm leading-none text-[#1D2C4B]">2</span>
-						</div>
-						<div className="flex size-8 items-center justify-center rounded-full bg-[#D0D3D9]">
-							<span className="text-sm leading-none text-[#1D2C4B]">3</span>
-						</div>
+					<div className="mx-auto w-2/5">
+						<ol className="flex w-full items-center">
+							<li className="flex w-full items-center text-[#0F1B34] after:inline-block after:h-1 after:w-full after:border-4 after:border-b after:border-[#D0D3D9] after:content-['']">
+								<span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary">
+									1
+								</span>
+							</li>
+							<li className="flex w-full items-center text-[#0F1B34] after:inline-block after:h-1 after:w-full after:border-4 after:border-b after:border-[#D0D3D9] after:content-['']">
+								<span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#D0D3D9] ">
+									2
+								</span>
+							</li>
+							<li className="flex w-0 items-center text-[#0F1B34]">
+								<span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#D0D3D9]">
+									3
+								</span>
+							</li>
+						</ol>
 					</div>
 					<h3 className="text-center uppercase">Memecoin Details</h3>
 					<form

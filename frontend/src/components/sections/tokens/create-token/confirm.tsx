@@ -10,6 +10,7 @@ import { useAccount } from '@gear-js/react-hooks'
 import { stepAtom } from '.'
 import { Created } from './created'
 import { cn } from '@/lib/utils'
+import { AnimationCoins } from '@/components/common/animation-coins'
 
 interface Props {
 	data: ICreateTokenForm | undefined
@@ -56,24 +57,38 @@ export const ConfirmCreate = ({ data }: Props) => {
 	}
 
 	return (
-		<div className="flex flex-col items-center gap-3">
+		<div className="flex flex-col items-center gap-3 overflow-hidden">
+			<AnimationCoins />
 			<h1 className="text-[28px] text-primary">Memecoin Creator</h1>
 			<div className="flex w-[660px] flex-col gap-6 rounded-[40px] bg-blue-light p-10">
-				<div className="flex justify-center gap-12">
-					<div className="flex w-8  items-center justify-center rounded-full bg-primary">
-						<span className="text-sm leading-none text-[#0F1B34]">1</span>
-					</div>
-					<div className="flex size-8 items-center justify-center rounded-full bg-primary">
-						<span className="text-sm leading-none text-[#1D2C4B]">2</span>
-					</div>
-					<div
-						className={cn(
-							'flex size-8 items-center justify-center rounded-full bg-[#D0D3D9]',
-							isCreated && 'bg-primary'
-						)}
-					>
-						<span className="text-sm leading-none text-[#1D2C4B]">3</span>
-					</div>
+				<div className="mx-auto w-2/5">
+					<ol className="flex w-full items-center">
+						<li className="flex w-full items-center text-[#0F1B34] after:inline-block after:h-1 after:w-full after:border-4 after:border-b after:border-primary after:content-['']">
+							<span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary">
+								1
+							</span>
+						</li>
+						<li
+							className={cn(
+								"flex w-full items-center text-[#0F1B34] after:inline-block after:h-1 after:w-full after:border-4 after:border-b after:border-[#D0D3D9] after:content-['']",
+								isCreated && 'after:border-primary'
+							)}
+						>
+							<span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary">
+								2
+							</span>
+						</li>
+						<li className="flex w-0 items-center text-[#0F1B34]">
+							<span
+								className={cn(
+									'flex size-10 shrink-0 items-center justify-center rounded-full bg-[#D0D3D9]',
+									isCreated && 'bg-primary'
+								)}
+							>
+								3
+							</span>
+						</li>
+					</ol>
 				</div>
 				{!isCreated ? (
 					<>
