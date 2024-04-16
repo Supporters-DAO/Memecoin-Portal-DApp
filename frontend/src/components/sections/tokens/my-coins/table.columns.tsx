@@ -1,15 +1,10 @@
 import { ColumnDef } from '@tanstack/react-table'
-import {
-	type AlertContainerFactory,
-	useAlert,
-	useAccount,
-} from '@gear-js/react-hooks'
+import { type AlertContainerFactory, useAlert } from '@gear-js/react-hooks'
 import Image from 'next/image'
 import { Token } from './hooks/use-fetch-coins'
+import { Balances, useFetchBalances } from './hooks/use-fetch-balances'
 import { copyToClipboard, prettyWord } from '@/lib/utils'
 import { Sprite } from '@/components/ui/sprite'
-import { HexString } from '@gear-js/api'
-import Link from 'next/link'
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -93,6 +88,19 @@ export const coinsTypesTableColumns: ColumnDef<Token>[] = [
 		enableSorting: false,
 	},
 	{
+		accessorFn: (row) => row.circulatingSupply,
+		id: 'circulatingSupply',
+		cell: (info) => (
+			<div className="text-right">
+				{Number(info.row.original.circulatingSupply).toLocaleString('us')}
+			</div>
+		),
+		header: () => (
+			<div className="group flex items-center justify-center">Circ. Supply</div>
+		),
+		enableSorting: false,
+	},
+	{
 		accessorFn: (row) => row.distributed,
 		id: 'distributed',
 		cell: (info) => (
@@ -111,11 +119,33 @@ export const coinsTypesTableColumns: ColumnDef<Token>[] = [
 		enableSorting: false,
 	},
 	{
+		accessorFn: (row) => row.holders,
+		id: 'holders',
+		cell: (info) => (
+			<div className="text-right">
+				{Number(info.row.original.holders).toLocaleString('us')}
+			</div>
+		),
+		header: () => (
+			<div className="group flex items-center justify-center">Holders</div>
+		),
+		enableSorting: false,
+	},
+	{
 		accessorFn: (row) => row.id,
 		id: 'address',
 		cell: (info) => TokenId(info.row.original.id),
 		header: () => (
 			<div className="group flex items-center justify-center">Address</div>
+		),
+		enableSorting: false,
+	},
+	{
+		accessorFn: (row) => row.id,
+		id: 'Balance',
+		cell: (info) => Balance(info.row.original.id),
+		header: () => (
+			<div className="group flex items-center justify-center">Balance</div>
 		),
 		enableSorting: false,
 	},
@@ -137,6 +167,16 @@ function TokenId(id: string) {
 			<button onClick={() => handleCopyClickAddress(id, alert)}>
 				<Sprite name="copy" size={16} />
 			</button>
+		</div>
+	)
+}
+
+function Balance(id: string) {
+	const { balances } = useFetchBalances()
+
+	return (
+		<div className="flex items-center justify-center gap-3 text-center">
+			{balances.find((b) => b.coin.id === id)?.balance || 0}
 		</div>
 	)
 }

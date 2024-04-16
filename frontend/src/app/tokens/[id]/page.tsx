@@ -1,4 +1,7 @@
-import { Token, type IToken } from '@/components/sections/tokens/single-token/single-token'
+import {
+	Token,
+	type IToken,
+} from '@/components/sections/tokens/single-token/single-token'
 import { notFound } from 'next/navigation'
 import { EXPLORER } from '@/lib/consts'
 
@@ -18,6 +21,10 @@ async function getData(id: string) {
 			discord
 			initialSupply
 			maxSupply
+			createdBy
+			burned
+			circulatingSupply
+			holders
           }
       }`
 
@@ -27,7 +34,7 @@ async function getData(id: string) {
 		body: JSON.stringify({ query: query }),
 	}
 
-	const res = await fetch(EXPLORER.BACK, options)
+	const res = await fetch(EXPLORER.BACK, { ...options, cache: 'no-store' })
 
 	if (!res.ok) {
 		// This will activate the closest `error.js` Error Boundary

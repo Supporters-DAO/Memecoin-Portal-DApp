@@ -17,12 +17,14 @@ interface Props {
 }
 
 export const ConfirmCreate = ({ data }: Props) => {
+	const [isPending, setIsPending] = useState(false)
 	const [step, setStep] = useAtom(stepAtom)
 	const [isCreated, setIsCreated] = useState(false)
 	const { account } = useAccount()
 	const handleMessage = useMessage()
 
 	const onCreate = () => {
+		setIsPending(true)
 		handleMessage({
 			payload: {
 				CreateMeme: {
@@ -44,21 +46,20 @@ export const ConfirmCreate = ({ data }: Props) => {
 					},
 				},
 			},
-			onInBlock: () => {
-				console.log('onInBlock')
-			},
+			onInBlock: () => {},
 			onSuccess: () => {
 				setIsCreated(true)
+				setStep('create')
+				setIsPending(false)
 			},
 			onError: () => {
-				// setIsPending(false);
+				setIsPending(false)
 			},
 		})
 	}
 
 	return (
 		<div className="flex flex-col items-center gap-3 overflow-hidden">
-			<AnimationCoins />
 			<h1 className="text-[28px] text-primary">Memecoin Creator</h1>
 			<div className="flex w-[660px] flex-col gap-6 rounded-[40px] bg-blue-light p-10">
 				<div className="mx-auto w-2/5">
@@ -184,14 +185,23 @@ export const ConfirmCreate = ({ data }: Props) => {
 							<button
 								className="mx-auto w-full rounded-lg bg-[#0F1B34] py-3 text-white"
 								onClick={() => setStep('create')}
+								disabled={isPending}
 							>
 								Back
 							</button>
 							<button
-								className="mx-auto w-full rounded-lg bg-primary py-3 text-black"
+								className="mx-auto w-full rounded-lg bg-primary py-3 text-black disabled:bg-[#D0D3D9]"
 								onClick={onCreate}
+								disabled={isPending}
 							>
-								Confirm
+								{isPending ? (
+									<span className='flex w-1/2 mx-auto'>
+										Pending
+										<span className="w-full after:animate-dots after:content-[''] after:flex"></span>
+									</span>
+								) : (
+									'Confirm'
+								)}
 							</button>
 						</div>
 					</>

@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 
 const endpoint = EXPLORER.BACK
 
-export interface Token {
+export type Token = {
 	description: string
 	decimals: number
 	distributed: string
@@ -16,6 +16,8 @@ export interface Token {
 	initialSupply: string
 	maxSupply: string
 	admins: HexString[]
+	holders: string
+	circulatingSupply: string
 }
 
 export const useFetchCoins = (limit: 20, offset: 0) => {
@@ -35,6 +37,8 @@ export const useFetchCoins = (limit: 20, offset: 0) => {
 			maxSupply
 			admins
 			createdBy
+			holders
+			circulatingSupply
           }
       }`
 

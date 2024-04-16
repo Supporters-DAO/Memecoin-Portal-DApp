@@ -15,6 +15,8 @@ export interface Token {
 	initialSupply: string
 	maxSupply: string
 	admins: HexString[]
+	holders: string
+	circulatingSupply: string
 }
 
 export const useFetchCoins = (limit: 20, offset: 0) => {
@@ -32,6 +34,8 @@ export const useFetchCoins = (limit: 20, offset: 0) => {
 			initialSupply
 			maxSupply
 			admins
+			holders
+			circulatingSupply
           }
       }`
 

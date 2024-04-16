@@ -3,6 +3,7 @@
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { AnimationCoins } from '@/components/common/animation-coins'
 
 interface Props {
 	name: string
@@ -12,6 +13,7 @@ interface Props {
 export const Created = ({ name, image }: Props) => {
 	return (
 		<>
+			<AnimationCoins />
 			<h3 className="text-center uppercase">Memecoin is created</h3>
 			<div className="flex flex-col gap-5 font-poppins">
 				<div className="mx-auto flex flex-col items-center justify-center gap-3 rounded-[42px] border-2 border-[#2E3B55] bg-[#172542] p-7">

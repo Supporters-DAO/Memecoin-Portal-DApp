@@ -25,6 +25,7 @@ type Props = {
 }
 
 export const SendCoin = ({ token }: Props) => {
+	const [isPending, setIsPending] = useState(false)
 	const [addresses, setAddresses] = useState<HexString[]>([])
 	const [inputValue, setInputValue] = useState<HexString | ''>('')
 	const [inputAmount, setInputAmount] = useState<number>()
@@ -58,6 +59,7 @@ export const SendCoin = ({ token }: Props) => {
 
 	const onSendCoins = () => {
 		if (inputAmount) {
+			setIsPending(true)
 			handleMessage({
 				payload: {
 					TransferToUsers: {
@@ -65,15 +67,13 @@ export const SendCoin = ({ token }: Props) => {
 						to_users: [...addresses],
 					},
 				},
-				onInBlock: () => {
-					console.log('onInBlock')
-				},
 				onSuccess: () => {
-					// setIsCreated(true)
-					console.log('onSuccess')
+					setIsPending(false)
+					setAddresses([])
+					setInputAmount(undefined)
 				},
 				onError: () => {
-					// setIsPending(false);
+					setIsPending(false)
 				},
 			})
 		}
@@ -138,11 +138,21 @@ export const SendCoin = ({ token }: Props) => {
 					<button
 						className="btn mx-25 py-4 disabled:bg-[#D0D3D9]"
 						disabled={
-							addresses.length === 0 || !inputAmount || inputAmount <= 0
+							addresses.length === 0 ||
+							!inputAmount ||
+							inputAmount <= 0 ||
+							isPending
 						}
 						onClick={onSendCoins}
 					>
-						Send
+						{isPending ? (
+							<span className="mx-auto flex w-1/2">
+								Pending
+								<span className="after:animate-dots w-full after:flex after:content-['']"></span>
+							</span>
+						) : (
+							'Send'
+						)}
 					</button>
 				</div>
 			</div>

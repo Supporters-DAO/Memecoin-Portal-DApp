@@ -77,6 +77,19 @@ export const coinsTypesTableColumns: ColumnDef<Token>[] = [
 		enableSorting: false,
 	},
 	{
+		accessorFn: (row) => row.circulatingSupply,
+		id: 'circulatingSupply',
+		cell: (info) => (
+			<div className="text-right">
+				{Number(info.row.original.circulatingSupply).toLocaleString('us')}
+			</div>
+		),
+		header: () => (
+			<div className="group flex items-center justify-center">Circ. Supply</div>
+		),
+		enableSorting: false,
+	},
+	{
 		accessorFn: (row) => row.distributed,
 		id: 'distributed',
 		cell: (info) => (
@@ -91,6 +104,19 @@ export const coinsTypesTableColumns: ColumnDef<Token>[] = [
 		),
 		header: () => (
 			<div className="group flex items-center justify-end">Distributed</div>
+		),
+		enableSorting: false,
+	},
+	{
+		accessorFn: (row) => row.holders,
+		id: 'holders',
+		cell: (info) => (
+			<div className="text-right">
+				{Number(info.row.original.holders).toLocaleString('us')}
+			</div>
+		),
+		header: () => (
+			<div className="group flex items-center justify-center">Holders</div>
 		),
 		enableSorting: false,
 	},

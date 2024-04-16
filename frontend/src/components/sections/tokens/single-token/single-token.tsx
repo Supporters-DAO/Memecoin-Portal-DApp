@@ -5,8 +5,10 @@ import Image from 'next/image'
 
 import { Sprite } from '@/components/ui/sprite'
 import { copyToClipboard, prettyWord } from '@/lib/utils'
-import { useAlert } from '@gear-js/react-hooks'
+import { useAccount, useAlert } from '@gear-js/react-hooks'
 import { BackButton } from '@/components/common/back-button'
+import { HexString } from '@gear-js/api'
+import { useFetchBalances } from './hooks/use-fetch-balances'
 
 export interface IToken {
 	description: string
@@ -18,6 +20,10 @@ export interface IToken {
 	symbol: string
 	initialSupply: string
 	maxSupply: string
+	createdBy: HexString
+	burned: string
+	circulatingSupply: string
+	holders: string
 	telegram?: string
 	twitter?: string
 	website?: string
@@ -37,6 +43,9 @@ function SocialLink({ platform, href }: { platform: string; href: string }) {
 }
 
 export function Token({ token: { id, ...token } }: Props) {
+	const { account } = useAccount()
+	const { balances } = useFetchBalances()
+
 	const alert = useAlert()
 
 	const onCopyLink = async () => {
@@ -44,6 +53,14 @@ export function Token({ token: { id, ...token } }: Props) {
 			await copyToClipboard({ value: window.location.href, alert })
 		}
 	}
+	const onCopyAddress = async () => {
+		await copyToClipboard({ value: id, alert })
+	}
+
+	const isAdmin = account?.decodedAddress === token.createdBy
+	const tokenBalance =
+		balances?.find((balance) => balance.coin.id === id)?.balance || 0
+
 	return (
 		<section>
 			<div className="ju my-10 flex flex-col gap-8">
@@ -66,15 +83,19 @@ export function Token({ token: { id, ...token } }: Props) {
 							<h2 className="font-ps2p text-[32px] text-primary">
 								{token.name}
 							</h2>
-							<span className="font-poppins text-[24px] font-semibold text-white/[80%]">
-								{token.symbol}
-							</span>
+							<div className="flex gap-2 font-poppins text-[24px] font-semibold text-white/[80%]">
+								<span>{tokenBalance.toLocaleString('us')}</span>
+								<span>{token.symbol}</span>
+							</div>
 						</div>
 						<div className="flex items-center gap-8">
-							<div className="flex items-center gap-2">
+							<button
+								className="flex items-center gap-2"
+								onClick={onCopyAddress}
+							>
 								<Sprite name="copy" color="#B4FF69" className="size-4" />
 								{prettyWord(id)}
-							</div>
+							</button>
 							<button className="flex items-center gap-2" onClick={onCopyLink}>
 								<Sprite name="link" color="#B4FF69" className="size-4" />
 								Share link
@@ -101,13 +122,13 @@ export function Token({ token: { id, ...token } }: Props) {
 								<SocialLink platform="telegram" href={token.telegram} />
 							)}
 						</div>
-						<div>
-							<Link href={`/tokens/my/send/${id}`}>
-								<button className="rounded-md border-2 border-[#2E3B55] px-[47px] py-[10px] font-medium text-white outline-[#2E3B55]">
-									Send
-								</button>
-							</Link>
-						</div>
+						{isAdmin && (
+							<div>
+								<Link href={`/tokens/my/send/${id}`}>
+									<button className="btn py-3 font-medium">Send</button>
+								</Link>
+							</div>
+						)}
 					</div>
 				</div>
 				<div className="ml-auto flex w-[30%]  flex-col items-end justify-between rounded-lg border-2 border-[#2E3B55]">
@@ -116,7 +137,7 @@ export function Token({ token: { id, ...token } }: Props) {
 							<span className="font-poppins text-[12px] font-semibold text-[#FDFDFD]/[80%]">
 								Holders
 							</span>{' '}
-							<p className="text-[12px]"></p>
+							<p className="text-[12px]">{token.holders}</p>
 						</div>
 					</div>
 					<div className="w-full bg-[#FDFDFD]/[2%]">
@@ -124,7 +145,7 @@ export function Token({ token: { id, ...token } }: Props) {
 							<span className="font-poppins text-[12px] font-semibold text-[#FDFDFD]/[80%]">
 								Circulating supply
 							</span>{' '}
-							<p className="text-[12px]"></p>
+							<p className="text-[12px]">{token.circulatingSupply}</p>
 						</div>
 					</div>
 					<div className="w-full">
@@ -146,7 +167,7 @@ export function Token({ token: { id, ...token } }: Props) {
 							<span className="font-poppins text-[12px] font-semibold text-[#FDFDFD]/[80%]">
 								Burned
 							</span>{' '}
-							<p className="text-[12px]"></p>
+							<p className="text-[12px]">{token.burned}</p>
 						</div>
 					</div>
 					<div className="w-full">

@@ -50,6 +50,7 @@ const config: Config = {
 				'accordion-down': 'accordion-down 0.35s ease-out',
 				'accordion-up': 'accordion-up 0.35s ease-out',
 				'running-text': 'running-text 15s linear infinite',
+				dots: 'dots 1.2s infinite',
 			},
 			keyframes: {
 				text: {
@@ -75,6 +76,12 @@ const config: Config = {
 				swipeOut: {
 					from: { transform: 'translateX(var(--radix-toast-swipe-end-x))' },
 					to: { transform: 'translateX(calc(100% + var(--viewport-padding)))' },
+				},
+				dots: {
+					'0%, 20%': { content: '""' },
+					'40%': { content: '"."' },
+					'60%': { content: '".."' },
+					'80%, 100%': { content: '"..."' },
 				},
 				'accordion-down': {
 					from: { height: '0' },
