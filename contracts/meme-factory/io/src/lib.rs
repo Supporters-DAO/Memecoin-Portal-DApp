@@ -127,6 +127,7 @@ pub struct ExternalLinks {
     pub telegram: Option<String>,
     pub twitter: Option<String>,
     pub discord: Option<String>,
+    pub tokenomics:Option<String>
 }
 
 #[derive(Debug, Decode, Encode, TypeInfo)]
