@@ -18,7 +18,7 @@ export default async function Page() {
 			<Hero />
 			<About />
 			<AboutCreate />
-			<div className="space-y-25 overflow-hidden bg-[#C3C5EA] pb-25 pt-55">
+			<div className="relative space-y-25 overflow-hidden bg-[#C3C5EA] pt-55 lg:pb-25">
 				<AllCoins coins={data.coins} />
 				<CreateTokenBanner />
 			</div>

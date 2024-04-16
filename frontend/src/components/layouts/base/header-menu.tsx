@@ -10,6 +10,7 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 type Props = {
 	className?: string
@@ -18,14 +19,17 @@ type Props = {
 export function HeaderMenu({ className }: Props) {
 	const [open, setOpen] = useState(false)
 	const pathname = usePathname()
-	const router = useRouter()
 
 	return (
 		<div className={cn('relative flex flex-col', className)}>
 			<DropdownMenu open={open} onOpenChange={setOpen}>
 				<DropdownMenuTrigger asChild>
-					<button type="button" className="link-primary -mr-2 inline-flex p-2">
-						<Sprite name="header-menu" className="size-6" />
+					<button
+						type="button"
+						className="link-primary -mr-2 inline-flex items-center p-2"
+					>
+						<Sprite name="header-menu" className="size-6" aria-hidden />
+						<span className="sr-only">Mobile menu</span>
 					</button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent
@@ -33,16 +37,25 @@ export function HeaderMenu({ className }: Props) {
 					side="bottom"
 					className="min-w-55 font-poppins text-[14px] leading-none tracking-[0.03em] md:mt-2"
 				>
-					<DropdownMenuItem onClick={() => router.push('/tokens/create')}>
-						Memecoins Creator
+					<DropdownMenuItem
+						asChild
+						className={cn(pathname === '/tokens/create' && 'text-primary')}
+					>
+						<Link href="/tokens/create">Memecoins Creator</Link>
 					</DropdownMenuItem>
 					<DropdownMenuSeparator />
-					<DropdownMenuItem onClick={() => router.push('/tokens/my')}>
-						My Coins – My Rules
+					<DropdownMenuItem
+						asChild
+						className={cn(pathname === '/tokens/my' && 'text-primary')}
+					>
+						<Link href="/tokens/my">My Coins – My Rules</Link>
 					</DropdownMenuItem>
 					<DropdownMenuSeparator />
-					<DropdownMenuItem onClick={() => router.push('/tokens')}>
-						All Memecoins
+					<DropdownMenuItem
+						asChild
+						className={cn(pathname === '/tokens' && 'text-primary')}
+					>
+						<Link href="/tokens">All Memecoins</Link>
 					</DropdownMenuItem>
 				</DropdownMenuContent>
 			</DropdownMenu>

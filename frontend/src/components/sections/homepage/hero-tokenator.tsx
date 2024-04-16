@@ -47,7 +47,7 @@ export function HeroTokenator({ className }: Props) {
 					alt="Tokenator"
 					width={591}
 					height={784}
-					placeholder="blur"
+					// placeholder="blur"
 					quality={100}
 					className="h-full object-contain"
 				/>
