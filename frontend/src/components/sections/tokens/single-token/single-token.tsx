@@ -28,6 +28,7 @@ export interface IToken {
 	twitter?: string
 	website?: string
 	discord?: string
+	tokenomics?: string
 }
 
 type Props = {
@@ -58,8 +59,9 @@ export function Token({ token: { id, ...token } }: Props) {
 	}
 
 	const isAdmin = account?.decodedAddress === token.createdBy
-	const tokenBalance =
-		balances?.find((balance) => balance.coin.id === id)?.balance || 0
+	const tokenBalance = balances?.find(
+		(balance) => balance.coin.id === id
+	)?.balance
 
 	return (
 		<section>
@@ -84,7 +86,9 @@ export function Token({ token: { id, ...token } }: Props) {
 								{token.name}
 							</h2>
 							<div className="flex gap-2 font-poppins text-[24px] font-semibold text-white/[80%]">
-								<span>{tokenBalance.toLocaleString('us')}</span>
+								{tokenBalance && (
+									<span>{parseFloat(tokenBalance).toLocaleString('us')}</span>
+								)}
 								<span>{token.symbol}</span>
 							</div>
 						</div>
@@ -100,10 +104,18 @@ export function Token({ token: { id, ...token } }: Props) {
 								<Sprite name="link" color="#B4FF69" className="size-4" />
 								Share link
 							</button>
-							{/* <div className="flex items-center gap-2">
-								<Sprite name="tokenomics" color="#B4FF69" className="size-4" />
-								Tokenomics
-							</div> */}
+							{token.tokenomics && (
+								<Link href={token.tokenomics} target="_blank">
+									<div className="flex items-center gap-2">
+										<Sprite
+											name="tokenomics"
+											color="#B4FF69"
+											className="size-4"
+										/>
+										Tokenomics
+									</div>
+								</Link>
+							)}
 						</div>
 						<div>
 							<p>{token.description}</p>
@@ -131,7 +143,7 @@ export function Token({ token: { id, ...token } }: Props) {
 						)}
 					</div>
 				</div>
-				<div className="ml-auto flex w-[30%]  flex-col items-end justify-between rounded-lg border-2 border-[#2E3B55]">
+				<div className="ml-auto flex h-max w-[30%] flex-col items-end rounded-lg border-2 border-[#2E3B55]">
 					<div className="w-full">
 						<div className="flex w-full justify-between p-3">
 							<span className="font-poppins text-[12px] font-semibold text-[#FDFDFD]/[80%]">

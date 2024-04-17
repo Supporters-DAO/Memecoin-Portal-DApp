@@ -39,6 +39,7 @@ export const ConfirmCreate = ({ data }: Props) => {
 							telegram: data?.external_links?.telegram,
 							twitter: data?.external_links?.twitter,
 							discord: data?.external_links?.discord,
+							tokenomics: data?.external_links?.tokenomics,
 						},
 						initialSupply: data?.initial_supply,
 						totalSupply: data?.total_supply,

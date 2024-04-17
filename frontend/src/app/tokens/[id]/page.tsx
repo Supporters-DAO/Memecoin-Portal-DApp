@@ -19,6 +19,7 @@ async function getData(id: string) {
 			twitter
 			website
 			discord
+			tokenomics
 			initialSupply
 			maxSupply
 			createdBy
