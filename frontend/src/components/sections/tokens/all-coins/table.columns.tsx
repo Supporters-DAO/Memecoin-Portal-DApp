@@ -1,9 +1,10 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { type AlertContainerFactory, useAlert } from '@gear-js/react-hooks'
 import Image from 'next/image'
-import { Token } from './hooks/use-fetch-coins'
+
 import { copyToClipboard, prettyWord } from '@/lib/utils'
 import { Sprite } from '@/components/ui/sprite'
+import { Token } from '@/lib/hooks/use-fetch-coins'
 
 const handleCopyClickAddress = async (
 	address: string,
