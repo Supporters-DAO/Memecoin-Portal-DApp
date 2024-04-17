@@ -76,7 +76,7 @@ export function Token({ token: { id, ...token } }: Props) {
 							alt={`Logo ${token.name}`}
 							width={160}
 							height={160}
-							className="relative size-max max-h-40 max-w-40 rounded-full object-cover"
+							className="relative size-max h-40 max-w-40 rounded-full object-cover"
 							unoptimized={true}
 						/>
 					</div>
