@@ -8,7 +8,7 @@ import { copyToClipboard, prettyWord } from '@/lib/utils'
 import { useAccount, useAlert } from '@gear-js/react-hooks'
 import { BackButton } from '@/components/common/back-button'
 import { HexString } from '@gear-js/api'
-import { useFetchBalances } from './hooks/use-fetch-balances'
+import { useFetchBalances } from '@/lib/hooks/use-fetch-balances'
 
 export interface IToken {
 	description: string
@@ -134,9 +134,9 @@ export function Token({ token: { id, ...token } }: Props) {
 								<SocialLink platform="telegram" href={token.telegram} />
 							)}
 						</div>
-						{isAdmin && (
+						{(isAdmin || tokenBalance) && (
 							<div>
-								<Link href={`/tokens/my/send/${id}`}>
+								<Link href={`/tokens/${id}/send/`}>
 									<button className="btn py-3 font-medium">Send</button>
 								</Link>
 							</div>

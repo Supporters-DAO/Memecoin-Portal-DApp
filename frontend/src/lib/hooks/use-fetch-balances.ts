@@ -1,5 +1,5 @@
-import { useAccount } from '@gear-js/react-hooks'
 import { useEffect, useState } from 'react'
+import { useAccount } from '@gear-js/react-hooks'
 import { EXPLORER } from '@/lib/consts'
 
 const endpoint = EXPLORER.BACK
@@ -57,7 +57,7 @@ export const useFetchBalances = () => {
 				(accountBalances: { address: string | undefined }) =>
 					accountBalances.address === account?.decodedAddress
 			)
-			console.log('filterData', filterData)
+
 			setBalances(filterData)
 		}
 

@@ -5,12 +5,11 @@ import Image from 'next/image'
 import { useAtom } from 'jotai'
 
 import { ICreateTokenForm } from './schema'
-import { useMessage } from './hooks/use-message'
 import { useAccount } from '@gear-js/react-hooks'
 import { stepAtom } from '.'
 import { Created } from './created'
 import { cn } from '@/lib/utils'
-import { AnimationCoins } from '@/components/common/animation-coins'
+import { useMessage } from '@/lib/hooks/use-message-factory'
 
 interface Props {
 	data: ICreateTokenForm | undefined
@@ -195,9 +194,9 @@ export const ConfirmCreate = ({ data }: Props) => {
 								disabled={isPending}
 							>
 								{isPending ? (
-									<span className='flex w-1/2 mx-auto'>
+									<span className="mx-auto flex w-1/2">
 										Pending
-										<span className="w-full after:animate-dots after:content-[''] after:flex"></span>
+										<span className="w-full after:flex after:animate-dots after:content-['']"></span>
 									</span>
 								) : (
 									'Confirm'

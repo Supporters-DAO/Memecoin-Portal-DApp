@@ -4,11 +4,11 @@ import React from 'react'
 import { useRouter } from 'next/navigation'
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table'
 
-import { useFetchCoins } from './hooks/use-fetch-coins'
 import { Input } from '@/components/ui/input'
 import { DataTable } from '@/components/common/data-table'
 import { BackButton } from '@/components/common/back-button'
 import { coinsTypesTableColumns } from './table.columns'
+import { useFetchCoins } from '@/lib/hooks/use-fetch-coins'
 
 export const AllCoins = () => {
 	const { tokenData } = useFetchCoins(20, 0)

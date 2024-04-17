@@ -53,6 +53,7 @@ export default async function Page({
 }: {
 	params: { id: string }
 }) {
+	console.log('id', id)
 	const data = (await getData(id)) as ITokenResponse
 
 	if (!data || !data.data.coinById) return notFound()

@@ -1,11 +1,10 @@
-import { EXPLORER } from '@/lib/consts'
-import { HexString } from '@gear-js/api'
-import { useAccount } from '@gear-js/react-hooks'
 import { useEffect, useState } from 'react'
+import { HexString } from '@gear-js/api'
+import { EXPLORER } from '@/lib/consts'
 
 const endpoint = EXPLORER.BACK
 
-export type Token = {
+export interface Token {
 	description: string
 	decimals: number
 	distributed: string
@@ -22,7 +21,6 @@ export type Token = {
 
 export const useFetchCoins = (limit: 20, offset: 0) => {
 	const [tokenData, setTokenData] = useState<Token[]>([])
-	const { account } = useAccount()
 
 	const query = `{
         coins(limit: ${limit}, offset: ${offset}, orderBy: id_ASC) {
@@ -36,7 +34,6 @@ export const useFetchCoins = (limit: 20, offset: 0) => {
 			initialSupply
 			maxSupply
 			admins
-			createdBy
 			holders
 			circulatingSupply
           }
@@ -65,18 +62,11 @@ export const useFetchCoins = (limit: 20, offset: 0) => {
 	useEffect(() => {
 		const getTokenData = async () => {
 			const data = await fetchCoins()
-			const filterData = data.filter(
-				(coin: { createdBy: string | undefined }) =>
-					coin.createdBy === account?.decodedAddress
-			)
-
-			setTokenData(filterData)
+			setTokenData(data)
 		}
 
 		getTokenData()
-
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [account])
+	}, [])
 
 	return { tokenData }
 }

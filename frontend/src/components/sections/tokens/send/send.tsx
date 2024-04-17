@@ -8,7 +8,9 @@ import { ScrollArea } from '@/components/common/scroll-area'
 import { Input } from '@/components/ui/input'
 import { BackButton } from '@/components/common/back-button'
 import { isValidHexString } from '@/lib/utils'
-import { useMessageToken } from './hooks/use-message'
+
+import { useMessageToken } from '@/lib/hooks/use-message-token'
+import { useFetchBalances } from '@/lib/hooks/use-fetch-balances'
 
 export interface IToken {
 	admins: HexString[]
@@ -25,6 +27,7 @@ type Props = {
 }
 
 export const SendCoin = ({ token }: Props) => {
+	const { balances } = useFetchBalances()
 	const [isPending, setIsPending] = useState(false)
 	const [addresses, setAddresses] = useState<HexString[]>([])
 	const [inputValue, setInputValue] = useState<HexString | ''>('')
@@ -79,6 +82,9 @@ export const SendCoin = ({ token }: Props) => {
 		}
 	}
 
+	const tokenBalance =
+		balances.find((b) => b.coin.id === token.id)?.balance || '0'
+
 	return (
 		<div className="ju my-10 flex items-start">
 			<BackButton />
@@ -90,7 +96,7 @@ export const SendCoin = ({ token }: Props) => {
 				<div className="flex w-[660px] flex-col gap-6 rounded-[40px] bg-blue-light p-10">
 					<h3 className="text-center uppercase">{token.name}</h3>
 					<p className="text-center font-poppins text-[16px] font-medium text-primary">
-						{token.initialSupply} {token.symbol}
+						{parseFloat(tokenBalance).toLocaleString('us')} {token.symbol}
 					</p>
 
 					<div className="flex flex-col gap-3 font-poppins">
@@ -148,7 +154,7 @@ export const SendCoin = ({ token }: Props) => {
 						{isPending ? (
 							<span className="mx-auto flex w-1/2">
 								Pending
-								<span className="after:animate-dots w-full after:flex after:content-['']"></span>
+								<span className="w-full after:flex after:animate-dots after:content-['']"></span>
 							</span>
 						) : (
 							'Send'
