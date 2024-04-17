@@ -1,4 +1,4 @@
-import { useSendMessageHandler } from '@gear-js/react-hooks'
+import { useSendMessageWithGas } from '@gear-js/react-hooks'
 
 import { CONTRACT_ADDRESS } from '@/lib/consts'
 import meta from '@/lib/assets/factory/memefactory.meta.txt'
@@ -8,7 +8,7 @@ const programId = CONTRACT_ADDRESS.ADDRESS
 
 export function useMessage() {
 	const metadata = useProgramMetadata(meta)
-	return useSendMessageHandler(programId, metadata, {
+	return useSendMessageWithGas(programId, metadata, {
 		disableAlerts: true,
 	})
 }
