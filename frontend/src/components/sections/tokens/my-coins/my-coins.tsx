@@ -7,10 +7,10 @@ import { Input } from '@/components/ui/input'
 import { coinsTypesTableColumns } from './table.columns'
 import { DataTable } from '@/components/common/data-table'
 import { BackButton } from '@/components/common/back-button'
-import { useFetchCoins } from '@/lib/hooks/use-fetch-coins'
+import { useFetchMyCoins } from '@/lib/hooks/use-fetch-my-coins'
 
 export const MyCoins = () => {
-	const { tokenData } = useFetchCoins(20, 0)
+	const { tokenData } = useFetchMyCoins(20, 0)
 	const router = useRouter()
 
 	const table = useReactTable({
