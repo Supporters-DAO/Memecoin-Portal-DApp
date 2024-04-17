@@ -19,6 +19,7 @@ type Coin @entity {
   telegram: String
   twitter: String
   discord: String
+  tokenomics: String
   description: String!
   image: String
   screenshots: [String!]!

@@ -8,7 +8,7 @@ import {
 import { IStorage } from "./storage/storage.inteface";
 import { BatchService } from "./batch.service";
 import { v4 as uuidv4 } from "uuid";
-import {NullAddress} from "../consts";
+import { NullAddress } from "../consts";
 
 export class EntitiesService {
   constructor(
@@ -44,7 +44,9 @@ export class EntitiesService {
         balance: BigInt(0),
       });
     }
-    console.log(`[getAccountBalance] ${address} ${coin.id} ${accountBalance.balance}`)
+    console.log(
+      `[getAccountBalance] ${address} ${coin.id} ${accountBalance.balance}`
+    );
     return new AccountBalance({ ...accountBalance, coin });
   }
 
@@ -59,7 +61,9 @@ export class EntitiesService {
 
   async setAccountBalance(balance: AccountBalance) {
     if (balance.address !== NullAddress) {
-      console.log(`[setAccountBalance] ${balance.address} ${balance.coin.id} ${balance.balance}`)
+      console.log(
+        `[setAccountBalance] ${balance.address} ${balance.coin.id} ${balance.balance}`
+      );
       await this.storage.updateAccountBalance(balance);
       this.batchService.addBalanceUpdate(balance);
     }

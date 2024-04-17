@@ -40,6 +40,7 @@ export type CreatedConfig = {
   telegram?: string | null;
   discord?: string | null;
   website?: string | null;
+  tokenomics?: string | null;
 };
 
 export type FactoryEvent = MemeCreatedEvent;
@@ -63,6 +64,7 @@ export interface FactoryEventPlain extends Enum {
         telegram: Option<Text>;
         discord: Option<Text>;
         website: Option<Text>;
+        tokenomics: Option<Text>;
       };
     };
   };
@@ -105,6 +107,9 @@ export function getFactoryEvent(
         ),
         website: safeUnwrapOptional<Text, string>(
           event.memeCreated.initConfig.externalLinks.website
+        ),
+        tokenomics: safeUnwrapOptional<Text, string>(
+          event.memeCreated.initConfig.externalLinks.tokenomics
         ),
       },
     };

@@ -26,6 +26,7 @@ export class MemeCreatedHandler implements IFactoryEventHandler {
         telegram,
         discord,
         website,
+        tokenomics,
       },
     } = event;
     const existed = await storage.getCoin(address);
@@ -45,6 +46,7 @@ export class MemeCreatedHandler implements IFactoryEventHandler {
       telegram,
       discord,
       website,
+      tokenomics,
       circulatingSupply: initialSupply,
       burned: 0n,
       holders: 1,
@@ -54,7 +56,7 @@ export class MemeCreatedHandler implements IFactoryEventHandler {
       maxSupply: totalSupply,
       createdBy: admin || eventInfo.destination,
       timestamp: eventInfo.timestamp,
-    })
+    });
     await storage.setCoin(coin);
     const balance = await storage.getAccountBalance(admin, coin);
     balance.balance = initialSupply;

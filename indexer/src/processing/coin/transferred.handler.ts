@@ -5,7 +5,7 @@ import { EventInfo } from "../event-info.type";
 import { Coin, Transfer } from "../../model";
 import { NullAddress } from "../../consts";
 import { TransferEvent } from "../../types/coin.events";
-import {deductBalance} from "../../types/balance.utils";
+import { deductBalance } from "../../types/balance.utils";
 
 export class TransferredHandler implements ICoinEventHandler {
   async handle(
@@ -33,7 +33,9 @@ export class TransferredHandler implements ICoinEventHandler {
       })
     );
     if (from === NullAddress) {
-      console.log(`from is NullAddress and amount is added to to account balance ${amount}`)
+      console.log(
+        `from is NullAddress and amount is added to to account balance ${amount}`
+      );
       fromBalance.balance += amount;
       const toBalance = await storage.getAccountBalance(to, coin);
       if (toBalance.balance === BigInt(0)) {
@@ -41,11 +43,11 @@ export class TransferredHandler implements ICoinEventHandler {
       }
       toBalance.balance += amount;
       await storage.setAccountBalance(toBalance);
-      coin.circulatingSupply = coin.circulatingSupply + amount
+      coin.circulatingSupply = coin.circulatingSupply + amount;
     } else if (to === NullAddress) {
       deductBalance(fromBalance, amount);
-      coin.circulatingSupply = coin.circulatingSupply - amount
-      coin.burned = coin.burned + amount
+      coin.circulatingSupply = coin.circulatingSupply - amount;
+      coin.burned = coin.burned + amount;
     } else {
       fromBalance.balance -= amount;
       const toBalance = await storage.getAccountBalance(to, coin);
@@ -55,7 +57,7 @@ export class TransferredHandler implements ICoinEventHandler {
       toBalance.balance += amount;
       await storage.setAccountBalance(toBalance);
       if (!coin.admins.includes(to)) {
-        coin.distributed += amount
+        coin.distributed += amount;
       }
     }
     if (fromBalance.balance === BigInt(0)) {

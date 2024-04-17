@@ -61,6 +61,9 @@ export class Coin {
   @Column_("text", { nullable: true })
   discord!: string | undefined | null;
 
+  @Column_("text", { nullable: true })
+  tokenomics!: string | undefined | null;
+
   @Column_("text", { nullable: false })
   description!: string;
 
