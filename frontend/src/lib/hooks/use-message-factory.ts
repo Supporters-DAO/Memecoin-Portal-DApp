@@ -1,7 +1,7 @@
 import { useSendMessageHandler } from '@gear-js/react-hooks'
 
 import { CONTRACT_ADDRESS } from '@/lib/consts'
-import meta from '@/lib/assets/factory/factory.meta.txt'
+import meta from '@/lib/assets/factory/memefactory.meta.txt'
 import { useProgramMetadata } from '@/lib/hooks/api'
 
 const programId = CONTRACT_ADDRESS.ADDRESS
