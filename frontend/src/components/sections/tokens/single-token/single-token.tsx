@@ -5,10 +5,11 @@ import Image from 'next/image'
 
 import { Sprite } from '@/components/ui/sprite'
 import { copyToClipboard, prettyWord } from '@/lib/utils'
-import { useAccount, useAlert } from '@gear-js/react-hooks'
+import { useAlert } from '@gear-js/react-hooks'
 import { BackButton } from '@/components/common/back-button'
 import { HexString } from '@gear-js/api'
 import { useFetchBalances } from '@/lib/hooks/use-fetch-balances'
+import { useAuth } from '@/lib/hooks/use-auth'
 
 export interface IToken {
 	description: string
@@ -44,7 +45,7 @@ function SocialLink({ platform, href }: { platform: string; href: string }) {
 }
 
 export function Token({ token: { id, ...token } }: Props) {
-	const { account } = useAccount()
+	const { walletAccount } = useAuth()
 	const { balances } = useFetchBalances()
 
 	const alert = useAlert()
@@ -58,7 +59,8 @@ export function Token({ token: { id, ...token } }: Props) {
 		await copyToClipboard({ value: id, alert })
 	}
 
-	const isAdmin = account?.decodedAddress === token.createdBy
+	const isAdmin = walletAccount?.decodedAddress === token.createdBy
+
 	const tokenBalance = balances?.find(
 		(balance) => balance.coin.id === id
 	)?.balance
@@ -134,11 +136,18 @@ export function Token({ token: { id, ...token } }: Props) {
 								<SocialLink platform="telegram" href={token.telegram} />
 							)}
 						</div>
-						{(isAdmin || tokenBalance) && (
-							<div>
+						{tokenBalance && walletAccount && (
+							<div className="flex gap-3">
 								<Link href={`/tokens/${id}/send/`}>
 									<button className="btn py-3 font-medium">Send</button>
 								</Link>
+								{isAdmin && (
+									<Link href={`/tokens/${id}/burn/`}>
+										<button className="btn border-2 !border-[#2E3B55] bg-[#0F1B34] py-3 font-medium text-[#FDFDFD]">
+											Burn
+										</button>
+									</Link>
+								)}
 							</div>
 						)}
 					</div>

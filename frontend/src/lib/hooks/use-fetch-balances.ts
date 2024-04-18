@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { useAccount } from '@gear-js/react-hooks'
 import { EXPLORER } from '@/lib/consts'
+import { useAuth } from './use-auth'
 
 const endpoint = EXPLORER.BACK
 
@@ -15,7 +15,7 @@ export type Balances = {
 
 export const useFetchBalances = () => {
 	const [balances, setBalances] = useState<Balances[]>([])
-	const { account } = useAccount()
+	const { walletAccount } = useAuth()
 
 	const query = `{
         accountBalances {
@@ -55,7 +55,7 @@ export const useFetchBalances = () => {
 
 			const filterData = data.filter(
 				(accountBalances: { address: string | undefined }) =>
-					accountBalances.address === account?.decodedAddress
+					accountBalances.address === walletAccount?.decodedAddress
 			)
 
 			setBalances(filterData)
@@ -64,7 +64,7 @@ export const useFetchBalances = () => {
 		getBalancesData()
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [account])
+	}, [walletAccount])
 
 	return { balances }
 }

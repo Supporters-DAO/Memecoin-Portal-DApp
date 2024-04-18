@@ -2,10 +2,12 @@
 
 import { useAccount } from '@gear-js/react-hooks'
 import { useEffect, useState } from 'react'
+
 import { AccountButton } from '../account-button'
 import { WalletModal } from '../wallet-modal'
 import styles from './wallet.module.scss'
 import { VaraBalance } from '@/components/common/wallet-new'
+import { useAuth } from '@/lib/hooks/use-auth'
 
 export type ClassNameProps = {
 	balance?: string
@@ -21,11 +23,21 @@ export function Wallet({
 	walletModalHandler,
 	className,
 }: Props) {
+	const { setWalletAccount, setsAccountReadyAtom } = useAuth()
+
 	const { account, isAccountReady } = useAccount()
 
 	const [isModalOpen, setIsModalOpen] = useState(isWalletModalOpen || false)
 	const openModal = () => walletModalHandler?.(true) || setIsModalOpen(true)
 	const closeModal = () => walletModalHandler?.(false) || setIsModalOpen(false)
+
+	useEffect(() => {
+		setWalletAccount(account)
+	}, [account])
+
+	useEffect(() => {
+		setsAccountReadyAtom(isAccountReady)
+	}, [isAccountReady])
 
 	useEffect(() => {
 		if (isWalletModalOpen !== undefined) {

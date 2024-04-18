@@ -1,7 +1,7 @@
 import { EXPLORER } from '@/lib/consts'
 import { HexString } from '@gear-js/api'
-import { useAccount } from '@gear-js/react-hooks'
 import { useEffect, useState } from 'react'
+import { useAuth } from './use-auth'
 
 const endpoint = EXPLORER.BACK
 
@@ -22,7 +22,7 @@ export type Token = {
 
 export const useFetchMyCoins = (limit: 20, offset: 0) => {
 	const [tokenData, setTokenData] = useState<Token[]>([])
-	const { account } = useAccount()
+	const { walletAccount } = useAuth()
 
 	const query = `{
         coins(limit: ${limit}, offset: ${offset}, orderBy: id_ASC) {
@@ -67,7 +67,7 @@ export const useFetchMyCoins = (limit: 20, offset: 0) => {
 			const data = await fetchCoins()
 			const filterData = data.filter(
 				(coin: { createdBy: string | undefined }) =>
-					coin.createdBy === account?.decodedAddress
+					coin.createdBy === walletAccount?.decodedAddress
 			)
 
 			setTokenData(filterData)
@@ -76,7 +76,7 @@ export const useFetchMyCoins = (limit: 20, offset: 0) => {
 		getTokenData()
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [account])
+	}, [walletAccount])
 
 	return { tokenData }
 }

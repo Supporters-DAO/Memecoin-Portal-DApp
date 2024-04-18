@@ -1,7 +1,8 @@
-import { SendCoin } from '@/components/sections/tokens/send/send'
+import { notFound } from 'next/navigation'
+
+import { BurnCoin } from '@/components/sections/tokens/burn/burn'
 import { EXPLORER } from '@/lib/consts'
 import { HexString } from '@gear-js/api'
-import { notFound } from 'next/navigation'
 
 async function getData(id: string) {
 	const query = `{
@@ -9,10 +10,9 @@ async function getData(id: string) {
 			admins
 			decimals
 			id
-			initialSupply
-			maxSupply
 			name
 			symbol
+			createdBy
           }
       }`
 
@@ -40,10 +40,9 @@ type ITokenResponse = {
 			admins: HexString[]
 			decimals: number
 			id: HexString
-			initialSupply: string
-			maxSupply: string
 			name: string
 			symbol: string
+			createdBy: HexString
 		}
 	}
 }
@@ -53,7 +52,6 @@ export default async function Page({
 }: {
 	params: { id: string }
 }) {
-	console.log('id', id)
 	const data = (await getData(id)) as ITokenResponse
 
 	if (!data || !data.data.coinById) return notFound()
@@ -64,7 +62,7 @@ export default async function Page({
 
 	return (
 		<div className="container">
-			<SendCoin token={coinById} />
+			<BurnCoin token={coinById} />
 		</div>
 	)
 }
