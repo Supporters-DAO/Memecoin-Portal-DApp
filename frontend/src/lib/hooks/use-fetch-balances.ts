@@ -38,18 +38,21 @@ export const useFetchBalances = () => {
 		}),
 	}
 
-	const fetchBalances = async () => {
-		try {
-			const response = await fetch(endpoint, { ...options, cache: 'no-store' })
-			const { data } = await response.json()
-
-			return data.accountBalances
-		} catch (error) {
-			console.error(error)
-		}
-	}
-
 	useEffect(() => {
+		const fetchBalances = async () => {
+			try {
+				const response = await fetch(endpoint, {
+					...options,
+					cache: 'no-store',
+				})
+				const { data } = await response.json()
+
+				return data.accountBalances
+			} catch (error) {
+				console.error(error)
+			}
+		}
+
 		const getBalancesData = async () => {
 			const data = await fetchBalances()
 
@@ -62,8 +65,6 @@ export const useFetchBalances = () => {
 		}
 
 		getBalancesData()
-
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [walletAccount])
 
 	return { balances }

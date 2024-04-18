@@ -136,7 +136,7 @@ export function Token({ token: { id, ...token } }: Props) {
 								<SocialLink platform="telegram" href={token.telegram} />
 							)}
 						</div>
-						{tokenBalance && walletAccount && (
+						{tokenBalance && parseFloat(tokenBalance) > 0 && walletAccount && (
 							<div className="flex gap-3">
 								<Link href={`/tokens/${id}/send/`}>
 									<button className="btn py-3 font-medium">Send</button>
