@@ -75,7 +75,7 @@ impl FungibleToken {
     fn mint(&mut self, amount: u128, to: ActorId) -> Result<FTReply, FTError> {
         assert!(self.admins.contains(&msg::source()), "Not admin");
 
-        if self.total_supply > self.current_supply + amount {
+        if self.total_supply >= self.current_supply + amount {
             self.balances
                 .entry(to)
                 .and_modify(|balance| *balance += amount)
