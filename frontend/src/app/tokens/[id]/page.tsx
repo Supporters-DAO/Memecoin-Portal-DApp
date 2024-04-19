@@ -35,7 +35,11 @@ async function getData(id: string) {
 		body: JSON.stringify({ query: query }),
 	}
 
-	const res = await fetch(EXPLORER.BACK, { ...options, cache: 'no-store' })
+	const res = await fetch(EXPLORER.BACK, {
+		...options,
+		cache: 'no-store',
+		next: { tags: ['token'] },
+	})
 
 	if (!res.ok) {
 		// This will activate the closest `error.js` Error Boundary

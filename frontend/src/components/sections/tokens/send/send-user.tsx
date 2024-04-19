@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input'
 import { isValidHexString } from '@/lib/utils'
 import { useMessageToken } from '@/lib/hooks/use-message-token'
 import { redirect, useRouter } from 'next/navigation'
+import action from '@/app/actions'
 
 type Props = {
 	id: HexString
@@ -40,6 +41,8 @@ export const SendUser = ({ id, from }: Props) => {
 					setIsPending(false)
 					setAddress(undefined)
 					setInputAmount(0)
+					action('token')
+					action('balance')
 					router.push(`/tokens/${id}`)
 				},
 				onError: () => {

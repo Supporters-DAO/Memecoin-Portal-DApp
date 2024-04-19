@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 
@@ -10,6 +11,7 @@ import { BackButton } from '@/components/common/back-button'
 import { HexString } from '@gear-js/api'
 import { useFetchBalances } from '@/lib/hooks/use-fetch-balances'
 import { useAuth } from '@/lib/hooks/use-auth'
+import { Mint } from '@/components/common/token-mint'
 
 export interface IToken {
 	description: string
@@ -45,8 +47,9 @@ function SocialLink({ platform, href }: { platform: string; href: string }) {
 }
 
 export function Token({ token: { id, ...token } }: Props) {
+	const [isOpenMintModal, setIsOpenMintModal] = useState(false)
 	const { walletAccount } = useAuth()
-	const { balances } = useFetchBalances()
+	const { balances } = useFetchBalances(isOpenMintModal)
 
 	const alert = useAlert()
 
@@ -65,13 +68,22 @@ export function Token({ token: { id, ...token } }: Props) {
 		(balance) => balance.coin.id === id
 	)?.balance
 
+	const availableMint =
+		parseFloat(token.maxSupply) - parseFloat(token.circulatingSupply)
+
 	return (
 		<section>
+			<Mint
+				isMintModalOpen={isOpenMintModal}
+				available={availableMint}
+				id={id}
+				mintModalHandler={setIsOpenMintModal}
+			/>
 			<div className="ju my-10 flex flex-col gap-8">
 				<BackButton />
 			</div>
 			<div className="flex gap-19">
-				<div className="flex w-[70%] justify-between gap-12">
+				<div className="flex justify-between gap-12">
 					<div className="relative">
 						<Image
 							src={token.image}
@@ -142,11 +154,21 @@ export function Token({ token: { id, ...token } }: Props) {
 									<button className="btn py-3 font-medium">Send</button>
 								</Link>
 								{isAdmin && (
-									<Link href={`/tokens/${id}/burn/`}>
-										<button className="btn border-2 !border-[#2E3B55] bg-[#0F1B34] py-3 font-medium text-[#FDFDFD]">
-											Burn
-										</button>
-									</Link>
+									<>
+										{availableMint > 0 && (
+											<button
+												onClick={() => setIsOpenMintModal(true)}
+												className="btn border-2 !border-[#2E3B55] bg-[#0F1B34] py-3 font-medium text-[#FDFDFD]"
+											>
+												Mint Tokens
+											</button>
+										)}
+										<Link href={`/tokens/${id}/burn/`}>
+											<button className="btn border-2 !border-[#2E3B55] bg-[#0F1B34] py-3 font-medium text-[#FDFDFD]">
+												Burn
+											</button>
+										</Link>
+									</>
 								)}
 							</div>
 						)}

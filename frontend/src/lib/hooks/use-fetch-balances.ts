@@ -13,7 +13,7 @@ export type Balances = {
 	}
 }
 
-export const useFetchBalances = () => {
+export const useFetchBalances = (trigger?: boolean) => {
 	const [balances, setBalances] = useState<Balances[]>([])
 	const { walletAccount } = useAuth()
 
@@ -44,6 +44,7 @@ export const useFetchBalances = () => {
 				const response = await fetch(endpoint, {
 					...options,
 					cache: 'no-store',
+					next: { tags: ['balance'] },
 				})
 				const { data } = await response.json()
 
@@ -65,7 +66,7 @@ export const useFetchBalances = () => {
 		}
 
 		getBalancesData()
-	}, [walletAccount])
+	}, [walletAccount, trigger])
 
 	return { balances }
 }

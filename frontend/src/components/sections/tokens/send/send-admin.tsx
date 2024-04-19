@@ -11,6 +11,7 @@ import { isValidHexString } from '@/lib/utils'
 import { useMessageToken } from '@/lib/hooks/use-message-token'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/hooks/use-auth'
+import action from '@/app/actions'
 
 type Props = {
 	id: HexString
@@ -67,6 +68,8 @@ export const SendAdmin = ({ id }: Props) => {
 					setIsPending(false)
 					setAddresses([])
 					setInputAmount(undefined)
+					action('token')
+					action('balance')
 					router.push(`/tokens/${id}`)
 				},
 				onError: () => {

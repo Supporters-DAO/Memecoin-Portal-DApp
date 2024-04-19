@@ -11,10 +11,11 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { usePathname, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useFetchBalances } from '@/lib/hooks/use-fetch-balances'
 import { Token } from '@/lib/hooks/use-fetch-coins'
+import { Mint } from '@/components/common/token-mint'
 
 const handleCopyClickAddress = async (
 	address: string,
@@ -154,7 +155,12 @@ export const coinsTypesTableColumns: ColumnDef<Token>[] = [
 		accessorFn: (row) => row.id,
 		id: 'buttons',
 		header: () => <div className="items-right justify-right group flex"></div>,
-		cell: (info) => Buttons(info.row.original.id),
+		cell: (info) =>
+			Buttons(
+				info.row.original.id,
+				parseFloat(info.row.original.maxSupply) -
+					parseFloat(info.row.original.circulatingSupply)
+			),
 		enableSorting: false,
 	},
 ]
@@ -182,60 +188,69 @@ function Balance(id: string) {
 	)
 }
 
-function Buttons(id: string) {
+function Buttons(id: string, availableMint: number) {
+	const [isOpenMintModal, setIsOpenMintModal] = useState(false)
 	const [open, setOpen] = useState(false)
-	const pathname = usePathname()
 	const router = useRouter()
 
 	return (
-		<DropdownMenu open={open} onOpenChange={setOpen}>
-			<DropdownMenuTrigger asChild>
-				<button type="button" className="link-primary -mr-2 inline-flex p-2 ">
-					<Sprite name="more" color="white" className="size-6" />
-				</button>
-			</DropdownMenuTrigger>
-			<DropdownMenuContent
-				align="end"
-				side="bottom"
-				className="min-w-35 rounded-lg border-2 border-[#2E3B55] bg-[#1D2C4B] font-poppins text-[14px] leading-none tracking-[0.03em] md:mt-2"
-			>
-				<DropdownMenuItem
-					onClick={(e) => {
-						e.stopPropagation()
-						router.push(`/tokens/${id}/send/`)
-					}}
-					className="flex gap-4"
+		<>
+			<Mint
+				isMintModalOpen={isOpenMintModal}
+				available={availableMint}
+				id={id}
+				mintModalHandler={setIsOpenMintModal}
+			/>
+
+			<DropdownMenu open={open} onOpenChange={setOpen}>
+				<DropdownMenuTrigger asChild>
+					<button type="button" className="link-primary -mr-2 inline-flex p-2 ">
+						<Sprite name="more" color="white" className="size-6" />
+					</button>
+				</DropdownMenuTrigger>
+				<DropdownMenuContent
+					align="end"
+					side="bottom"
+					className="min-w-35 rounded-lg border-2 border-[#2E3B55] bg-[#1D2C4B] font-poppins text-[14px] leading-none tracking-[0.03em] md:mt-2"
 				>
-					<Sprite
-						name="arrow-right-up"
-						color="#FDFDFD/[30%]"
-						className="size-5"
-					/>
-					Send
-				</DropdownMenuItem>
-				<DropdownMenuSeparator />
-				<DropdownMenuItem
-					onClick={(e) => {
-						e.stopPropagation()
-						router.push('/tokens/create')
-					}}
-					className="flex gap-4"
-				>
-					<Sprite name="coins" color="#FDFDFD/[30%]" className="size-5" />
-					Issue more
-				</DropdownMenuItem>
-				<DropdownMenuSeparator />
-				<DropdownMenuItem
-					onClick={(e) => {
-						e.stopPropagation()
-						router.push('/tokens')
-					}}
-					className="flex gap-4"
-				>
-					<Sprite name="fire" color="#FDFDFD/[30%]" className="size-5" />
-					Burn
-				</DropdownMenuItem>
-			</DropdownMenuContent>
-		</DropdownMenu>
+					<DropdownMenuItem
+						onClick={(e: { stopPropagation: () => void }) => {
+							e.stopPropagation()
+							router.push(`/tokens/${id}/send/`)
+						}}
+						className="flex gap-4"
+					>
+						<Sprite
+							name="arrow-right-up"
+							color="#FDFDFD/[30%]"
+							className="size-5"
+						/>
+						Send
+					</DropdownMenuItem>
+					<DropdownMenuSeparator />
+					<DropdownMenuItem
+						onClick={(e: { stopPropagation: () => void }) => {
+							e.stopPropagation()
+							setIsOpenMintModal(true)
+						}}
+						className="flex gap-4"
+					>
+						<Sprite name="coins" color="#FDFDFD/[30%]" className="size-5" />
+						Mint Tokens
+					</DropdownMenuItem>
+					<DropdownMenuSeparator />
+					<DropdownMenuItem
+						onClick={(e: { stopPropagation: () => void }) => {
+							e.stopPropagation()
+							router.push('/tokens')
+						}}
+						className="flex gap-4"
+					>
+						<Sprite name="fire" color="#FDFDFD/[30%]" className="size-5" />
+						Burn
+					</DropdownMenuItem>
+				</DropdownMenuContent>
+			</DropdownMenu>
+		</>
 	)
 }

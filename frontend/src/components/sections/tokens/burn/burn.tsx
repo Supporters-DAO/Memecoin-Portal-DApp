@@ -10,6 +10,7 @@ import { useMessageToken } from '@/lib/hooks/use-message-token'
 import { useFetchBalances } from '@/lib/hooks/use-fetch-balances'
 import { useAuth } from '@/lib/hooks/use-auth'
 import { Hero404 } from '../../404/hero'
+import action from '@/app/actions'
 
 export interface IToken {
 	admins: HexString[]
@@ -50,6 +51,8 @@ export const BurnCoin = ({ token }: Props) => {
 				onSuccess: () => {
 					setIsPending(false)
 					setInputAmount(undefined)
+					action('token')
+					action('balance')
 				},
 				onError: () => {
 					setInputAmount(undefined)
@@ -58,6 +61,7 @@ export const BurnCoin = ({ token }: Props) => {
 			})
 		}
 	}
+
 	const disableBurnButton =
 		!inputAmount ||
 		inputAmount <= 0 ||
