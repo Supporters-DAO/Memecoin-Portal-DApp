@@ -1,11 +1,9 @@
 extern crate std;
 
 use alloc::{boxed::Box, string::ToString, vec};
-use gear_core::ids::ProgramId;
 use gstd::{ActorId, CodeId, Encode};
 use gtest::{Log, Program, System};
 use io::{Config, ExternalLinks, InitConfig, InitConfigFactory, MemeFactoryEvent};
-use parity_scale_codec::Decode;
 
 const USERS: &[u64] = &[3, 4, 5];
 
