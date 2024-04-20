@@ -1,0 +1,25 @@
+[package]
+name = "wasm"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+app = { workspace = true }
+
+[dev-dependencies]
+fungible-token = { path = "../../fungible-token", features = ["binary-vendor"] }
+
+gstd.workspace = true
+gtest.workspace = true
+io.workspace = true
+parity-scale-codec.workspace = true
+
+[build-dependencies]
+app.workspace = true
+sails-clientgen.workspace = true
+
+sails-idlgen.workspace = true
+gear-wasm-builder.workspace = true
+
+[features]
+debug = ["app/debug"]

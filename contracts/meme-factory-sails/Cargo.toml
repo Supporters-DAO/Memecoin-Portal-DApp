@@ -1,0 +1,26 @@
+[workspace.package]
+homepage = "https://wiki.gear-tech.io/docs/examples/prerequisites"
+version = "0.1.0"
+license = "MIT"
+edition = "2021"
+publish = false
+
+[workspace]
+resolver = "2"
+members = ["app", "wasm", "io"]
+
+[workspace.dependencies]
+app = { path = "app" }
+io = { path = "io" }
+
+sails-macros = { git = "https://github.com/gear-tech/sails" }
+sails-idlgen = { git = "https://github.com/gear-tech/sails" }
+sails-rtl = { git = "https://github.com/gear-tech/sails" }
+sails-idl-meta = { git = "https://github.com/gear-tech/sails" }
+sails-clientgen = { git = "https://github.com/gear-tech/sails" }
+gstd = "1.1.1"
+gtest = "1.1.1"
+gear-wasm-builder = "1.1.1"
+parity-scale-codec = { version = "3", default-features = false }
+scale-info = { version = "2", default-features = false }
+log = "0.4.21"
