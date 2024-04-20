@@ -8,6 +8,9 @@ use gstd::{
     ActorId,
 };
 
+#[cfg(feature = "binary-vendor")]
+include!(concat!(env!("OUT_DIR"), "/wasm_binary.rs"));
+
 const ZERO_ID: ActorId = ActorId::new([0u8; 32]);
 
 #[cfg(test)]
@@ -358,7 +361,7 @@ extern "C" fn state() {
         Query::Decimals => QueryReply::Decimals(token.decimals),
         Query::Description => QueryReply::Description(token.description),
         Query::ExternalLinks => QueryReply::ExternalLinks(token.external_links),
-        Query::CurrentSupply  => QueryReply::CurrentSupply(token.current_supply),
+        Query::CurrentSupply => QueryReply::CurrentSupply(token.current_supply),
         Query::TotalSupply => QueryReply::TotalSupply(token.total_supply),
         Query::BalanceOf(account) => {
             let balance = if let Some(balance) = token.balances.get(&account) {
