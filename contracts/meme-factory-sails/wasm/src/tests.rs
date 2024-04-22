@@ -7,10 +7,7 @@ use io::{Config, ExternalLinks, InitConfig, InitConfigFactory, MemeFactoryEvent}
 
 const USERS: &[u64] = &[3, 4, 5];
 
-#[test]
-fn create_meme() {
-    let sys = System::new();
-    sys.init_logger();
+fn init_factory(sys: &System) -> Program {
     let factory = Program::current(&sys);
 
     let fungible_code_id =
@@ -24,6 +21,16 @@ fn create_meme() {
     let request = ["New".encode(), init_config_factory.encode()].concat();
     let res = factory.send_bytes(USERS[0], request);
     assert!(!res.main_failed());
+
+    factory
+}
+
+#[test]
+fn create_meme() {
+    let sys = System::new();
+    sys.init_logger();
+
+    let factory = init_factory(&sys);
 
     let init_config = InitConfig {
         name: "MemeName".to_string(),
@@ -70,7 +77,8 @@ fn create_meme() {
 fn code_id_update() {
     let sys = System::new();
     sys.init_logger();
-    let factory = Program::current(&sys);
+
+    let factory = init_factory(&sys);
 
     let new_code_id = CodeId::new([1; 32]);
     let request = ["UpdateCodeId".encode(), new_code_id.encode()].concat();
@@ -89,7 +97,8 @@ fn code_id_update() {
 fn update_gas_program() {
     let sys = System::new();
     sys.init_logger();
-    let factory = Program::current(&sys);
+
+    let factory = init_factory(&sys);
 
     let new_gas_amount = 50000u64;
     let request = ["UpdateGasForProgram".encode(), new_gas_amount.encode()].concat();
