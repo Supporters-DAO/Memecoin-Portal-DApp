@@ -175,6 +175,14 @@ where
         }
     }
 
+    fn check_admin(&self, data: &MemeFactoryData, id: ActorId) -> Result<(), MemeError> {
+        if data.admins.contains(&id) {
+            Ok(())
+        } else {
+            Err(MemeError::Unauthorized)
+        }
+    }
+
     pub async fn create_fungible_program(
         &mut self,
         init_config: InitConfig,
@@ -242,36 +250,32 @@ where
         // TODO: `msg::source()` just more convenient
         let source = (*self.exec_context.actor_id()).into();
 
-        if data.admins.contains(&source) {
-            data.gas_for_program = new_gas_amount;
-            self.event_trigger
-                .trigger(MemeFactoryEvent::GasUpdatedSuccessfully {
-                    updated_by: source,
-                    new_gas_amount,
-                })
-                .unwrap();
-            Ok(())
-        } else {
-            Err(MemeError::Unauthorized)
-        }
+        self.check_admin(data, source)?;
+
+        data.gas_for_program = new_gas_amount;
+        self.event_trigger
+            .trigger(MemeFactoryEvent::GasUpdatedSuccessfully {
+                updated_by: source,
+                new_gas_amount,
+            })
+            .unwrap();
+        Ok(())
     }
 
     pub fn update_code_id(&mut self, new_code_id: CodeId) -> Result<(), MemeError> {
         let data = MemeFactoryData::get_mut();
         let source = (*self.exec_context.actor_id()).into();
 
-        if data.admins.contains(&source) {
-            data.meme_code_id = new_code_id;
-            self.event_trigger
-                .trigger(MemeFactoryEvent::CodeIdUpdatedSuccessfully {
-                    updated_by: source,
-                    new_code_id,
-                })
-                .unwrap();
-            Ok(())
-        } else {
-            Err(MemeError::Unauthorized)
-        }
+        self.check_admin(data, source)?;
+
+        data.meme_code_id = new_code_id;
+        self.event_trigger
+            .trigger(MemeFactoryEvent::CodeIdUpdatedSuccessfully {
+                updated_by: source,
+                new_code_id,
+            })
+            .unwrap();
+        Ok(())
     }
 
     pub fn add_admin_to_factory(&mut self, admin_actor_id: ActorId) -> Result<(), MemeError> {
@@ -279,17 +283,15 @@ where
         // TODO: should be named `source_id`
         let source = (*self.exec_context.actor_id()).into();
 
-        if data.admins.contains(&source) {
-            data.admins.push(admin_actor_id);
-            self.event_trigger
-                .trigger(MemeFactoryEvent::AdminAdded {
-                    updated_by: source,
-                    admin_actor_id,
-                })
-                .unwrap();
-            Ok(())
-        } else {
-            Err(MemeError::Unauthorized)
-        }
+        self.check_admin(data, source)?;
+
+        data.admins.push(admin_actor_id);
+        self.event_trigger
+            .trigger(MemeFactoryEvent::AdminAdded {
+                updated_by: source,
+                admin_actor_id,
+            })
+            .unwrap();
+        Ok(())
     }
 }
