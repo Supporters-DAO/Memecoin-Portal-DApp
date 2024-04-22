@@ -13,6 +13,7 @@ type ContentTableLayoutProps<T> = BaseComponentProps & {
 	globalFilterPlaceholder?: string
 	isLoading?: boolean
 	onRowClick?: any
+	nameTable?: string
 }
 
 export function DataTable<TData>({
@@ -23,16 +24,21 @@ export function DataTable<TData>({
 	globalFilterPlaceholder,
 	isLoading,
 	onRowClick,
+	nameTable,
 }: ContentTableLayoutProps<TData>) {
+	console.log('globalFilter', globalFilter)
 	return (
 		<TableLayoutWrapper>
-			{setGlobalFilter && (
-				<TableGlobalFilter
-					globalFilter={globalFilter}
-					setGlobalFilter={setGlobalFilter}
-					globalFilterPlaceholder={globalFilterPlaceholder}
-				/>
-			)}
+			<div className="flex items-center justify-between">
+				{nameTable && <h1 className="text-[28px] text-primary w-full">{nameTable}</h1>}
+				{setGlobalFilter && (
+					<TableGlobalFilter
+						globalFilter={globalFilter}
+						setGlobalFilter={setGlobalFilter}
+						globalFilterPlaceholder={globalFilterPlaceholder}
+					/>
+				)}
+			</div>
 
 			<TableLayout
 				table={table}

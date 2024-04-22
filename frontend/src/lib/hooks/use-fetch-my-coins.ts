@@ -20,12 +20,16 @@ export type Token = {
 	circulatingSupply: string
 }
 
-export const useFetchMyCoins = (limit: 20, offset: 0) => {
+export const useFetchMyCoins = (limit: 20, offset: 0, searchQuery = '') => {
 	const [tokenData, setTokenData] = useState<Token[]>([])
 	const { walletAccount } = useAuth()
 
+	const whereClause = searchQuery.trim()
+		? `, where: { name_containsInsensitive: "${searchQuery.trim()}" }`
+		: ''
+
 	const query = `{
-        coins(limit: ${limit}, offset: ${offset}, orderBy: id_ASC) {
+        coins(limit: ${limit}, offset: ${offset}, orderBy: id_ASC${whereClause}) {
             description
             decimals
             distributed
@@ -76,7 +80,7 @@ export const useFetchMyCoins = (limit: 20, offset: 0) => {
 		getTokenData()
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [walletAccount])
+	}, [walletAccount, searchQuery, limit, offset])
 
 	return { tokenData }
 }

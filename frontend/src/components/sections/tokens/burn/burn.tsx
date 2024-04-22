@@ -11,6 +11,7 @@ import { useFetchBalances } from '@/lib/hooks/use-fetch-balances'
 import { useAuth } from '@/lib/hooks/use-auth'
 import { Hero404 } from '../../404/hero'
 import action from '@/app/actions'
+import { useRouter } from 'next/navigation'
 
 export interface IToken {
 	admins: HexString[]
@@ -25,9 +26,10 @@ type Props = {
 }
 
 export const BurnCoin = ({ token }: Props) => {
-	const { balances } = useFetchBalances()
+	const router = useRouter()
 	const { walletAccount } = useAuth()
 	const [isPending, setIsPending] = useState(false)
+	const { balances } = useFetchBalances(isPending)
 
 	const [inputAmount, setInputAmount] = useState<number | undefined>(undefined)
 
@@ -53,6 +55,7 @@ export const BurnCoin = ({ token }: Props) => {
 					setInputAmount(undefined)
 					action('token')
 					action('balance')
+					router.push(`/tokens/${token.id}`)
 				},
 				onError: () => {
 					setInputAmount(undefined)

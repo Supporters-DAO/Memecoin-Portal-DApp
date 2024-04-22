@@ -148,30 +148,35 @@ export function Token({ token: { id, ...token } }: Props) {
 								<SocialLink platform="telegram" href={token.telegram} />
 							)}
 						</div>
-						{tokenBalance && parseFloat(tokenBalance) > 0 && walletAccount && (
-							<div className="flex gap-3">
-								<Link href={`/tokens/${id}/send/`}>
-									<button className="btn py-3 font-medium">Send</button>
-								</Link>
-								{isAdmin && (
-									<>
-										{availableMint > 0 && (
-											<button
-												onClick={() => setIsOpenMintModal(true)}
-												className="btn border-2 !border-[#2E3B55] bg-[#0F1B34] py-3 font-medium text-[#FDFDFD]"
-											>
-												Mint Tokens
-											</button>
-										)}
+
+						<div className="flex gap-3">
+							{tokenBalance &&
+								parseFloat(tokenBalance) > 0 &&
+								walletAccount && (
+									<Link href={`/tokens/${id}/send/`}>
+										<button className="btn py-3 font-medium">Send</button>
+									</Link>
+								)}
+							{isAdmin && (
+								<>
+									{availableMint > 0 && (
+										<button
+											onClick={() => setIsOpenMintModal(true)}
+											className="btn border-2 !border-[#2E3B55] bg-[#0F1B34] py-3 font-medium text-[#FDFDFD]"
+										>
+											Mint Tokens
+										</button>
+									)}
+									{tokenBalance && parseFloat(tokenBalance) > 0 && (
 										<Link href={`/tokens/${id}/burn/`}>
 											<button className="btn border-2 !border-[#2E3B55] bg-[#0F1B34] py-3 font-medium text-[#FDFDFD]">
 												Burn
 											</button>
 										</Link>
-									</>
-								)}
-							</div>
-						)}
+									)}
+								</>
+							)}
+						</div>
 					</div>
 				</div>
 				<div className="ml-auto flex h-max w-[30%] flex-col items-end rounded-lg border-2 border-[#2E3B55]">

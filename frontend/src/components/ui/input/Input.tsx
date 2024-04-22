@@ -8,6 +8,7 @@ type Props = {
 	error?: string | undefined
 	className?: string
 	onChange?: (e: any) => void
+	value?: string
 }
 
 export function Input({
@@ -16,6 +17,7 @@ export function Input({
 	placeholder,
 	type = 'text',
 	className,
+	value,
 	...props
 }: Props) {
 	return (

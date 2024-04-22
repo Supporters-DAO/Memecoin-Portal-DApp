@@ -19,11 +19,15 @@ export interface Token {
 	circulatingSupply: string
 }
 
-export const useFetchCoins = (limit: 20, offset: 0) => {
-	const [tokenData, setTokenData] = useState<Token[]>([])
+export const useFetchCoins = (limit = 20, offset = 0, searchQuery = '') => {
+	const [tokenData, setTokenData] = useState([])
+
+	const whereClause = searchQuery.trim()
+		? `, where: { name_containsInsensitive: "${searchQuery.trim()}" }`
+		: ''
 
 	const query = `{
-        coins(limit: ${limit}, offset: ${offset}, orderBy: id_ASC) {
+        coins(limit: ${limit}, offset: ${offset}, orderBy: id_ASC${whereClause}) {
             description
             decimals
             distributed
@@ -31,42 +35,33 @@ export const useFetchCoins = (limit: 20, offset: 0) => {
             id
             name
             symbol
-			initialSupply
-			maxSupply
-			admins
-			holders
-			circulatingSupply
-          }
-      }`
+            initialSupply
+            maxSupply
+            admins
+            holders
+            circulatingSupply
+        }
+    }`
 
 	const options = {
 		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify({
-			query: query,
-		}),
-	}
-
-	const fetchCoins = async () => {
-		try {
-			const response = await fetch(endpoint, options)
-			const { data } = await response.json()
-			return data.coins
-		} catch (error) {
-			console.error(error)
-		}
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({ query }),
 	}
 
 	useEffect(() => {
-		const getTokenData = async () => {
-			const data = await fetchCoins()
-			setTokenData(data)
+		const fetchCoins = async () => {
+			try {
+				const response = await fetch(endpoint, options)
+				const { data } = await response.json()
+				setTokenData(data.coins)
+			} catch (error) {
+				console.error('Failed to fetch coins:', error)
+			}
 		}
 
-		getTokenData()
-	}, [])
+		fetchCoins()
+	}, [searchQuery, limit, offset])
 
 	return { tokenData }
 }
