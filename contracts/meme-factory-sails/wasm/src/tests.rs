@@ -4,6 +4,7 @@ use alloc::{boxed::Box, string::ToString, vec};
 use gstd::{ActorId, CodeId, Encode};
 use gtest::{Log, Program, System};
 use io::{Config, ExternalLinks, InitConfig, InitConfigFactory, MemeFactoryEvent};
+use parity_scale_codec::Decode;
 
 const USERS: &[u64] = &[3, 4, 5];
 
@@ -56,21 +57,26 @@ fn create_meme() {
     let request = ["CreateFungibleProgram".encode(), init_config.encode()].concat();
     let res = factory.send_bytes(USERS[0], request);
 
-    let payload = [
-        &"MemeCreated".encode(),
-        &MemeFactoryEvent::MemeCreated {
+    let log = &res.log()[0];
+    assert_eq!(log.destination(), 0.into());
+
+    // 0 is discriminant of `MemeCreated` variant
+    let event = [&[0], &log.payload()["MemeCreated".encode().len()..]].concat();
+    let mut event: MemeFactoryEvent = Decode::decode(&mut &event[..]).unwrap();
+
+    // TODO: compare with latest program id when `gtest` is updated
+    if let MemeFactoryEvent::MemeCreated { meme_address, .. } = &mut event {
+        *meme_address = ActorId::new([0xfe; 32]);
+    }
+
+    assert_eq!(
+        event,
+        MemeFactoryEvent::MemeCreated {
             meme_id: 1,
-            meme_address: ActorId::from([
-                106, 171, 49, 42, 252, 31, 189, 241, 199, 8, 161, 126, 13, 94, 6, 137, 154, 161,
-                68, 242, 62, 163, 198, 132, 106, 90, 59, 148, 238, 180, 98, 87,
-            ]),
+            meme_address: ActorId::new([0xfe; 32]),
             init_config: Box::new(init_config.clone()),
         }
-        .encode()[1..],
-    ]
-    .concat();
-    let log = Log::builder().source(1).dest(0).payload_bytes(payload);
-    assert!(res.contains(&log));
+    );
 }
 
 #[test]
@@ -83,14 +89,17 @@ fn code_id_update() {
     let new_code_id = CodeId::new([1; 32]);
     let request = ["UpdateCodeId".encode(), new_code_id.encode()].concat();
     let res = factory.send_bytes(USERS[0], request);
-    assert!(res.contains(&(
-        USERS[0],
-        MemeFactoryEvent::CodeIdUpdatedSuccessfully {
+
+    let payload = [
+        &"CodeIdUpdatedSuccessfully".encode(),
+        &MemeFactoryEvent::CodeIdUpdatedSuccessfully {
             updated_by: USERS[0].into(),
             new_code_id,
         }
-        .encode()
-    )));
+        .encode()[1..],
+    ]
+    .concat();
+    assert!(res.contains(&Log::builder().dest(0).payload_bytes(payload)));
 }
 
 #[test]
@@ -103,14 +112,17 @@ fn update_gas_program() {
     let new_gas_amount = 50000u64;
     let request = ["UpdateGasForProgram".encode(), new_gas_amount.encode()].concat();
     let res = factory.send_bytes(USERS[0], request);
-    assert!(res.contains(&(
-        USERS[0],
-        MemeFactoryEvent::GasUpdatedSuccessfully {
+
+    let payload = [
+        &"GasUpdatedSuccessfully".encode(),
+        &MemeFactoryEvent::GasUpdatedSuccessfully {
             updated_by: USERS[0].into(),
             new_gas_amount,
         }
-        .encode()
-    )));
+        .encode()[1..],
+    ]
+    .concat();
+    assert!(res.contains(&Log::builder().dest(0).payload_bytes(payload)));
 }
 
 #[test]
@@ -122,12 +134,15 @@ fn add_admin() {
     let admin_actor_id = ActorId::new([2; 32]);
     let request = ["AddAdminToFactory".encode(), admin_actor_id.encode()].concat();
     let res = factory.send_bytes(USERS[0], request);
-    assert!(res.contains(&(
-        USERS[0],
-        MemeFactoryEvent::AdminAdded {
+
+    let payload = [
+        &"AdminAdded".encode(),
+        &MemeFactoryEvent::AdminAdded {
             updated_by: USERS[0].into(),
             admin_actor_id,
         }
-        .encode()
-    )));
+        .encode()[1..],
+    ]
+    .concat();
+    assert!(res.contains(&Log::builder().dest(0).payload_bytes(payload)));
 }
