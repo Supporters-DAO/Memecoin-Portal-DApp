@@ -1,15 +1,15 @@
 extern crate std;
 
 use alloc::{boxed::Box, string::ToString, vec};
+use app::{Config, ExternalLinks, InitConfig, InitConfigFactory, MemeFactoryEvent};
 use gstd::{ActorId, CodeId, Encode};
 use gtest::{Log, Program, System};
-use io::{Config, ExternalLinks, InitConfig, InitConfigFactory, MemeFactoryEvent};
 use parity_scale_codec::Decode;
 
 const USER1: u64 = 3;
 
 fn init_factory(sys: &System) -> Program {
-    let factory = Program::current(&sys);
+    let factory = Program::current(sys);
 
     let fungible_code_id =
         sys.submit_code("../target/wasm32-unknown-unknown/debug/fungible_token.opt.wasm");

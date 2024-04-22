@@ -7,11 +7,12 @@ publish = false
 
 [workspace]
 resolver = "2"
-members = ["app", "wasm", "io"]
+members = ["app", "wasm"]
 
 [workspace.dependencies]
 app = { path = "app" }
-io = { path = "io" }
+
+fungible-token = { path = "../fungible-token" }
 
 sails-macros = { git = "https://github.com/gear-tech/sails" }
 sails-idlgen = { git = "https://github.com/gear-tech/sails" }
