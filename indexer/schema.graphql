@@ -30,6 +30,7 @@ type Coin @entity {
   factory: Factory!
   createdBy: String!
   timestamp: DateTime! @index
+  balances: [AccountBalance!]! @derivedFrom(field: "coin")
   transfers: [Transfer!]! @derivedFrom(field: "coin")
 }
 

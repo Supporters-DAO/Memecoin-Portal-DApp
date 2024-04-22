@@ -8,6 +8,7 @@ import {
 } from "typeorm";
 import * as marshal from "./marshal";
 import { Factory } from "./factory.model";
+import { AccountBalance } from "./accountBalance.model";
 import { Transfer } from "./transfer.model";
 
 @Entity_()
@@ -101,6 +102,9 @@ export class Coin {
   @Index_()
   @Column_("timestamp with time zone", { nullable: false })
   timestamp!: Date;
+
+  @OneToMany_(() => AccountBalance, (e) => e.coin)
+  balances!: AccountBalance[];
 
   @OneToMany_(() => Transfer, (e) => e.coin)
   transfers!: Transfer[];
