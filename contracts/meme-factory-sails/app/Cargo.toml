@@ -4,8 +4,6 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-fungible-token.workspace = true
-
 sails-macros.workspace = true
 sails-rtl.workspace = true
 sails-idl-meta.workspace = true
