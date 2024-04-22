@@ -51,12 +51,9 @@ pub enum MemeFactoryEvent {
 #[codec(crate = gstd::codec)]
 #[scale_info(crate = gstd::scale_info)]
 pub enum MemeError {
-    ProgramInitializationFailed,
     ProgramInitializationFailedWithContext(String),
     Unauthorized,
-    UnexpectedFTEvent,
-    MessageSendError,
-    MemeNotFound,
+    MemeExists,
 }
 
 #[derive(Debug, Decode, Encode, TypeInfo, Clone, Eq, PartialEq)]
@@ -192,7 +189,7 @@ where
         for meme_records in data.meme_coins.values() {
             for (_, meme_record) in meme_records {
                 if meme_record.name == init_config.name {
-                    return Err(MemeError::Unauthorized);
+                    return Err(MemeError::MemeExists);
                 }
             }
         }
