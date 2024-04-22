@@ -6,7 +6,7 @@ use gtest::{Log, Program, System};
 use io::{Config, ExternalLinks, InitConfig, InitConfigFactory, MemeFactoryEvent};
 use parity_scale_codec::Decode;
 
-const USERS: &[u64] = &[3, 4, 5];
+const USER1: u64 = 3;
 
 fn init_factory(sys: &System) -> Program {
     let factory = Program::current(&sys);
@@ -16,11 +16,11 @@ fn init_factory(sys: &System) -> Program {
 
     let init_config_factory = InitConfigFactory {
         meme_code_id: CodeId::from(fungible_code_id.into_bytes()),
-        factory_admin_account: vec![USERS[0].into()],
+        factory_admin_account: vec![USER1.into()],
         gas_for_program: 1_000_000_000,
     };
     let request = ["New".encode(), init_config_factory.encode()].concat();
-    let res = factory.send_bytes(USERS[0], request);
+    let res = factory.send_bytes(USER1, request);
     assert!(!res.main_failed());
 
     factory
@@ -55,7 +55,7 @@ fn create_meme() {
         },
     };
     let request = ["CreateFungibleProgram".encode(), init_config.encode()].concat();
-    let res = factory.send_bytes(USERS[0], request);
+    let res = factory.send_bytes(USER1, request);
 
     let log = &res.log()[0];
     assert_eq!(log.destination(), 0.into());
@@ -88,12 +88,12 @@ fn code_id_update() {
 
     let new_code_id = CodeId::new([1; 32]);
     let request = ["UpdateCodeId".encode(), new_code_id.encode()].concat();
-    let res = factory.send_bytes(USERS[0], request);
+    let res = factory.send_bytes(USER1, request);
 
     let payload = [
         &"CodeIdUpdatedSuccessfully".encode(),
         &MemeFactoryEvent::CodeIdUpdatedSuccessfully {
-            updated_by: USERS[0].into(),
+            updated_by: USER1.into(),
             new_code_id,
         }
         .encode()[1..],
@@ -111,12 +111,12 @@ fn update_gas_program() {
 
     let new_gas_amount = 50000u64;
     let request = ["UpdateGasForProgram".encode(), new_gas_amount.encode()].concat();
-    let res = factory.send_bytes(USERS[0], request);
+    let res = factory.send_bytes(USER1, request);
 
     let payload = [
         &"GasUpdatedSuccessfully".encode(),
         &MemeFactoryEvent::GasUpdatedSuccessfully {
-            updated_by: USERS[0].into(),
+            updated_by: USER1.into(),
             new_gas_amount,
         }
         .encode()[1..],
@@ -129,16 +129,17 @@ fn update_gas_program() {
 fn add_admin() {
     let sys = System::new();
     sys.init_logger();
-    let factory = Program::current(&sys);
+
+    let factory = init_factory(&sys);
 
     let admin_actor_id = ActorId::new([2; 32]);
     let request = ["AddAdminToFactory".encode(), admin_actor_id.encode()].concat();
-    let res = factory.send_bytes(USERS[0], request);
+    let res = factory.send_bytes(USER1, request);
 
     let payload = [
         &"AdminAdded".encode(),
         &MemeFactoryEvent::AdminAdded {
-            updated_by: USERS[0].into(),
+            updated_by: USER1.into(),
             admin_actor_id,
         }
         .encode()[1..],
