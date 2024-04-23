@@ -66,42 +66,19 @@ pub struct InitConfigFactory {
     pub gas_for_program: u64,
 }
 
-#[derive(Encode, Decode, TypeInfo)]
-#[codec(crate = gstd::codec)]
-#[scale_info(crate = gstd::scale_info)]
-pub enum Query {
-    MemeNumber,
-    MemeCodeId,
-    FactoryAdminAccount,
-    GasForProgram,
-    IdToAddress,
-    Memecoins,
-}
-
-#[derive(Encode, Decode, TypeInfo)]
-#[codec(crate = gstd::codec)]
-#[scale_info(crate = gstd::scale_info)]
-pub enum QueryReply {
-    MemeNumber(MemeId),
-    MemeCodeId(CodeId),
-    FactoryAdminAccount(Vec<ActorId>),
-    GasForProgram(u64),
-    IdToAddress(Vec<(MemeId, ActorId)>),
-    Memecoins(Vec<(ActorId, Vec<(MemeId, MemeRecord)>)>),
-}
-
 #[derive(Debug, Default)]
 pub struct MemeFactoryData {
     pub meme_number: MemeId,
     pub meme_code_id: CodeId,
     pub admins: Vec<ActorId>,
     pub gas_for_program: u64,
+    // used for `state` entrypoint
     pub id_to_address: HashMap<MemeId, ActorId>,
     pub meme_coins: HashMap<ActorId, Vec<(MemeId, MemeRecord)>>,
 }
 
 impl MemeFactoryData {
-    fn get_mut() -> &'static mut Self {
+    pub fn get_mut() -> &'static mut Self {
         unsafe { DATA.as_mut().expect("MemeFactory::seed() should be called") }
     }
 }

@@ -5,9 +5,9 @@ edition = "2021"
 
 [dependencies]
 app = { workspace = true }
+gstd.workspace = true
 
 [dev-dependencies]
-gstd.workspace = true
 gtest.workspace = true
 parity-scale-codec.workspace = true
 fungible-token-io.workspace = true

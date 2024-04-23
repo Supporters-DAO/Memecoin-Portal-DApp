@@ -4,7 +4,9 @@ extern crate alloc;
 
 mod service;
 
-pub use service::{InitConfigFactory, MemeError, MemeFactoryEvent, MemeId, MemeRecord};
+pub use service::{
+    InitConfigFactory, MemeError, MemeFactoryData, MemeFactoryEvent, MemeId, MemeRecord,
+};
 
 use sails_macros::{gprogram, groute};
 use sails_rtl::gstd::{events::GStdEventTrigger, GStdExecContext};

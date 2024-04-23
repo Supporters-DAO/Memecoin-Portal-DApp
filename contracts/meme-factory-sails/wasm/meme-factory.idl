@@ -13,12 +13,9 @@ type ActorId = struct {
 };
 
 type MemeError = enum {
-  ProgramInitializationFailed,
   ProgramInitializationFailedWithContext: str,
   Unauthorized,
-  UnexpectedFTEvent,
-  MessageSendError,
-  MemeNotFound,
+  MemeExists,
 };
 
 type InitConfig = struct {
