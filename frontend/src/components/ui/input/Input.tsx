@@ -8,7 +8,6 @@ type Props = {
 	error?: string | undefined
 	className?: string
 	onChange?: (e: any) => void
-	value?: string
 	onBlur?: (e: any) => void
 	autoFocus?: boolean
 }
@@ -19,7 +18,6 @@ export function Input({
 	placeholder,
 	type = 'text',
 	className,
-	value,
 	onBlur,
 	autoFocus = false,
 	...props

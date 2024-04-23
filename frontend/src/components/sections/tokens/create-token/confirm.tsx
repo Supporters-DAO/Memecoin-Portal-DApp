@@ -46,7 +46,6 @@ export const ConfirmCreate = ({ data }: Props) => {
 					},
 				},
 			},
-			onInBlock: () => {},
 			onSuccess: () => {
 				setIsCreated(true)
 				setIsPending(false)
