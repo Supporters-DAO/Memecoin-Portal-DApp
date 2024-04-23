@@ -34,6 +34,10 @@ pub enum MemeFactoryEvent {
         meme_address: ActorId,
         init_config: Box<InitConfig>,
     },
+    MemeRemoved {
+        removed_by: ActorId,
+        meme_id: MemeId,
+    },
     GasUpdatedSuccessfully {
         updated_by: ActorId,
         new_gas_amount: u64,
@@ -55,6 +59,7 @@ pub enum MemeError {
     ProgramInitializationFailedWithContext(String),
     Unauthorized,
     MemeExists,
+    MemeNotFound,
 }
 
 #[derive(Debug, Decode, Encode, TypeInfo)]
@@ -128,6 +133,7 @@ where
         init_config: InitConfig,
     ) -> Result<(), MemeError> {
         let data = MemeFactoryData::get_mut();
+        let source = (*self.exec_context.actor_id()).into();
 
         for meme_records in data.meme_coins.values() {
             for (_, meme_record) in meme_records {
@@ -166,7 +172,7 @@ where
         };
 
         data.meme_coins
-            .entry((*self.exec_context.actor_id()).into())
+            .entry(source)
             .or_default()
             .push((data.meme_number, meme_record));
 
@@ -226,6 +232,39 @@ where
                 admin_actor_id,
             })
             .unwrap();
+        Ok(())
+    }
+
+    pub fn remove_meme(&mut self, meme_id: MemeId) -> Result<(), MemeError> {
+        let data = MemeFactoryData::get_mut();
+        let source = (*self.exec_context.actor_id()).into();
+
+        self.check_admin(data, source)?;
+
+        let mut is_meme_removed = false;
+
+        for (_actor_id, memes) in data.meme_coins.iter_mut() {
+            if let Some(pos) = memes.iter().position(|(id, _)| *id == meme_id) {
+                memes.remove(pos);
+                is_meme_removed = true;
+                break;
+            }
+        }
+
+        if !is_meme_removed {
+            return Err(MemeError::MemeNotFound);
+        }
+
+        let address = data.id_to_address.remove(&meme_id);
+        debug_assert!(address.is_some());
+
+        self.event_trigger
+            .trigger(MemeFactoryEvent::MemeRemoved {
+                removed_by: source,
+                meme_id,
+            })
+            .unwrap();
+
         Ok(())
     }
 }
@@ -324,6 +363,46 @@ mod tests {
         assert_eq!(
             MemeFactoryData::get_mut().admins,
             vec![DEFAULT_ADMIN_ID.into(), new_admin]
+        );
+    }
+
+    #[test]
+    fn remove_meme() {
+        const MEME_ID: u64 = 2;
+
+        init();
+
+        let mut service = MemeFactory::new(MockExecContext, MockEventTrigger::new());
+
+        let data = MemeFactoryData::get_mut();
+        data.meme_coins.insert(
+            ActorId::new([0xee; 32]),
+            vec![(
+                MEME_ID,
+                MemeRecord {
+                    name: "".to_string(),
+                    symbol: "".to_string(),
+                    decimals: 0,
+                    meme_program_id: Default::default(),
+                    admins: vec![],
+                },
+            )],
+        );
+        data.id_to_address.insert(MEME_ID, ActorId::zero());
+
+        service.remove_meme(MEME_ID).unwrap();
+
+        assert_eq!(service.remove_meme(MEME_ID), Err(MemeError::MemeNotFound));
+
+        assert_eq!(
+            service.remove_meme(0xdeadbeef),
+            Err(MemeError::MemeNotFound)
+        );
+
+        *admin() = sails_rtl::ActorId::from(123);
+        assert_eq!(
+            service.remove_meme(0xdeadbeef),
+            Err(MemeError::Unauthorized)
         );
     }
 }

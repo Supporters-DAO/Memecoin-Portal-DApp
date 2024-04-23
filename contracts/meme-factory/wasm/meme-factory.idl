@@ -16,6 +16,7 @@ type MemeError = enum {
   ProgramInitializationFailedWithContext: str,
   Unauthorized,
   MemeExists,
+  MemeNotFound,
 };
 
 type InitConfig = struct {
@@ -32,11 +33,12 @@ type InitConfig = struct {
 };
 
 type ExternalLinks = struct {
-  image: opt str,
+  image: str,
   website: opt str,
   telegram: opt str,
   twitter: opt str,
   discord: opt str,
+  tokenomics: opt str,
 };
 
 type Config = struct {
@@ -51,11 +53,13 @@ constructor {
 service {
   AddAdminToFactory : (admin_actor_id: ActorId) -> result (null, MemeError);
   CreateFungibleProgram : (init_config: InitConfig) -> result (null, MemeError);
+  RemoveMeme : (meme_id: u64) -> result (null, MemeError);
   UpdateCodeId : (new_code_id: CodeId) -> result (null, MemeError);
   UpdateGasForProgram : (new_gas_amount: u64) -> result (null, MemeError);
 
   events {
     MemeCreated: struct { meme_id: u64, meme_address: ActorId, init_config: InitConfig };
+    MemeRemoved: struct { removed_by: ActorId, meme_id: u64 };
     GasUpdatedSuccessfully: struct { updated_by: ActorId, new_gas_amount: u64 };
     CodeIdUpdatedSuccessfully: struct { updated_by: ActorId, new_code_id: CodeId };
     AdminAdded: struct { updated_by: ActorId, admin_actor_id: ActorId };
