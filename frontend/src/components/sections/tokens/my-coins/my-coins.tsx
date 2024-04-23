@@ -1,8 +1,12 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { getCoreRowModel, useReactTable } from '@tanstack/react-table'
+import {
+	PaginationState,
+	getCoreRowModel,
+	useReactTable,
+} from '@tanstack/react-table'
 import { Input } from '@/components/ui/input'
 import { coinsTypesTableColumns } from './table.columns'
 import { DataTable } from '@/components/common/data-table'
@@ -13,7 +17,31 @@ import { fuzzyFilter } from '@/components/common/data-table/fuzzy-filter'
 export const MyCoins = () => {
 	const router = useRouter()
 	const [globalFilter, setGlobalFilter] = useState('')
-	const { tokenData } = useFetchMyCoins(20, 0, globalFilter)
+
+	const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
+		pageIndex: 0,
+		pageSize: 10,
+	})
+
+	const pagination = useMemo(
+		() => ({
+			pageIndex,
+			pageSize,
+		}),
+		[pageIndex, pageSize]
+	)
+
+	const { tokenData, totalCoins } = useFetchMyCoins(
+		pagination.pageSize,
+		pagination.pageIndex * pagination.pageSize,
+		globalFilter
+	)
+
+	useEffect(() => {
+		if (globalFilter) {
+			setPagination({ pageIndex: 0, pageSize: pagination.pageSize })
+		}
+	}, [globalFilter, totalCoins])
 
 	const table = useReactTable({
 		data: tokenData,
@@ -43,6 +71,8 @@ export const MyCoins = () => {
 				nameTable="My Coins - My Rules"
 				setGlobalFilter={setGlobalFilter}
 				globalFilter={globalFilter}
+				total={totalCoins}
+				limit={pagination.pageSize}
 			/>
 		</div>
 	)

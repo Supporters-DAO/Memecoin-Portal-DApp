@@ -14,6 +14,7 @@ type ContentTableLayoutProps<T> = BaseComponentProps & {
 	isLoading?: boolean
 	onRowClick?: any
 	nameTable?: string
+	limit?: number
 }
 
 export function DataTable<TData>({
@@ -25,12 +26,14 @@ export function DataTable<TData>({
 	isLoading,
 	onRowClick,
 	nameTable,
+	limit = 10,
 }: ContentTableLayoutProps<TData>) {
-	console.log('globalFilter', globalFilter)
 	return (
 		<TableLayoutWrapper>
 			<div className="flex items-center justify-between">
-				{nameTable && <h1 className="text-[28px] text-primary w-full">{nameTable}</h1>}
+				{nameTable && (
+					<h1 className="w-full text-[28px] text-primary">{nameTable}</h1>
+				)}
 				{setGlobalFilter && (
 					<TableGlobalFilter
 						globalFilter={globalFilter}
@@ -47,7 +50,7 @@ export function DataTable<TData>({
 				onRowClick={onRowClick}
 			/>
 
-			<TableNavigation table={table} total={total} />
+			<TableNavigation table={table} total={total} limit={limit} />
 		</TableLayoutWrapper>
 	)
 }

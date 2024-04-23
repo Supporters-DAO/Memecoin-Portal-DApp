@@ -20,6 +20,7 @@ export interface Token {
 }
 
 export const useFetchCoins = (limit = 20, offset = 0, searchQuery = '') => {
+	const [totalCoins, setTotalCoins] = useState(0)
 	const [tokenData, setTokenData] = useState([])
 
 	const whereClause = searchQuery.trim()
@@ -41,6 +42,9 @@ export const useFetchCoins = (limit = 20, offset = 0, searchQuery = '') => {
             holders
             circulatingSupply
         }
+		coinsConnection(orderBy: id_ASC${whereClause}) {
+			totalCount
+		}
     }`
 
 	const options = {
@@ -54,6 +58,8 @@ export const useFetchCoins = (limit = 20, offset = 0, searchQuery = '') => {
 			try {
 				const response = await fetch(endpoint, options)
 				const { data } = await response.json()
+
+				setTotalCoins(data.coinsConnection.totalCount)
 				setTokenData(data.coins)
 			} catch (error) {
 				console.error('Failed to fetch coins:', error)
@@ -63,5 +69,5 @@ export const useFetchCoins = (limit = 20, offset = 0, searchQuery = '') => {
 		fetchCoins()
 	}, [searchQuery, limit, offset])
 
-	return { tokenData }
+	return { tokenData, totalCoins }
 }

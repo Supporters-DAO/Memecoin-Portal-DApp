@@ -32,7 +32,9 @@ export function TextField<
 	defaultValue,
 	...rest
 }: UseControllerProps<TFieldValues, TName> & TextFieldProps) {
-	const { field } = useController({
+	const {
+		field: { ref, ...field },
+	} = useController({
 		name,
 		shouldUnregister,
 		rules,

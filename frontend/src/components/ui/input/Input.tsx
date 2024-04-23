@@ -9,6 +9,8 @@ type Props = {
 	className?: string
 	onChange?: (e: any) => void
 	value?: string
+	onBlur?: (e: any) => void
+	autoFocus?: boolean
 }
 
 export function Input({
@@ -18,6 +20,8 @@ export function Input({
 	type = 'text',
 	className,
 	value,
+	onBlur,
+	autoFocus = false,
 	...props
 }: Props) {
 	return (
@@ -29,6 +33,8 @@ export function Input({
 						type={type}
 						className={clsx(styles.input, error && styles.inputError)}
 						placeholder={placeholder}
+						onBlur={onBlur}
+						autoFocus
 						{...props}
 					/>
 				</label>

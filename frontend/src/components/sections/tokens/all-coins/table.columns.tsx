@@ -21,7 +21,8 @@ export const coinsTypesTableColumns: ColumnDef<Token>[] = [
 			<>
 				<Image
 					src={info?.row?.original?.image}
-					alt={""}
+					key={info?.row?.original?.id}
+					alt={''}
 					width={60}
 					height={60}
 					className="size-15 rounded-full object-cover"
