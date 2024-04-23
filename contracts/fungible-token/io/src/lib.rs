@@ -36,11 +36,12 @@ pub struct InitConfig {
 #[codec(crate = gstd::codec)]
 #[scale_info(crate = gstd::scale_info)]
 pub struct ExternalLinks {
-    pub image: Option<String>,
+    pub image: String,
     pub website: Option<String>,
     pub telegram: Option<String>,
     pub twitter: Option<String>,
     pub discord: Option<String>,
+    pub tokenomics:Option<String>
 }
 
 #[derive(Debug, Decode, Encode, TypeInfo, Default, Clone, Eq, PartialEq)]
