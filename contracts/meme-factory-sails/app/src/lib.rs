@@ -1,4 +1,7 @@
 #![no_std]
+// TODO: remove lint when issue is resolved
+// TODO: https://github.com/gear-tech/sails/issues/183
+#![allow(dead_code)]
 
 extern crate alloc;
 
@@ -23,7 +26,6 @@ impl Program {
     }
 
     // Expose hosted service
-    // TODO: simple #[groute] in case of empty route string
     #[groute("")]
     pub fn meme_factory(&self) -> MemeFactory {
         MemeFactory::new(GStdExecContext::new(), GStdEventTrigger::new())

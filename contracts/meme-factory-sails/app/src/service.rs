@@ -137,8 +137,6 @@ where
             }
         }
 
-        // TODO: exec context do not emulate syscalls
-        // TODO: so its usage is very limited
         let create_program_future =
             ProgramGenerator::create_program_with_gas_for_reply::<InitConfig>(
                 data.meme_code_id,
@@ -186,8 +184,6 @@ where
 
     pub fn update_gas_for_program(&mut self, new_gas_amount: u64) -> Result<(), MemeError> {
         let data = MemeFactoryData::get_mut();
-        // TODO: sails-rtl define its own types so conversion is required
-        // TODO: `msg::source()` just more convenient
         let source = (*self.exec_context.actor_id()).into();
 
         self.check_admin(data, source)?;
@@ -220,7 +216,6 @@ where
 
     pub fn add_admin_to_factory(&mut self, admin_actor_id: ActorId) -> Result<(), MemeError> {
         let data = MemeFactoryData::get_mut();
-        // TODO: should be named `source_id`
         let source = (*self.exec_context.actor_id()).into();
 
         self.check_admin(data, source)?;

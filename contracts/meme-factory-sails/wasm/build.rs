@@ -12,6 +12,5 @@ fn main() {
 
     let out_dir_path = PathBuf::from(env::var("OUT_DIR").unwrap());
     let out_path = out_dir_path.join("client.rs");
-    // TODO: AsRef<Path> should be always used in API
     sails_clientgen::generate_client_from_idl(idl_file_path.as_path(), &out_path).unwrap();
 }
