@@ -3,6 +3,7 @@ use alloc::{
     string::{String, ToString},
     vec::Vec,
 };
+use fungible_token_io::InitConfig;
 use gstd::{collections::HashMap, prog::ProgramGenerator, ActorId, CodeId};
 use parity_scale_codec::{Decode, Encode};
 use sails_macros::gservice;
@@ -54,41 +55,6 @@ pub enum MemeError {
     ProgramInitializationFailedWithContext(String),
     Unauthorized,
     MemeExists,
-}
-
-#[derive(Debug, Decode, Encode, TypeInfo, Clone, Eq, PartialEq)]
-#[codec(crate = gstd::codec)]
-#[scale_info(crate = gstd::scale_info)]
-pub struct InitConfig {
-    pub name: String,
-    pub symbol: String,
-    pub decimals: u8,
-    pub description: String,
-    pub external_links: ExternalLinks,
-    pub initial_supply: u128,
-    pub total_supply: u128,
-    pub admin: ActorId,
-    pub initial_capacity: Option<u32>,
-    pub config: Config,
-}
-
-#[derive(Debug, Decode, Encode, TypeInfo, Default, Clone, Eq, PartialEq)]
-#[codec(crate = gstd::codec)]
-#[scale_info(crate = gstd::scale_info)]
-pub struct Config {
-    pub tx_storage_period: u64,
-    pub tx_payment: u128,
-}
-
-#[derive(Debug, Decode, Encode, TypeInfo, Default, Clone, Eq, PartialEq)]
-#[codec(crate = gstd::codec)]
-#[scale_info(crate = gstd::scale_info)]
-pub struct ExternalLinks {
-    pub image: Option<String>,
-    pub website: Option<String>,
-    pub telegram: Option<String>,
-    pub twitter: Option<String>,
-    pub discord: Option<String>,
 }
 
 #[derive(Debug, Decode, Encode, TypeInfo)]

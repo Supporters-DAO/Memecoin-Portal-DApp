@@ -12,7 +12,7 @@ members = ["app", "wasm"]
 [workspace.dependencies]
 app = { path = "app" }
 
-fungible-token = { path = "../fungible-token" }
+fungible-token-io = { path = "../fungible-token/io" }
 
 sails-macros = { git = "https://github.com/gear-tech/sails" }
 sails-idlgen = { git = "https://github.com/gear-tech/sails" }

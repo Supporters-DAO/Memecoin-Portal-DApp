@@ -16,7 +16,7 @@ impl Metadata for FungibleTokenMetadata {
     type State = InOut<Query, QueryReply>;
 }
 
-#[derive(Debug, Decode, Encode, TypeInfo)]
+#[derive(Debug, Decode, Encode, TypeInfo, Clone, Eq, PartialEq)]
 #[codec(crate = gstd::codec)]
 #[scale_info(crate = gstd::scale_info)]
 pub struct InitConfig {
@@ -32,7 +32,7 @@ pub struct InitConfig {
     pub config: Config,
 }
 
-#[derive(Debug, Decode, Encode, TypeInfo, Default, Clone)]
+#[derive(Debug, Decode, Encode, TypeInfo, Default, Clone, Eq, PartialEq)]
 #[codec(crate = gstd::codec)]
 #[scale_info(crate = gstd::scale_info)]
 pub struct ExternalLinks {
@@ -43,7 +43,7 @@ pub struct ExternalLinks {
     pub discord: Option<String>,
 }
 
-#[derive(Debug, Decode, Encode, TypeInfo, Default, Clone)]
+#[derive(Debug, Decode, Encode, TypeInfo, Default, Clone, Eq, PartialEq)]
 #[codec(crate = gstd::codec)]
 #[scale_info(crate = gstd::scale_info)]
 pub struct Config {

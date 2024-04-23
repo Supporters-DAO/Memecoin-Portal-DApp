@@ -5,15 +5,15 @@ edition = "2021"
 
 [dependencies]
 fungible-token-io = { path = "io" }
-gstd = { git = "https://github.com/gear-tech/gear.git", tag = "v1.1.0" }
+gstd = "1.1.1"
 
 [dev-dependencies]
-gstd = { git = "https://github.com/gear-tech/gear.git", tag = "v1.1.0" }
-gtest = { git = "https://github.com/gear-tech/gear.git", tag = "v1.1.0" }
+gstd = "1.1.1"
+gtest = "1.1.1"
 
 [build-dependencies]
 fungible-token-io = { path = "io" }
-gear-wasm-builder = { git = "https://github.com/gear-tech/gear.git", tag = "v1.1.0" }
+gear-wasm-builder = "1.1.1"
 
 [features]
 binary-vendor = []

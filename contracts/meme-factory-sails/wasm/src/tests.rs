@@ -1,7 +1,8 @@
 extern crate std;
 
 use alloc::{boxed::Box, string::ToString, vec};
-use app::{Config, ExternalLinks, InitConfig, InitConfigFactory, MemeFactoryEvent};
+use app::{InitConfigFactory, MemeFactoryEvent};
+use fungible_token_io::{Config, ExternalLinks, InitConfig};
 use gstd::{ActorId, CodeId, Encode};
 use gtest::{Log, Program, System};
 use parity_scale_codec::Decode;
