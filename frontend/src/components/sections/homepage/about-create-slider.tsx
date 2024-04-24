@@ -118,7 +118,7 @@ export function AboutCreateSlider() {
 					align: 'center',
 					containScroll: false,
 				}}
-				className="mt-6 overflow-hidden sm:mt-10"
+				className="mt-6 overflow-hidden sm:mt-10 z-1"
 			>
 				<div className="w-full [--img-h:266px] [--img-w:375px] [--offset:2rem] sm:[--img-h:278px] sm:[--img-w:392px] sm:[--offset:6.875rem] md:px-2.5 lg:[--img-h:400px] lg:[--img-w:563px] lg:[--offset:10rem]">
 					<CarouselContent
