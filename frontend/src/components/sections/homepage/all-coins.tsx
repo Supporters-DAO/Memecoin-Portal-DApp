@@ -1,14 +1,21 @@
+'use client'
+
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ILastCoin } from '@/lib/requests'
+import { useState } from 'react'
+import { useFetchCoins } from '@/lib/hooks/use-fetch-coins'
+import { useDebounce } from '@/lib/hooks/use-debounce'
 
 type Props = {
-	coins?: ILastCoin[] | null
 	className?: string
 }
 
-export function AllCoins({ coins, className }: Props) {
+export function AllCoins({ className }: Props) {
+	const [searchQuery, setSearchQuery] = useState('')
+	const debouncedSearchQuery = useDebounce(searchQuery, 1000)
+	const { tokenData: coins } = useFetchCoins(10, 0, debouncedSearchQuery)
+
 	return (
 		<section
 			className={cn(
@@ -19,11 +26,12 @@ export function AllCoins({ coins, className }: Props) {
 			<h2 className="text-center text-[22px] leading-none text-[#242424] sm:text-[32px]">
 				All memecoins
 			</h2>
-			<div className="">
+			<div>
 				<input
 					type="text"
 					className="block w-full select-none rounded-lg bg-[#0F1B34]/[4%] px-6 py-3 font-silkscreen text-[16px]/5 text-[#242424] ring-2 ring-inset ring-[#0F1B34]/[6%] placeholder:text-[#242424]/70 focus:outline-none"
 					placeholder="Search"
+					onChange={(event) => setSearchQuery(event.target.value.trim())}
 				/>
 			</div>
 			<div className="">

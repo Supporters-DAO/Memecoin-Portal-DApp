@@ -21,7 +21,7 @@ export interface Token {
 
 export const useFetchCoins = (limit = 20, offset = 0, searchQuery = '') => {
 	const [totalCoins, setTotalCoins] = useState(0)
-	const [tokenData, setTokenData] = useState([])
+	const [tokenData, setTokenData] = useState<Token[]>([])
 
 	const whereClause = searchQuery.trim()
 		? `, where: { name_containsInsensitive: "${searchQuery.trim()}" }`
