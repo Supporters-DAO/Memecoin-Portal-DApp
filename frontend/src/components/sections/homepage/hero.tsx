@@ -1,7 +1,7 @@
-import Link from 'next/link'
 import { HeroBackground } from '@/components/sections/homepage/hero-background'
 import { HeroTokenator } from '@/components/sections/homepage/hero-tokenator'
 import { HeroTicker } from '@/components/sections/homepage/hero-ticker'
+import { CreateButtonLazy } from '@/components/common/create-button-lazy'
 
 export function Hero() {
 	return (
@@ -18,11 +18,7 @@ export function Hero() {
 					<p className="mt-5 font-silkscreen text-[16px]/[1.25] text-[#FDFDFD] drop-shadow-[0_2px_0_#242424] sm:mt-6 md:text-[24px]/[1.4]">
 						Create your own memecoin in&nbsp;#&nbsp;minutes
 					</p>
-					<div className="mt-10">
-						<Link href={'/tokens/create'} className="btn btn--primary">
-							Create now
-						</Link>
-					</div>
+					<CreateButtonLazy />
 				</div>
 			</div>
 			<HeroTicker />

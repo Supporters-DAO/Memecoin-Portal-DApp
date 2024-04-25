@@ -23,7 +23,7 @@ export function Wallet({
 	walletModalHandler,
 	className,
 }: Props) {
-	const { setWalletAccount, setsAccountReadyAtom } = useAuth()
+	const { setWalletAccount, setsAccountReadyAtom, walletAccount } = useAuth()
 
 	const { account, isAccountReady } = useAccount()
 
@@ -51,11 +51,11 @@ export function Wallet({
 		<>
 			<div className={styles.wallet}>
 				<VaraBalance className={className?.balance} />
-				{account ? (
+				{account || walletAccount ? (
 					<div className={styles.accountButton}>
 						<AccountButton
-							address={account.address}
-							name={account.meta.name}
+							address={account?.address || walletAccount?.address}
+							name={account?.meta.name || walletAccount?.meta.name}
 							onClick={openModal}
 							className="cursor-pointer rounded-lg border-2 border-primary bg-[#0F1B34] p-4 px-6 text-xs font-bold text-primary"
 						/>

@@ -5,7 +5,7 @@ import styles from './account-button.module.scss'
 
 type Props = {
 	name: string | undefined
-	address: string
+	address: string | undefined
 	className?: string
 	onClick: () => void
 }
