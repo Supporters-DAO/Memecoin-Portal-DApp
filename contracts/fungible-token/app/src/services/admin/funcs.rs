@@ -1,17 +1,28 @@
+use crate::admin::{
+    storage::AdditionalMeta,
+    utils::{Error, Result},
+};
 use crate::services::erc20::{
     funcs,
-    utils::{BalancesMap, AllowancesMap, NonZeroU256},
+    utils::{AllowancesMap, BalancesMap, NonZeroU256},
 };
 use gstd::{prelude::*, ActorId};
 use primitive_types::U256;
-use crate::admin::{storage::AdditionalMeta, utils::{Result, Error}};
 
-pub fn mint(balances: &mut BalancesMap, meta: &AdditionalMeta, total_supply: &mut U256, to: ActorId, value: U256) -> Result<bool> {
+pub fn mint(
+    balances: &mut BalancesMap,
+    meta: &AdditionalMeta,
+    total_supply: &mut U256,
+    to: ActorId,
+    value: U256,
+) -> Result<bool> {
     if value.is_zero() {
         return Ok(false);
     }
 
-    let new_total_supply = total_supply.checked_add(value).ok_or(Error::NumericOverflow)?;
+    let new_total_supply = total_supply
+        .checked_add(value)
+        .ok_or(Error::NumericOverflow)?;
     if new_total_supply <= meta.max_supply {
         let new_to = funcs::balance_of(balances, to)
             .checked_add(value)
@@ -47,7 +58,12 @@ pub fn burn(balances: &mut BalancesMap, from: ActorId, value: U256) -> Result<bo
     Ok(true)
 }
 
-pub fn transfer_to_users(balances: &mut BalancesMap, from: ActorId, to: Vec<ActorId>, value: U256) -> Result<bool> {
+pub fn transfer_to_users(
+    balances: &mut BalancesMap,
+    from: ActorId,
+    to: Vec<ActorId>,
+    value: U256,
+) -> Result<bool> {
     if value.is_zero() {
         return Ok(false);
     }
@@ -73,7 +89,7 @@ pub fn transfer_to_users(balances: &mut BalancesMap, from: ActorId, to: Vec<Acto
     } else {
         balances.remove(&from);
     }
-    
+
     Ok(true)
 }
 

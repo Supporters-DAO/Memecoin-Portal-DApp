@@ -37,7 +37,6 @@ pub enum Event {
     },
 }
 
-
 // TODO (breathx): once supported in sails impl Clone here
 pub struct Service<X> {
     roles_service: services::roles::GstdDrivenService,
@@ -84,7 +83,6 @@ impl<X: EventTrigger<Event>> Service<X> {
             balances.insert(admin, non_zero_initial_supply);
         }
 
-
         Self {
             roles_service,
             aggregated_service,
@@ -115,8 +113,15 @@ where
         self.roles_service
             .ensure_has_role::<FungibleMinter>(msg::source());
 
-        let mutated =
-            services::utils::panicking(|| funcs::mint(BalancesStorage::as_mut(), AdditionalMetaStorage::as_ref(), TotalSupplyStorage::as_mut(), to.into(), value));
+        let mutated = services::utils::panicking(|| {
+            funcs::mint(
+                BalancesStorage::as_mut(),
+                AdditionalMetaStorage::as_ref(),
+                TotalSupplyStorage::as_mut(),
+                to.into(),
+                value,
+            )
+        });
 
         if mutated {
             services::utils::deposit_event(Event::Minted { to, value });
@@ -144,13 +149,18 @@ where
 
     pub fn transfer_to_users(&mut self, to: Vec<sails_rtl::ActorId>, value: U256) -> bool {
         let from = msg::source();
-        let to_gstd: Vec<gstd::ActorId> = to.iter().map(|actor_id| actor_id.clone().into()).collect();
+        let to_gstd: Vec<gstd::ActorId> =
+            to.iter().map(|actor_id| actor_id.clone().into()).collect();
         let mutated = services::utils::panicking(|| {
             funcs::transfer_to_users(BalancesStorage::as_mut(), from.into(), to_gstd, value)
         });
 
         if mutated {
-            services::utils::deposit_event(Event::TransferredToUsers { from: from.into(), to, value });
+            services::utils::deposit_event(Event::TransferredToUsers {
+                from: from.into(),
+                to,
+                value,
+            });
         }
 
         mutated

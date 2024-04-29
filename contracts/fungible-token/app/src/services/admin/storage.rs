@@ -1,7 +1,6 @@
-
-use gstd::{ActorId, prelude::*};
-use primitive_types::U256;
 use super::utils::ExternalLinks;
+use gstd::{prelude::*, ActorId};
+use primitive_types::U256;
 
 pub struct AdditionalMeta {
     pub description: String,
@@ -12,7 +11,11 @@ pub struct AdditionalMeta {
 crate::declare_storage!(module: meta, name: AdditionalMetaStorage, ty: AdditionalMeta);
 
 impl AdditionalMetaStorage {
-    pub fn with_data(description: String, external_links: ExternalLinks, max_supply: U256) -> Result<(), AdditionalMeta> {
+    pub fn with_data(
+        description: String,
+        external_links: ExternalLinks,
+        max_supply: U256,
+    ) -> Result<(), AdditionalMeta> {
         Self::set(AdditionalMeta {
             description,
             external_links,

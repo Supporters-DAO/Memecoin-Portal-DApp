@@ -1,5 +1,4 @@
-
-use gstd::{collections::HashMap, ActorId, Decode, Encode, TypeInfo, prelude::*};
+use gstd::{collections::HashMap, prelude::*, ActorId, Decode, Encode, TypeInfo};
 use primitive_types::U256;
 
 pub(crate) type Result<T, E = Error> = core::result::Result<T, E>;
@@ -8,7 +7,7 @@ pub(crate) type Result<T, E = Error> = core::result::Result<T, E>;
 pub enum Error {
     NumericOverflow,
     MaxSupplyReached,
-    InsufficientBalance
+    InsufficientBalance,
 }
 
 #[derive(Debug, Encode, Decode, TypeInfo)]
@@ -20,7 +19,7 @@ pub struct Init {
     pub external_links: ExternalLinks,
     pub initial_supply: U256,
     pub max_supply: U256,
-    pub admin_id: ActorId
+    pub admin_id: ActorId,
 }
 
 #[derive(Clone, Debug, Encode, Decode, TypeInfo)]
