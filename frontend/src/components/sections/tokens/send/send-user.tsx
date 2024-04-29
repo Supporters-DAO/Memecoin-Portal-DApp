@@ -1,12 +1,12 @@
 'use client'
 
 import React, { useState } from 'react'
-import { HexString } from '@gear-js/api'
+import { HexString, decodeAddress } from '@gear-js/api'
 
 import { Input } from '@/components/ui/input'
 import { isValidHexString } from '@/lib/utils'
 import { useMessageToken } from '@/lib/hooks/use-message-token'
-import { redirect, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import action from '@/app/actions'
 
 type Props = {
@@ -19,21 +19,21 @@ export const SendUser = ({ id, from }: Props) => {
 
 	const handleMessage = useMessageToken(id)
 	const [isPending, setIsPending] = useState(false)
-	const [address, setAddress] = useState<HexString>()
+	const [address, setAddress] = useState<string | HexString>()
 	const [inputAmount, setInputAmount] = useState<number>(0)
 
 	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setAddress(e.target.value as HexString)
+		setAddress(e.target.value as string)
 	}
 
 	const onSendCoins = () => {
-		if (address && inputAmount && isValidHexString(address)) {
+		if (address && inputAmount && isValidHexString(decodeAddress(address))) {
 			setIsPending(true)
 			handleMessage({
 				payload: {
 					Transfer: {
 						from,
-						to: address,
+						to: decodeAddress(address),
 						amount: inputAmount,
 					},
 				},
@@ -70,18 +70,14 @@ export const SendUser = ({ id, from }: Props) => {
 			<button
 				className="btn mx-auto mt-5 w-1/2 py-4 disabled:bg-[#D0D3D9]"
 				disabled={
-					address?.length === 0 ||
-					!inputAmount ||
-					inputAmount <= 0 ||
-					isPending ||
-					(address && !isValidHexString(address))
+					address?.length === 0 || !inputAmount || inputAmount <= 0 || isPending
 				}
 				onClick={onSendCoins}
 			>
 				{isPending ? (
 					<span className="mx-auto flex w-max">
 						Pending
-						<span className="w-full after:flex after:animate-dots after:content-['']"></span>
+						<span className="w-6 after:flex after:animate-dots after:content-['']"></span>
 					</span>
 				) : (
 					'Send'
