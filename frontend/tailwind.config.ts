@@ -51,6 +51,13 @@ const config: Config = {
 				'accordion-up': 'accordion-up 0.35s ease-out',
 				'running-text': 'running-text 15s linear infinite',
 				dots: 'dots 1.2s infinite',
+				slideDownAndFade:
+					'slideDownAndFade 400ms cubic-bezier(0.16, 1, 0.3, 1)',
+				slideLeftAndFade:
+					'slideLeftAndFade 400ms cubic-bezier(0.16, 1, 0.3, 1)',
+				slideUpAndFade: 'slideUpAndFade 400ms cubic-bezier(0.16, 1, 0.3, 1)',
+				slideRightAndFade:
+					'slideRightAndFade 400ms cubic-bezier(0.16, 1, 0.3, 1)',
 			},
 			keyframes: {
 				text: {
@@ -94,6 +101,22 @@ const config: Config = {
 				'running-text': {
 					from: { transform: 'translate3d(100vw,0,0)' },
 					to: { transform: 'translate3d(-120%,0,0)' },
+				},
+				slideDownAndFade: {
+					from: { opacity: '0', transform: 'translateY(-2px)' },
+					to: { opacity: '1', transform: 'translateY(0)' },
+				},
+				slideLeftAndFade: {
+					from: { opacity: '0', transform: 'translateX(2px)' },
+					to: { opacity: '1', transform: 'translateX(0)' },
+				},
+				slideUpAndFade: {
+					from: { opacity: '0', transform: 'translateY(2px)' },
+					to: { opacity: '1', transform: 'translateY(0)' },
+				},
+				slideRightAndFade: {
+					from: { opacity: '0', transform: 'translateX(-2px)' },
+					to: { opacity: '1', transform: 'translateX(0)' },
 				},
 			},
 			backgroundImage: {

@@ -1,5 +1,7 @@
 import clsx from 'clsx'
 import styles from './Input.module.scss'
+import { TooltipContainer } from '../tooltip'
+import { Sprite } from '../sprite'
 
 type Props = {
 	label: string
@@ -10,6 +12,8 @@ type Props = {
 	onChange?: (e: any) => void
 	onBlur?: (e: any) => void
 	autoFocus?: boolean
+	tooltip?: string
+	value?: string | number | undefined | null
 }
 
 export function Input({
@@ -20,11 +24,29 @@ export function Input({
 	className,
 	onBlur,
 	autoFocus = false,
+	tooltip = '',
+	value,
 	...props
 }: Props) {
 	return (
 		<div className={className}>
-			<span className={styles.label}>{label}</span>
+			<div className="flex items-center gap-1">
+				<span className={styles.label}>{label}</span>
+				{tooltip && (
+					<TooltipContainer
+						trigger={
+							<>
+								<Sprite
+									name="question"
+									className="size-4 text-[#FDFDFD]/[40%]"
+								/>
+							</>
+						}
+					>
+						<p className="max-w-60 text-center">{tooltip}</p>
+					</TooltipContainer>
+				)}
+			</div>
 			<div className={clsx(styles.wrapper, error && styles.error)}>
 				<label className="w-full">
 					<input

@@ -12,6 +12,8 @@ import { useAuth } from '@/lib/hooks/use-auth'
 import { Hero404 } from '../../404/hero'
 import action from '@/app/actions'
 import { useRouter } from 'next/navigation'
+import { TooltipContainer } from '@/components/ui/tooltip'
+import { Sprite } from '@/components/ui/sprite'
 
 export interface IToken {
 	admins: HexString[]
@@ -88,13 +90,43 @@ export const BurnCoin = ({ token }: Props) => {
 
 					<div className="flex flex-col gap-3 font-poppins">
 						<div className="">
-							Amount
-							<Input
-								label=""
-								placeholder="Set amount"
-								type="number"
-								onChange={(e) => setInputAmount(Number(e.target.value))}
-							/>
+							<div className="flex items-center gap-1">
+								Amount
+								<TooltipContainer
+									trigger={
+										<>
+											<Sprite
+												name="question"
+												className="size-4 text-[#FDFDFD]/[40%]"
+											/>
+										</>
+									}
+								>
+									<p className="max-w-60 text-center">
+										Сan`t be greater than total supply
+									</p>
+								</TooltipContainer>
+							</div>
+							<div className="flex gap-3">
+								<Input
+									label=""
+									placeholder="Set amount"
+									type="number"
+									onChange={(e) => setInputAmount(Number(e.target.value))}
+									className="w-full"
+									value={inputAmount || ''}
+								/>
+								{/* {tokenBalance && (
+									<button
+										className="mt-1 rounded-lg bg-[#2E3B55] px-6 py-3"
+										onClick={() => {
+											setInputAmount(Number(tokenBalance))
+										}}
+									>
+										All
+									</button>
+								)} */}
+							</div>
 						</div>
 					</div>
 					<button

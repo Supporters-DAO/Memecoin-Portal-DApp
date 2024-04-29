@@ -1,7 +1,7 @@
 'use client'
 
-import React, { useState } from 'react'
-import { HexString } from '@gear-js/api'
+import React, { useEffect, useRef, useState } from 'react'
+import { HexString, decodeAddress } from '@gear-js/api'
 
 import { Sprite } from '@/components/ui/sprite'
 import { ScrollArea } from '@/components/common/scroll-area'
@@ -29,39 +29,61 @@ export const SendAdmin = ({ id }: Props) => {
 
 	const isScrollable = (addresses?.length || 0) > 6
 
-	const handleAddAddress = () => {
-		if (inputValue && isValidHexString(inputValue)) {
-			if (!addresses.includes(inputValue)) {
-				setAddresses([...addresses, inputValue])
-				setInputValue('')
+	const textAreaRef = useRef<HTMLTextAreaElement>(null)
+	const [textAreaHeight, setTextAreaHeight] = useState('auto')
+	const [parentHeight, setParentHeight] = useState('auto')
+
+	useEffect(() => {
+		setParentHeight(`${textAreaRef.current!.scrollHeight}px`)
+		setTextAreaHeight(`${textAreaRef.current!.scrollHeight}px`)
+	}, [addresses])
+
+	const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+		const value = e.target.value
+		setInputValue(value as HexString)
+
+		const potentialAddresses = value.split(/\r?\n/)
+		const newAddresses: HexString[] = []
+
+		for (const addr of potentialAddresses) {
+			try {
+				if (
+					isValidHexString(addr) ||
+					(isValidHexString(decodeAddress(addr)) &&
+						!addresses.includes(decodeAddress(addr)))
+				) {
+					newAddresses.push(decodeAddress(addr))
+				}
+			} catch (error) {
+				console.error('Error decoding address:', addr, error)
 			}
 		}
-	}
 
-	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setInputValue(e.target.value as HexString)
-	}
-
-	const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-		if (e.key === 'Enter') {
-			handleAddAddress()
+		if (newAddresses.length > 0) {
+			setAddresses((prevAddresses: any) => {
+				const updatedAddresses = new Set([...prevAddresses, ...newAddresses])
+				return Array.from(updatedAddresses)
+			})
+		} else if (
+			potentialAddresses.every(
+				(addr) => !isValidHexString(addr) || !decodeAddress(addr)
+			)
+		) {
+			setAddresses([])
 		}
-	}
 
-	const handleDeleteAddress = (index: number) => {
-		setAddresses((currentAddresses) =>
-			currentAddresses.filter((_, i) => i !== index)
-		)
+		setTextAreaHeight('auto')
+		setParentHeight(`${textAreaRef.current!.scrollHeight}px`)
 	}
 
 	const onSendCoins = () => {
-		if (inputAmount && walletAccount) {
+		if (inputAmount && walletAccount && addresses.length > 0) {
 			setIsPending(true)
 			handleMessage({
 				payload: {
 					TransferToUsers: {
 						amount: inputAmount,
-						to_users: [...addresses],
+						to_users: addresses,
 					},
 				},
 				onSuccess: () => {
@@ -83,32 +105,28 @@ export const SendAdmin = ({ id }: Props) => {
 		<>
 			<div className="flex max-h-[354px] flex-col gap-2 rounded-lg border-2 border-[#2E3B55] bg-[#0F1B34]/[40%] px-4 py-3">
 				<ScrollArea className="pr-4" type={isScrollable ? 'always' : undefined}>
-					<div className="grid gap-2">
-						{addresses.map((address, index) => (
-							<div
-								key={index}
-								className="flex items-center justify-between truncate rounded-lg border-2 border-[#2E3B55] bg-[#0F1B34]/[40%] px-4 py-2"
-							>
-								<span className="inline-grid truncate">
-									<span className="truncate">{address}</span>
-								</span>
-								<Sprite
-									name="close"
-									size={15}
-									onClick={() => handleDeleteAddress(index)}
-								/>
-							</div>
-						))}
-						<input
+					<div
+						className="relative grid gap-2"
+						style={{
+							minHeight: parentHeight,
+						}}
+					>
+						<Sprite name="enter" className="absolute bottom-0 right-0 size-4" />
+						<textarea
+							ref={textAreaRef}
+							rows={1}
+							style={{
+								height: textAreaHeight,
+							}}
 							value={inputValue}
-							placeholder="Add one or more addresses"
-							className="border-none bg-transparent outline-none"
+							placeholder="Add one or more addresses (use new lines for multiple addresses)"
+							className="resize-none border-none bg-transparent text-[12px] leading-6 outline-none"
 							onChange={handleInputChange}
-							onKeyDown={handleKeyDown}
 						/>
 					</div>
 				</ScrollArea>
 			</div>
+			<span className="text-[13px]">Each address should be on a new line</span>
 			<div className="mt-3">
 				<Input
 					label="Amount"
@@ -118,7 +136,7 @@ export const SendAdmin = ({ id }: Props) => {
 				/>
 			</div>
 			<button
-				className="btn mx-auto mt-5 w-1/2 py-4 disabled:bg-[#D0D3D9]"
+				className="btn mx-auto mt-5 flex w-full justify-center py-4 disabled:bg-[#D0D3D9]"
 				disabled={
 					addresses.length === 0 ||
 					!inputAmount ||
@@ -130,7 +148,7 @@ export const SendAdmin = ({ id }: Props) => {
 				{isPending ? (
 					<span className="mx-auto flex w-max">
 						Pending
-						<span className="w-full after:flex after:animate-dots after:content-['']"></span>
+						<span className="w-6 after:flex after:animate-dots after:content-['']"></span>
 					</span>
 				) : (
 					'Send'

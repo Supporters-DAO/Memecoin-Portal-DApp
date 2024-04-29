@@ -6,9 +6,9 @@ export const createTokenSchema = z.object({
 			required_error: 'Required',
 			invalid_type_error: 'Required',
 		})
-		.regex(/^[A-Za-z]+$/, { message: 'Only Latin letters are allowed' })
+		.regex(/^([A-Za-z ]+)$/, { message: 'Only Latin letters are allowed' })
 		.min(2, { message: 'Name must be at least 2 characters' })
-		.max(10, { message: 'Name must be no more than 10 characters' }),
+		.max(20, { message: 'Name must be no more than 10 characters' }),
 	symbol: z
 		.string()
 		.regex(/^[A-Za-z]+$/, { message: 'Only Latin letters are allowed' })
@@ -19,7 +19,7 @@ export const createTokenSchema = z.object({
 		.max(100, { message: 'Max number of decimals is 100' })
 		.positive()
 		.nullable()
-		.refine((val) => val !== null, { message: 'Required' }) // Кастомная проверка на null
+		.refine((val) => val !== null, { message: 'Required' })
 		.transform((value) => value ?? null),
 	description: z
 		.string()
@@ -32,11 +32,13 @@ export const createTokenSchema = z.object({
 		image: z
 			.string({ required_error: 'Required' })
 			.url({ message: 'Invalid URL' }),
-			// .refine((url) => /\.jpg$|\.jpeg$|\.png$/i.test(url), { message: 'URL must be an image link (JPG or PNG)' }),
+		// .refine((url) => /\.jpg$|\.jpeg$|\.png$/i.test(url), { message: 'URL must be an image link (JPG or PNG)' }),
 		website: z
+			// .string()
 			.string()
 			.min(1, { message: 'Website must be at least 2 characters long' })
 			.url()
+			.includes('https://', { message: 'Invalid URL' })
 			.or(z.literal(''))
 			.optional(),
 		telegram: z
@@ -67,17 +69,23 @@ export const createTokenSchema = z.object({
 	initial_supply: z
 		.number()
 		.min(2, { message: 'Initial Supply must be at least 2 characters long' })
+		.max(3000000000000, {
+			message: 'Initial Supply must be no more than 3000000000000',
+		})
 		.positive()
 		.nullable()
-		.refine((val) => val !== null, { message: 'Required' }) // Кастомная проверка на null
+		.refine((val) => val !== null, { message: 'Required' })
 		.transform((value) => value ?? null),
 
 	total_supply: z
 		.number()
 		.min(2, { message: 'Total Supply must be at least 2 characters long' })
+		.max(3000000000000, {
+			message: 'Total Supply must be no more than 3000000000000',
+		})
 		.positive()
 		.nullable()
-		.refine((val) => val !== null, { message: 'Required' }) // Кастомная проверка на null
+		.refine((val) => val !== null, { message: 'Required' })
 		.transform((value) => value ?? null),
 })
 
@@ -98,10 +106,4 @@ export const createTokenDefault = {
 	},
 	initial_supply: null,
 	total_supply: null,
-	// admin: '',
-	// initial_capacity: '',
-	// config: {
-	//   tx_storage_period: '',
-	//   tx_payment: '',
-	// },
 } satisfies ICreateTokenForm

@@ -1,7 +1,7 @@
 'use client'
 
 import { atom, useAtom } from 'jotai'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { CreateForm } from './form'
 import { ConfirmCreate } from './confirm'
 import { ICreateTokenForm } from './schema'
@@ -12,8 +12,12 @@ export const stepAtom = atom<StepType>('create')
 export const dataTokenAtom = atom<ICreateTokenForm | undefined>(undefined)
 
 export const CreateToken = () => {
-	const [step] = useAtom(stepAtom)
+	const [step, setStep] = useAtom(stepAtom)
 	const [dataToken] = useAtom(dataTokenAtom)
+
+	useEffect(() => {
+		setStep('create')
+	}, [])
 
 	return step === 'create' ? <CreateForm /> : <ConfirmCreate data={dataToken} />
 }

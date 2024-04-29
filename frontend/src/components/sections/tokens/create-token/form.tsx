@@ -4,13 +4,11 @@ import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 import { Input } from '@/components/ui/input'
-import { Sprite } from '@/components/ui/sprite'
 import {
 	createTokenDefault,
 	createTokenSchema,
 	ICreateTokenForm,
 } from '@/components/sections/tokens/create-token/schema'
-import Link from 'next/link'
 import { InputArea } from '@/components/ui/InputArea'
 import { useAtom } from 'jotai'
 
@@ -115,6 +113,7 @@ export const CreateForm = () => {
 												field.onChange(value ? parseInt(value) : null)
 											}}
 											error={error?.message}
+											tooltip="The number of decimals for token"
 										/>
 									)}
 								/>
@@ -152,6 +151,7 @@ export const CreateForm = () => {
 												field.onChange(value ? parseInt(value) : null)
 											}}
 											error={error?.message}
+											tooltip="The number of created tokens"
 										/>
 									)}
 								/>
@@ -171,6 +171,7 @@ export const CreateForm = () => {
 												const value = e.target.value
 												field.onChange(value ? parseInt(value) : null)
 											}}
+											tooltip="Total number of tokens available"
 										/>
 									)}
 								/>

@@ -242,7 +242,7 @@ function Buttons(id: string, availableMint: number) {
 					<DropdownMenuItem
 						onClick={(e: { stopPropagation: () => void }) => {
 							e.stopPropagation()
-							router.push('/tokens')
+							router.push(`/tokens/${id}/burn/`)
 						}}
 						className="flex gap-4"
 					>
