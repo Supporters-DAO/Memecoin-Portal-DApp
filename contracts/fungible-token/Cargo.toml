@@ -7,7 +7,6 @@ members = [
 
 [workspace.package]
 version = "0.1.0"
-authors = ["breathx <novikov.dm.al@gmail.com>"]
 edition = "2021"
 license = "GPL-3.0"
 

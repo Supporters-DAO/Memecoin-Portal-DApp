@@ -5,7 +5,6 @@
 [package]
 name = "erc20-wasm"
 version.workspace = true
-authors.workspace = true
 edition.workspace = true
 license.workspace = true
 
