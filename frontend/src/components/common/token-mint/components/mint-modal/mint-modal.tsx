@@ -96,7 +96,7 @@ export const MintModal = ({ onClose, open, setOpen, id, available }: any) => {
 									</div>
 									<div className={styles.button}>
 										<button
-											className="btn w-full py-4 disabled:bg-[#D0D3D9]"
+											className="btn w-full py-4 font-ps2p disabled:bg-[#D0D3D9]"
 											disabled={disableBurnButton}
 											onClick={onMintTokens}
 										>

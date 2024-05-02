@@ -30,13 +30,11 @@ export const SendAdmin = ({ id }: Props) => {
 	const isScrollable = (addresses?.length || 0) > 6
 
 	const textAreaRef = useRef<HTMLTextAreaElement>(null)
-	const [textAreaHeight, setTextAreaHeight] = useState('auto')
 	const [parentHeight, setParentHeight] = useState('auto')
 
 	useEffect(() => {
 		setParentHeight(`${textAreaRef.current!.scrollHeight}px`)
-		setTextAreaHeight(`${textAreaRef.current!.scrollHeight}px`)
-	}, [addresses])
+	}, [inputValue])
 
 	const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
 		const value = e.target.value
@@ -55,7 +53,7 @@ export const SendAdmin = ({ id }: Props) => {
 					newAddresses.push(decodeAddress(addr))
 				}
 			} catch (error) {
-				console.error('Error decoding address:', addr, error)
+				// console.error('Error decoding address:', addr, error)
 			}
 		}
 
@@ -72,8 +70,13 @@ export const SendAdmin = ({ id }: Props) => {
 			setAddresses([])
 		}
 
-		setTextAreaHeight('auto')
-		setParentHeight(`${textAreaRef.current!.scrollHeight}px`)
+		const nonEmptyLines = potentialAddresses.filter(
+			(addr) => addr.trim() !== ''
+		)
+
+		const newHeight =
+			nonEmptyLines.length > 0 ? `${nonEmptyLines.length * 20}px` : 'auto'
+		setParentHeight(newHeight)
 	}
 
 	const onSendCoins = () => {
@@ -116,7 +119,7 @@ export const SendAdmin = ({ id }: Props) => {
 							ref={textAreaRef}
 							rows={1}
 							style={{
-								height: textAreaHeight,
+								height: parentHeight,
 							}}
 							value={inputValue}
 							placeholder="Add one or more addresses (use new lines for multiple addresses)"
@@ -136,7 +139,7 @@ export const SendAdmin = ({ id }: Props) => {
 				/>
 			</div>
 			<button
-				className="btn mx-auto mt-5 flex w-full justify-center py-4 disabled:bg-[#D0D3D9]"
+				className="btn mx-auto mt-5 flex w-full justify-center py-4 font-ps2p disabled:bg-[#D0D3D9]"
 				disabled={
 					addresses.length === 0 ||
 					!inputAmount ||

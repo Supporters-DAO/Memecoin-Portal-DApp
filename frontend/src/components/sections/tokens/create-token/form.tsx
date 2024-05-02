@@ -292,7 +292,7 @@ export const CreateForm = () => {
 						</div> */}
 						<button
 							type="submit"
-							className="mx-auto rounded-lg bg-[#D0D3D9] px-35 py-3 text-black hover:bg-primary"
+							className="font-ps2p mx-auto rounded-lg bg-[#D0D3D9] px-35 py-3 text-black hover:bg-primary"
 						>
 							Next
 						</button>

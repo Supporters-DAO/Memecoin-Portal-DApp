@@ -68,7 +68,7 @@ export const SendUser = ({ id, from }: Props) => {
 				/>
 			</div>
 			<button
-				className="btn mx-auto mt-5 w-1/2 py-4 disabled:bg-[#D0D3D9]"
+				className="btn font-ps2p mx-auto mt-5 w-1/2 py-4 disabled:bg-[#D0D3D9]"
 				disabled={
 					address?.length === 0 || !inputAmount || inputAmount <= 0 || isPending
 				}
