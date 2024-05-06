@@ -7,7 +7,7 @@ use fungible_token_io::InitConfig;
 use gstd::{collections::HashMap, prog::ProgramGenerator, ActorId, CodeId};
 use parity_scale_codec::{Decode, Encode};
 use sails_macros::gservice;
-use sails_rtl::{gstd::events::EventTrigger, ExecContext};
+use sails_rtl::gstd::{events::EventTrigger, ExecContext};
 use scale_info::TypeInfo;
 
 static mut DATA: Option<MemeFactoryData> = None;
@@ -133,7 +133,7 @@ where
         init_config: InitConfig,
     ) -> Result<(), MemeError> {
         let data = MemeFactoryData::get_mut();
-        let source = (*self.exec_context.actor_id()).into();
+        let source = self.exec_context.actor_id().into();
 
         for meme_records in data.meme_coins.values() {
             for (_, meme_record) in meme_records {
@@ -189,7 +189,7 @@ where
 
     pub fn update_gas_for_program(&mut self, new_gas_amount: u64) -> Result<(), MemeError> {
         let data = MemeFactoryData::get_mut();
-        let source = (*self.exec_context.actor_id()).into();
+        let source = self.exec_context.actor_id().into();
 
         self.check_admin(data, source)?;
 
@@ -205,7 +205,7 @@ where
 
     pub fn update_code_id(&mut self, new_code_id: CodeId) -> Result<(), MemeError> {
         let data = MemeFactoryData::get_mut();
-        let source = (*self.exec_context.actor_id()).into();
+        let source = self.exec_context.actor_id().into();
 
         self.check_admin(data, source)?;
 
@@ -221,7 +221,7 @@ where
 
     pub fn add_admin_to_factory(&mut self, admin_actor_id: ActorId) -> Result<(), MemeError> {
         let data = MemeFactoryData::get_mut();
-        let source = (*self.exec_context.actor_id()).into();
+        let source = self.exec_context.actor_id().into();
 
         self.check_admin(data, source)?;
 
@@ -237,7 +237,7 @@ where
 
     pub fn remove_meme(&mut self, meme_id: MemeId) -> Result<(), MemeError> {
         let data = MemeFactoryData::get_mut();
-        let source = (*self.exec_context.actor_id()).into();
+        let source = self.exec_context.actor_id().into();
 
         self.check_admin(data, source)?;
 
@@ -272,25 +272,33 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
-    use alloc::vec;
+    use alloc::{rc::Rc, vec};
+    use core::cell::Cell;
     use sails_rtl::{gstd::events::mocks::MockEventTrigger, MessageId};
 
     const DEFAULT_ADMIN_ID: u64 = 1;
 
-    fn admin() -> &'static mut sails_rtl::ActorId {
-        static mut ADMIN: Option<sails_rtl::ActorId> = None;
-        unsafe { ADMIN.get_or_insert(sails_rtl::ActorId::from(DEFAULT_ADMIN_ID)) }
-    }
-
     #[derive(Clone)]
-    struct MockExecContext;
+    struct MockExecContext(Rc<Cell<sails_rtl::ActorId>>);
 
-    impl ExecContext for MockExecContext {
-        fn actor_id(&self) -> &sails_rtl::ActorId {
-            admin()
+    impl MockExecContext {
+        fn new() -> Self {
+            Self(Rc::new(Cell::new(sails_rtl::ActorId::from(
+                DEFAULT_ADMIN_ID,
+            ))))
         }
 
-        fn message_id(&self) -> &MessageId {
+        fn set_admin(&mut self, id: sails_rtl::ActorId) {
+            self.0.set(id);
+        }
+    }
+
+    impl ExecContext for MockExecContext {
+        fn actor_id(&self) -> sails_rtl::ActorId {
+            self.0.get()
+        }
+
+        fn message_id(&self) -> MessageId {
             unimplemented!()
         }
     }
@@ -303,21 +311,19 @@ mod tests {
                 gas_for_program: 0,
             },
         );
-
-        // init admin
-        admin();
     }
 
     #[test]
     fn update_code_id() {
         init();
 
-        let mut service = MemeFactory::new(MockExecContext, MockEventTrigger::new());
+        let mut exec_context = MockExecContext::new();
+        let mut service = MemeFactory::new(exec_context.clone(), MockEventTrigger::new());
 
         service.update_code_id(CodeId::default()).unwrap();
         assert_eq!(MemeFactoryData::get_mut().meme_code_id, CodeId::default());
 
-        *admin() = sails_rtl::ActorId::from(0);
+        exec_context.set_admin(sails_rtl::ActorId::from(0));
         assert_eq!(
             service.update_code_id(CodeId::new([0xaa; 32])),
             Err(MemeError::Unauthorized)
@@ -329,12 +335,13 @@ mod tests {
     fn update_gas_for_program() {
         init();
 
-        let mut service = MemeFactory::new(MockExecContext, MockEventTrigger::new());
+        let mut exec_context = MockExecContext::new();
+        let mut service = MemeFactory::new(exec_context.clone(), MockEventTrigger::new());
 
         service.update_gas_for_program(1_000).unwrap();
         assert_eq!(MemeFactoryData::get_mut().gas_for_program, 1_000);
 
-        *admin() = sails_rtl::ActorId::from(0);
+        exec_context.set_admin(sails_rtl::ActorId::from(0));
         assert_eq!(
             service.update_gas_for_program(555_555),
             Err(MemeError::Unauthorized)
@@ -346,7 +353,8 @@ mod tests {
     fn add_admin_to_factory() {
         init();
 
-        let mut service = MemeFactory::new(MockExecContext, MockEventTrigger::new());
+        let mut exec_context = MockExecContext::new();
+        let mut service = MemeFactory::new(exec_context.clone(), MockEventTrigger::new());
 
         let new_admin = ActorId::new([0xcc; 32]);
         service.add_admin_to_factory(new_admin).unwrap();
@@ -355,7 +363,7 @@ mod tests {
             vec![DEFAULT_ADMIN_ID.into(), new_admin]
         );
 
-        *admin() = sails_rtl::ActorId::from(0);
+        exec_context.set_admin(sails_rtl::ActorId::from(0));
         assert_eq!(
             service.update_gas_for_program(555_555),
             Err(MemeError::Unauthorized)
@@ -372,7 +380,8 @@ mod tests {
 
         init();
 
-        let mut service = MemeFactory::new(MockExecContext, MockEventTrigger::new());
+        let mut exec_context = MockExecContext::new();
+        let mut service = MemeFactory::new(exec_context.clone(), MockEventTrigger::new());
 
         let data = MemeFactoryData::get_mut();
         data.meme_coins.insert(
@@ -399,7 +408,7 @@ mod tests {
             Err(MemeError::MemeNotFound)
         );
 
-        *admin() = sails_rtl::ActorId::from(123);
+        exec_context.set_admin(sails_rtl::ActorId::from(123));
         assert_eq!(
             service.remove_meme(0xdeadbeef),
             Err(MemeError::Unauthorized)

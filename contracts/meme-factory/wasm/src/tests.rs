@@ -40,11 +40,12 @@ fn create_meme() {
         decimals: 2,
         description: "Description".to_string(),
         external_links: ExternalLinks {
-            image: Some("https://imgur.com/".to_string()),
+            image: "https://imgur.com/".to_string(),
             website: Some("http://example.org/".to_string()),
             telegram: Some("http://telegram.me/".to_string()),
             twitter: Some("http://twitter.com/".to_string()),
             discord: Some("http://discord.gg/".to_string()),
+            tokenomics: None,
         },
         initial_supply: 1000,
         total_supply: 10_000_000,

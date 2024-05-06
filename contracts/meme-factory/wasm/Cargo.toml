@@ -14,8 +14,8 @@ fungible-token-io.workspace = true
 
 [build-dependencies]
 app.workspace = true
-sails-clientgen.workspace = true
-sails-idlgen.workspace = true
+sails-client-gen.workspace = true
+sails-idl-gen.workspace = true
 gear-wasm-builder.workspace = true
 
 [features]
