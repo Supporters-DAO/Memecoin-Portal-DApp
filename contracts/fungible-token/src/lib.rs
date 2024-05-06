@@ -8,6 +8,9 @@ use gstd::{
     ActorId,
 };
 
+#[cfg(feature = "binary-vendor")]
+include!(concat!(env!("OUT_DIR"), "/wasm_binary.rs"));
+
 const ZERO_ID: ActorId = ActorId::new([0u8; 32]);
 
 #[cfg(test)]
