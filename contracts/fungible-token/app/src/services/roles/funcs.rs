@@ -7,7 +7,6 @@ pub fn grant_role<T: Role>(roles: &mut RolesMap, actor: ActorId) -> bool {
     set.insert(TypeId::of::<T>())
 }
 
-// TODO (breathx): optimize me
 pub fn remove_role<T: Role>(roles: &mut RolesMap, actor: ActorId) -> bool {
     let Some(set) = roles.get_mut(&actor) else {
         return false;

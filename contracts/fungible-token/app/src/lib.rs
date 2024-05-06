@@ -3,8 +3,6 @@
 #![allow(dead_code)]
 #![allow(unused)]
 
-// TODO (sails): consider sub-services inside (for observing state, for example)
-// TODO (sails): rename gstd event depositor here to use `notifier`::`Notifier`/`Informer`.
 use crate::admin::utils::Init;
 use gstd::{msg, String};
 use sails_macros::{gprogram, groute};
@@ -12,14 +10,10 @@ use services::{admin, aggregated, erc20, pausable, roles};
 
 pub mod services;
 
-pub struct BreathxProgram(());
+pub struct Program(());
 
-// TODO (sails): allow to import all necessary macros at once (gprogram, grout, etc).
-// TODO (sails): stop forcing deriving default on `BreathxProgram`.
 #[gprogram]
-impl BreathxProgram {
-    // TODO (sails): fix arguments are unused.
-    // TODO (sails): `#[gconstructor]`
+impl Program {
     pub fn new(init: Init) -> Self {
         let roles_service = roles::GstdDrivenService::seed();
 
@@ -49,8 +43,6 @@ impl BreathxProgram {
         admin::GstdDrivenService::new(self.roles(), self.aggregated())
     }
 
-    // TODO (sails): service Erc20: Pausable [pipeline]
-    // TODO (sails): Should reflect on multiple names as pipeline (aliasing)
     #[groute("erc20")]
     pub fn aggregated(&self) -> aggregated::GstdDrivenService {
         aggregated::GstdDrivenService::new(self.erc20(), self.pausable())

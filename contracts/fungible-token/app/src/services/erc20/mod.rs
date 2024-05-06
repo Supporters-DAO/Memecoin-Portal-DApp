@@ -1,4 +1,3 @@
-// TODO (breathx): replace sails_rtl::ActorId with gstd's one.
 #![allow(clippy::unused_unit)]
 
 use crate::services;
@@ -25,14 +24,12 @@ pub enum Event {
     Transfer {
         from: sails_rtl::ActorId,
         to: sails_rtl::ActorId,
-        // TODO (breathx and team): use or not to use `NonZeroU256`?
         value: U256,
     },
 }
 
 pub type GstdDrivenService = Service<GStdEventTrigger<Event>>;
 
-// TODO (sails): isn't services - modules?
 #[derive(Clone)]
 pub struct Service<X>(PhantomData<X>);
 
@@ -54,19 +51,11 @@ impl<X> Service<X> {
     }
 }
 
-// TODO (sails): consider renaming `EventTrigger` -> `Notifier`/`Informer`.
-// TODO (sails): fix that requires `Encode`, `Decode`, `TypeInfo` and `Vec` in scope.
-// TODO (sails): fix that requires explicit `-> ()`. ALREADY EXISTS
-// TODO (sails): let me specify error as subset of strings (Display of my Error) -> thats common flow for us.
-// TODO (sails): gstd::ActorId, primitive_types::H256/U256, [u8; 32], NonZeroStuff are primitives!.
-// TODO (sails): gservice(events = Event, error = Error)
-// #[gservice(events = Event, error = Error)]
 #[gservice]
 impl<X> Service<X>
 where
     X: EventTrigger<Event>,
 {
-    // TODO (sails): hide this into macro.
     pub fn new() -> Self {
         Self(PhantomData)
     }
@@ -99,7 +88,6 @@ where
         MetaStorage::decimals()
     }
 
-    // TODO (sails): allow using references.
     pub fn name(&self) -> String {
         MetaStorage::name()
     }
@@ -134,7 +122,6 @@ where
         mutated
     }
 
-    // TODO (breathx): rename me once bug in sails fixed.
     pub fn transfer_from(
         &mut self,
         from: sails_rtl::ActorId,
@@ -165,7 +152,6 @@ where
         mutated
     }
 
-    // TODO (breathx): delete me once multi services are implemented.
     pub fn set_balance(&mut self, new_balance: U256) -> bool {
         let owner = msg::source();
 

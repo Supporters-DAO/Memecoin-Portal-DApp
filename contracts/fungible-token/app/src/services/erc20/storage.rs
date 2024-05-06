@@ -1,4 +1,3 @@
-// TODO (sails): impl such macro
 use super::utils::{AllowancesMap, BalancesMap};
 use gstd::String;
 use primitive_types::U256;

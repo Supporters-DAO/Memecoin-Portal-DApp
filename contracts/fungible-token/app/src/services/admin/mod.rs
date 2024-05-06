@@ -37,7 +37,6 @@ pub enum Event {
     },
 }
 
-// TODO (breathx): once supported in sails impl Clone here
 pub struct Service<X> {
     roles_service: services::roles::GstdDrivenService,
     aggregated_service: services::aggregated::GstdDrivenService,
@@ -166,7 +165,6 @@ where
         mutated
     }
 
-    // TODO (sails): consider `#[panicking]` and then it expect Result in return type, automatically wrapping closure
     pub fn allowances_reserve(&mut self, additional: u32) -> () {
         services::utils::panicking(|| self.aggregated_service.pausable_service.ensure_unpaused());
 
@@ -242,7 +240,6 @@ where
         })
     }
 
-    // TODO (sails): self `pub fn kill(&mut self) -> !`
     pub fn kill(&mut self, inheritor: sails_rtl::ActorId) -> () {
         services::utils::panicking(|| {
             self.roles_service

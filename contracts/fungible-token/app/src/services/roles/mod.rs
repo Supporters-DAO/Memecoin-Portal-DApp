@@ -25,8 +25,6 @@ pub enum Event {
     },
 }
 
-// TODO (sails): impl Clone for gstd event depositor
-// #[derive(Clone)]
 pub struct Service<X>(PhantomData<X>);
 
 impl Clone for GstdDrivenService {
@@ -160,6 +158,4 @@ where
             .map(ToString::to_string)
             .collect()
     }
-
-    // TODO (breathx): actors keys, actors role queries
 }

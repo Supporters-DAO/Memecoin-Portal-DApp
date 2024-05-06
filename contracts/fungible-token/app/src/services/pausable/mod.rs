@@ -88,7 +88,6 @@ where
         })
     }
 
-    // TODO (breathx): consider as atomic
     pub fn delegate_admin(&mut self, actor: sails_rtl::ActorId) -> bool {
         services::utils::panicking(move || -> services::roles::Result<bool> {
             let source = msg::source();

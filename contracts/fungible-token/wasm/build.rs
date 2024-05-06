@@ -1,4 +1,4 @@
-use erc20::BreathxProgram;
+use erc20::Program;
 use sails_idlgen::program;
 use std::{env, fs::File, path::PathBuf};
 
@@ -11,5 +11,5 @@ fn main() {
 
     let idl_file = File::create(idl_file_path).unwrap();
 
-    program::generate_idl::<BreathxProgram>(idl_file).unwrap();
+    program::generate_idl::<Program>(idl_file).unwrap();
 }
