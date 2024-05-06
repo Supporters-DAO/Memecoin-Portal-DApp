@@ -26,7 +26,7 @@ impl Program {
     }
 
     // Expose hosted service
-    #[groute("")]
+    #[groute("MemeFactory")]
     pub fn meme_factory(&self) -> MemeFactory {
         MemeFactory::new(GStdExecContext::new(), GStdEventTrigger::new())
     }

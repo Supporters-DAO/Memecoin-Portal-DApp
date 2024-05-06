@@ -7,7 +7,7 @@ use fungible_token_io::InitConfig;
 use gstd::{collections::HashMap, prog::ProgramGenerator, ActorId, CodeId};
 use parity_scale_codec::{Decode, Encode};
 use sails_macros::gservice;
-use sails_rtl::{gstd::events::EventTrigger, ExecContext};
+use sails_rtl::gstd::{events::EventTrigger, ExecContext};
 use scale_info::TypeInfo;
 
 static mut DATA: Option<MemeFactoryData> = None;
@@ -133,7 +133,7 @@ where
         init_config: InitConfig,
     ) -> Result<(), MemeError> {
         let data = MemeFactoryData::get_mut();
-        let source = (*self.exec_context.actor_id()).into();
+        let source = self.exec_context.actor_id().into();
 
         for meme_records in data.meme_coins.values() {
             for (_, meme_record) in meme_records {
@@ -189,7 +189,7 @@ where
 
     pub fn update_gas_for_program(&mut self, new_gas_amount: u64) -> Result<(), MemeError> {
         let data = MemeFactoryData::get_mut();
-        let source = (*self.exec_context.actor_id()).into();
+        let source = self.exec_context.actor_id().into();
 
         self.check_admin(data, source)?;
 
@@ -205,7 +205,7 @@ where
 
     pub fn update_code_id(&mut self, new_code_id: CodeId) -> Result<(), MemeError> {
         let data = MemeFactoryData::get_mut();
-        let source = (*self.exec_context.actor_id()).into();
+        let source = self.exec_context.actor_id().into();
 
         self.check_admin(data, source)?;
 
@@ -221,7 +221,7 @@ where
 
     pub fn add_admin_to_factory(&mut self, admin_actor_id: ActorId) -> Result<(), MemeError> {
         let data = MemeFactoryData::get_mut();
-        let source = (*self.exec_context.actor_id()).into();
+        let source = self.exec_context.actor_id().into();
 
         self.check_admin(data, source)?;
 
@@ -237,7 +237,7 @@ where
 
     pub fn remove_meme(&mut self, meme_id: MemeId) -> Result<(), MemeError> {
         let data = MemeFactoryData::get_mut();
-        let source = (*self.exec_context.actor_id()).into();
+        let source = self.exec_context.actor_id().into();
 
         self.check_admin(data, source)?;
 
@@ -286,11 +286,11 @@ mod tests {
     struct MockExecContext;
 
     impl ExecContext for MockExecContext {
-        fn actor_id(&self) -> &sails_rtl::ActorId {
-            admin()
+        fn actor_id(&self) -> sails_rtl::ActorId {
+            *admin()
         }
 
-        fn message_id(&self) -> &MessageId {
+        fn message_id(&self) -> MessageId {
             unimplemented!()
         }
     }
