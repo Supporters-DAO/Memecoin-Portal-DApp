@@ -16,15 +16,11 @@ pub struct Program(());
 impl Program {
     pub fn new(init: Init) -> Self {
         let roles_service = roles::GstdDrivenService::seed();
-
         let erc20_service = <erc20::GstdDrivenService>::seed(init.name, init.symbol, init.decimals);
-
         let pausable_service =
             <pausable::GstdDrivenService>::seed(roles_service.clone(), init.admin_id);
-
         let aggregated_service =
             <aggregated::GstdDrivenService>::seed(erc20_service, pausable_service);
-
         <admin::GstdDrivenService>::seed(
             roles_service,
             aggregated_service,

@@ -16,6 +16,11 @@ scale-info.workspace = true
 
 [dev-dependencies]
 env_logger.workspace = true
+gtest.workspace = true
 
 [build-dependencies]
 gwasm-builder.workspace = true
+
+[features]
+debug = ["gstd/debug"]
+

@@ -1,7 +1,3 @@
-
-
-
-
 [package]
 name = "erc20-wasm"
 version.workspace = true

@@ -132,3 +132,198 @@ pub fn balances(balances: &BalancesMap, skip: usize, take: usize) -> Vec<(ActorI
         .map(|(&id, &v)| (id, v))
         .collect()
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::admin::funcs;
+    use utils::*;
+
+    macro_rules! assert_ok {
+        ( $x:expr, $y: expr $(,)? ) => {{
+            assert_eq!($x.unwrap(), $y);
+        }};
+    }
+
+    macro_rules! assert_err {
+        ( $x:expr, $y: expr $(,)? ) => {{
+            assert_eq!($x.err().expect("Ran into Ok value"), $y);
+        }};
+    }
+
+    #[test]
+    fn mint() {
+        // Initializing thread logger.
+        let _ = env_logger::try_init();
+
+        // Creating map
+        let mut map = balances_map([]);
+        let additional_meta = additional_meta();
+        let mut total_supply: U256 = 100.into();
+        let value: U256 = 100.into();
+        // # Test case #1.
+        // Successful Mint
+        {
+            assert_ok!(
+                funcs::mint(
+                    &mut map,
+                    &additional_meta,
+                    &mut total_supply,
+                    alice(),
+                    value
+                ),
+                true
+            );
+            let expected_balance: NonZeroU256 = value.try_into().unwrap();
+            assert_eq!(*map.get(&alice()).unwrap(), expected_balance);
+        }
+        // # Test case #2.
+        // Mint with value equal to 0
+        {
+            assert_ok!(
+                funcs::mint(
+                    &mut map,
+                    &additional_meta,
+                    &mut total_supply,
+                    alice(),
+                    0.into()
+                ),
+                false
+            );
+        }
+
+        // # Test case #3.
+        // Mint with Error: MaxSupplyReached
+        {
+            assert_err!(
+                funcs::mint(
+                    &mut map,
+                    &additional_meta,
+                    &mut total_supply,
+                    alice(),
+                    1_000_000.into()
+                ),
+                Error::MaxSupplyReached
+            );
+        }
+    }
+
+    #[test]
+    fn burn() {
+        // Initializing thread logger.
+        let _ = env_logger::try_init();
+
+        // Creating map
+        let mut map = balances_map([(dave(), U256::MAX)]);
+        let value: U256 = 100.into();
+        // # Test case #1.
+        // Successful Burn
+        {
+            assert_ok!(funcs::burn(&mut map, dave(), value), true);
+            let expected_balance: NonZeroU256 = (U256::MAX - value).try_into().unwrap();
+            assert_eq!(*map.get(&dave()).unwrap(), expected_balance);
+        }
+        // # Test case #2.
+        // Burn with value equal to 0
+        {
+            assert_ok!(funcs::burn(&mut map, dave(), 0.into()), false);
+        }
+
+        // # Test case #3.
+        // Burn with Error: InsufficientBalance
+        {
+            assert_err!(
+                funcs::burn(&mut map, alice(), value),
+                Error::InsufficientBalance
+            );
+        }
+    }
+
+    #[test]
+    fn transfer_to_users() {
+        // Initializing thread logger.
+        let _ = env_logger::try_init();
+
+        // Creating map
+        let mut map = balances_map([(dave(), U256::MAX)]);
+        let value: U256 = 100.into();
+        let to = vec![alice(), bob(), charlie()];
+        let to_len: U256 = to.len().into();
+        // # Test case #1.
+        // Successful Transfer to users
+        {
+            assert_ok!(
+                funcs::transfer_to_users(&mut map, dave(), to.clone(), value),
+                true
+            );
+            let expected_balance: NonZeroU256 = (U256::MAX - to_len * value).try_into().unwrap();
+            assert_eq!(*map.get(&dave()).unwrap(), expected_balance);
+            let expected_balance: NonZeroU256 = value.try_into().unwrap();
+            assert_eq!(*map.get(&alice()).unwrap(), expected_balance);
+            assert_eq!(*map.get(&bob()).unwrap(), expected_balance);
+            assert_eq!(*map.get(&charlie()).unwrap(), expected_balance);
+        }
+        // # Test case #2.
+        // Burn with Error: InsufficientBalance
+        {
+            assert_err!(
+                funcs::transfer_to_users(&mut map, alice(), to, value),
+                Error::InsufficientBalance
+            );
+        }
+    }
+
+    mod utils {
+        use super::{AdditionalMeta, AllowancesMap, BalancesMap};
+        use crate::admin::ExternalLinks;
+        use gstd::{ActorId, ToString};
+        use primitive_types::U256;
+
+        pub fn allowances_map<const N: usize>(
+            content: [(ActorId, ActorId, U256); N],
+        ) -> AllowancesMap {
+            content
+                .into_iter()
+                .map(|(k1, k2, v)| ((k1, k2), v.try_into().unwrap()))
+                .collect()
+        }
+
+        pub fn additional_meta() -> AdditionalMeta {
+            AdditionalMeta {
+                description: "Description".to_string(),
+                external_links: ExternalLinks {
+                    image: "image".to_string(),
+                    website: None,
+                    telegram: None,
+                    twitter: None,
+                    discord: None,
+                    tokenomics: None,
+                },
+                max_supply: 1_000.into(),
+            }
+        }
+
+        pub fn balances_map<const N: usize>(content: [(ActorId, U256); N]) -> BalancesMap {
+            content
+                .into_iter()
+                .map(|(k, v)| (k, v.try_into().unwrap()))
+                .collect()
+        }
+
+        pub fn alice() -> ActorId {
+            1u64.into()
+        }
+
+        pub fn bob() -> ActorId {
+            2u64.into()
+        }
+
+        pub fn charlie() -> ActorId {
+            3u64.into()
+        }
+
+        pub fn dave() -> ActorId {
+            4u64.into()
+        }
+    }
+}

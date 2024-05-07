@@ -1,6 +1,6 @@
 use crate::services::{self, pausable::roles::PauseAdmin, roles::storage::RolesStorage};
 use core::marker::PhantomData;
-use gstd::{msg, ActorId, Decode, Encode, String, TypeInfo, Vec};
+use gstd::{debug, msg, ActorId, Decode, Encode, String, TypeInfo, Vec};
 use sails_macros::gservice;
 use sails_rtl::gstd::events::{EventTrigger, GStdEventTrigger};
 use storage::StateStorage;
@@ -27,10 +27,8 @@ impl<X: EventTrigger<Event>> Service<X> {
         debug_assert!(_res.is_ok());
 
         roles_service.register_role::<PauseAdmin>();
-
         let _res = roles_service.grant_role::<PauseAdmin>(admin);
         debug_assert!(_res);
-
         Self {
             roles_service,
             _phantom: PhantomData,

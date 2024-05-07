@@ -1222,6 +1222,7 @@ dependencies = [
  "env_logger 0.11.3",
  "gear-wasm-builder",
  "gstd",
+ "gtest",
  "log",
  "parity-scale-codec",
  "primitive-types",
@@ -3551,7 +3552,6 @@ checksum = "e86697c916019a8588c99b5fac3cead74ec0b4b819707a682fd4d23fa0ce1ba1"
 [[package]]
 name = "sails-idl-meta"
 version = "0.0.1"
-source = "git+https://github.com/gear-tech/sails#2ca9ba7951b16858a4f2623573310a0f4b657961"
 dependencies = [
  "scale-info",
 ]
@@ -3559,7 +3559,6 @@ dependencies = [
 [[package]]
 name = "sails-idlgen"
 version = "0.0.1"
-source = "git+https://github.com/gear-tech/sails#2ca9ba7951b16858a4f2623573310a0f4b657961"
 dependencies = [
  "convert_case 0.6.0",
  "handlebars",
@@ -3574,7 +3573,6 @@ dependencies = [
 [[package]]
 name = "sails-macros"
 version = "0.0.1"
-source = "git+https://github.com/gear-tech/sails#2ca9ba7951b16858a4f2623573310a0f4b657961"
 dependencies = [
  "proc-macro-error",
  "sails-macros-core",
@@ -3583,7 +3581,6 @@ dependencies = [
 [[package]]
 name = "sails-macros-core"
 version = "0.0.1"
-source = "git+https://github.com/gear-tech/sails#2ca9ba7951b16858a4f2623573310a0f4b657961"
 dependencies = [
  "convert_case 0.6.0",
  "parity-scale-codec",
@@ -3596,7 +3593,6 @@ dependencies = [
 [[package]]
 name = "sails-rtl"
 version = "0.0.1"
-source = "git+https://github.com/gear-tech/sails#2ca9ba7951b16858a4f2623573310a0f4b657961"
 dependencies = [
  "futures",
  "gear-core-errors",
