@@ -10,9 +10,8 @@ import {
 } from "../types/factory.events";
 import {
   CoinEvent,
-  CoinEventPlain,
+  CoinEventsParser,
   CoinEventType,
-  getCoinEvent,
 } from "../types/coin.events";
 import { MemeCreatedHandler } from "./factory/meme-created.handler";
 import { IFactoryEventHandler } from "./factory/factory.handler";
@@ -20,6 +19,8 @@ import { AdminDeletedHandler } from "./coin/admin-deleted.handler";
 import { AdminAddedHandler } from "./coin/admin-added.handler";
 import { TransferredHandler } from "./coin/transferred.handler";
 import { TransferredToUsersHandler } from "./coin/transferred-to-users.handler";
+import { BurnedHandler } from "./coin/burned.handler";
+import { MintedHandler } from "./coin/minted.handler";
 
 const factoryEventsToHandler: Record<
   FactoryEventType,
@@ -36,6 +37,8 @@ const coinEventsToHandler: Record<
   [CoinEventType.AdminAdded]: new AdminAddedHandler(),
   [CoinEventType.Transferred]: new TransferredHandler(),
   [CoinEventType.TransferredToUsers]: new TransferredToUsersHandler(),
+  [CoinEventType.Burned]: new BurnedHandler(),
+  [CoinEventType.Minted]: new MintedHandler(),
 };
 
 export class EventsProcessing {
@@ -46,6 +49,7 @@ export class EventsProcessing {
     private readonly entitiesService: EntitiesService,
     private readonly storage: IStorage,
     private readonly memeFactoryParser: MemeFactoryEventsParser,
+    private readonly coinParser: CoinEventsParser
   ) {
     const factory = this.storage.getFactory();
     this.factoryMeta = ProgramMetadata.from(factory.meta);
@@ -62,10 +66,13 @@ export class EventsProcessing {
   ): Promise<FactoryEvent | null> {
     const { blockNumber, messageId } = eventInfo;
     try {
-      console.log(`${blockNumber}-${messageId}: handling marketplace event`);
+      console.log(`${blockNumber}-${messageId}: handling memecoin event`);
       const event = this.memeFactoryParser.getFactoryEvent(payload);
       if (!event) {
-        console.warn(`${blockNumber}-${messageId}: unknown event type`, payload);
+        console.warn(
+          `${blockNumber}-${messageId}: unknown event type`,
+          payload
+        );
         return null;
       }
       console.log(
@@ -107,35 +114,16 @@ export class EventsProcessing {
   }
 
   async handleCoinEvent(
-    payload: string,
+    payload: HexString,
     eventInfo: EventInfo
   ): Promise<CoinEvent | null> {
     const { blockNumber, messageId } = eventInfo;
     try {
-      console.log(`${blockNumber}-${messageId}: handling coin event`);
-      const data = this.coinMeta.createType<CoinEventPlain>(
-        this.coinMeta.types.handle.output!,
-        payload
-      );
-      const parsed = data.toJSON() as { ok: CoinEventPlain } | null;
-      if (!parsed || !parsed.ok) {
-        console.warn(
-          `${blockNumber}-${messageId}: failed to parse event`,
-          parsed,
-          payload
-        );
-        return null;
-      }
-      console.log(
-        `${blockNumber}-${messageId}: extracting coin event ${JSON.stringify(
-          parsed.ok
-        )}`
-      );
-      const event = getCoinEvent(parsed.ok);
+      const event = this.coinParser.getCoinEvent(payload);
       if (!event) {
         console.warn(
-          `${blockNumber}-${messageId}: unknown coin event type`,
-          parsed
+          `${blockNumber}-${messageId}: unknown event type`,
+          payload
         );
         return null;
       }

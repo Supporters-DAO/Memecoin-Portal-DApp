@@ -1,10 +1,8 @@
 import { Option, u128, u16, u32, u64, u8 } from "@polkadot/types";
-import { Hash } from '@polkadot/types/interfaces';
+import { Hash } from "@polkadot/types/interfaces";
 import { Codec } from "@polkadot/types/types";
 
-export function safeUnwrapToNumber(
-  value: number | string
-): number | null {
+export function safeUnwrapToNumber(value: number | string): number | null {
   if (typeof value === "number") {
     return value;
   }

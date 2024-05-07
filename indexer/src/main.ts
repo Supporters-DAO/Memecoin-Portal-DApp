@@ -7,7 +7,8 @@ import { Block } from "@subsquid/substrate-processor";
 import { EntitiesService } from "./processing/entities.service";
 import { getLocalStorage } from "./processing/storage/local.storage";
 import { BatchService } from "./processing/batch.service";
-import { getMemeFactoryEventsParser } from './types/factory.events';
+import { getMemeFactoryEventsParser } from "./types/factory.events";
+import { getCoinEventsParser } from "./types/coin.events";
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -28,7 +29,13 @@ processor.run(new TypeormDatabase(), async (ctx) => {
     new BatchService(ctx.store)
   );
   const memeFactoryParser = await getMemeFactoryEventsParser();
-  const processing = new EventsProcessing(entitiesService, localStorage, memeFactoryParser);
+  const coinParser = await getCoinEventsParser();
+  const processing = new EventsProcessing(
+    entitiesService,
+    localStorage,
+    memeFactoryParser,
+    coinParser
+  );
   const firstBlockDate = getBlockDate(ctx.blocks[0]);
   console.log(
     `[main] start processing ${ctx.blocks.length} blocks at ${firstBlockDate}.`
