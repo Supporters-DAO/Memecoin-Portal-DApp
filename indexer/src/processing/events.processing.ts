@@ -2,12 +2,11 @@ import { ICoinEventHandler } from "./coin/coin.handler";
 import { EventInfo } from "./event-info.type";
 import { EntitiesService } from "./entities.service";
 import { IStorage } from "./storage/storage.inteface";
-import { ProgramMetadata } from "@gear-js/api";
+import { HexString, ProgramMetadata } from "@gear-js/api";
 import {
   FactoryEvent,
-  FactoryEventPlain,
   FactoryEventType,
-  getFactoryEvent,
+  MemeFactoryEventsParser,
 } from "../types/factory.events";
 import {
   CoinEvent,
@@ -45,7 +44,8 @@ export class EventsProcessing {
 
   constructor(
     private readonly entitiesService: EntitiesService,
-    private readonly storage: IStorage
+    private readonly storage: IStorage,
+    private readonly memeFactoryParser: MemeFactoryEventsParser,
   ) {
     const factory = this.storage.getFactory();
     this.factoryMeta = ProgramMetadata.from(factory.meta);
@@ -57,28 +57,15 @@ export class EventsProcessing {
   }
 
   async handleFactoryEvent(
-    payload: string,
+    payload: HexString,
     eventInfo: EventInfo
   ): Promise<FactoryEvent | null> {
     const { blockNumber, messageId } = eventInfo;
     try {
       console.log(`${blockNumber}-${messageId}: handling marketplace event`);
-      const data = this.factoryMeta.createType<FactoryEventPlain>(
-        this.factoryMeta.types.handle.output!,
-        payload
-      );
-      const parsed = data.toJSON() as { ok: FactoryEventPlain } | null;
-      if (!parsed || !parsed.ok) {
-        return null;
-      }
-      console.log(
-        `${blockNumber}-${messageId}: extracting factory event ${JSON.stringify(
-          parsed.ok
-        )}`
-      );
-      const event = getFactoryEvent(parsed.ok);
+      const event = this.memeFactoryParser.getFactoryEvent(payload);
       if (!event) {
-        console.warn(`${blockNumber}-${messageId}: unknown event type`, parsed);
+        console.warn(`${blockNumber}-${messageId}: unknown event type`, payload);
         return null;
       }
       console.log(

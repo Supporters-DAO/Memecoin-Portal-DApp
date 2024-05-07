@@ -1,17 +1,17 @@
 import { Option, u128, u16, u32, u64, u8 } from "@polkadot/types";
-import { Codec } from "@polkadot/types-codec/types/codec";
-import { Hash } from "@polkadot/types/interfaces";
+import { Hash } from '@polkadot/types/interfaces';
+import { Codec } from "@polkadot/types/types";
 
 export function safeUnwrapToNumber(
-  value: number | u8 | u16 | u32 | u64 | u128 | null
+  value: number | string
 ): number | null {
   if (typeof value === "number") {
     return value;
   }
-  if (value === null) {
+  if (!value) {
     return null;
   }
-  return value.toNumber();
+  return Number.parseFloat(value);
 }
 
 export function safeUnwrapToHex(value: Hash | string | null): string | null {
@@ -43,7 +43,7 @@ function isOption<E extends Codec, T>(
 }
 
 export function safeUnwrapToBigInt(
-  value: number | bigint | u16 | u32 | u64 | u128 | null
+  value: number | bigint | string | null
 ): bigint | null {
   if (typeof value === "number") {
     return BigInt(value);
@@ -51,8 +51,8 @@ export function safeUnwrapToBigInt(
   if (typeof value === "bigint") {
     return value;
   }
-  if (value === null) {
-    return null;
+  if (typeof value === "string") {
+    return BigInt(value);
   }
-  return value.toBigInt();
+  return null;
 }

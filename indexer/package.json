@@ -15,8 +15,10 @@
     "start": "npm run migration:apply && node lib/main.js"
   },
   "dependencies": {
-    "@gear-js/api": "^0.35.2",
-    "@polkadot/types": "10.10.1",
+    "@gear-js/api": "^0.38.0",
+    "@polkadot/types": "11.0.1",
+    "@polkadot/api": "^11.0.1",
+    "sails-js": "0.1.2",
     "@subsquid/archive-registry": "^3.3.0",
     "@subsquid/graphql-server": "^4.5.0",
     "@subsquid/ss58": "^2.0.1",
@@ -45,6 +47,6 @@
     "jest": "^27.2.5",
     "prettier": "^2.3.2",
     "source-map-support": "^0.5.20",
-    "typescript": "^5.2.2"
+    "typescript": "^5.4.5"
   }
 }

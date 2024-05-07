@@ -1,20 +1,18 @@
-import {
-  Enum,
-  Option,
-  Text,
-  Vec,
-  u64,
-  u128,
-  u32,
-  u16,
-  u8,
-} from "@polkadot/types";
-import { Hash } from "@polkadot/types/interfaces";
-import {
-  safeUnwrapOptional,
-  safeUnwrapToBigInt,
-  safeUnwrapToNumber,
-} from "./event.utils";
+import { Sails, getFnNamePrefix, getServiceNamePrefix } from 'sails-js';
+import { readFileSync } from 'fs';
+import { HexString } from '@gear-js/api';
+import { ActorId, InitConfig } from '../generated/lib';
+import { safeUnwrapToBigInt, safeUnwrapToNumber } from './event.utils';
+
+let instance: MemeFactoryEventsParser | undefined;
+
+export async function getMemeFactoryEventsParser(): Promise<MemeFactoryEventsParser> {
+  if (!instance) {
+    instance = new MemeFactoryEventsParser();
+    await instance.init()
+  }
+  return instance;
+}
 
 export enum FactoryEventType {
   MemeCreated = "MemeCreated",
@@ -45,73 +43,55 @@ export type CreatedConfig = {
 
 export type FactoryEvent = MemeCreatedEvent;
 
-export interface FactoryEventPlain extends Enum {
-  memeCreated: {
-    memeId: Option<u64>;
-    memeAddress: Text;
-    initConfig: {
-      name: Text;
-      symbol: Text;
-      decimals: u8;
-      description: Text;
-      initialSupply: u128;
-      totalSupply: u128;
-      admin: Hash;
-      initialCapacity: Option<u128>;
-      externalLinks: {
-        image: Option<Text>;
-        twitter: Option<Text>;
-        telegram: Option<Text>;
-        discord: Option<Text>;
-        website: Option<Text>;
-        tokenomics: Option<Text>;
-      };
-    };
-  };
-}
+export class MemeFactoryEventsParser {
+  private sails?: Sails;
 
-export function getFactoryEvent(
-  event: FactoryEventPlain
-): FactoryEvent | undefined {
-  if (event.memeCreated) {
-    const capacity = safeUnwrapOptional<u128, u128>(
-      event.memeCreated.initConfig.initialCapacity
-    );
-    return {
-      type: FactoryEventType.MemeCreated,
-      address: event.memeCreated.memeAddress.toString(),
-      config: {
-        name: event.memeCreated.initConfig.name.toString(),
-        symbol: event.memeCreated.initConfig.symbol.toString(),
-        decimals: safeUnwrapToNumber(event.memeCreated.initConfig.decimals)!,
-        description: event.memeCreated.initConfig.description.toString(),
-        initialSupply: safeUnwrapToBigInt(
-          event.memeCreated.initConfig.initialSupply
-        )!,
-        totalSupply: safeUnwrapToBigInt(
-          event.memeCreated.initConfig.totalSupply
-        )!,
-        admin: event.memeCreated.initConfig.admin.toString(),
-        initialCapacity: safeUnwrapToBigInt(capacity)!,
-        image: safeUnwrapOptional<Text, string>(
-          event.memeCreated.initConfig.externalLinks.image
-        ),
-        twitter: safeUnwrapOptional<Text, string>(
-          event.memeCreated.initConfig.externalLinks.twitter
-        ),
-        telegram: safeUnwrapOptional<Text, string>(
-          event.memeCreated.initConfig.externalLinks.telegram
-        ),
-        discord: safeUnwrapOptional<Text, string>(
-          event.memeCreated.initConfig.externalLinks.discord
-        ),
-        website: safeUnwrapOptional<Text, string>(
-          event.memeCreated.initConfig.externalLinks.website
-        ),
-        tokenomics: safeUnwrapOptional<Text, string>(
-          event.memeCreated.initConfig.externalLinks.tokenomics
-        ),
-      },
-    };
+  async init() {
+    const idl = readFileSync('./assets/meme-factory.idl', 'utf-8');
+    this.sails = await Sails.new();
+
+    this.sails.parseIdl(idl);
+  }
+
+  getFactoryEvent(payload: HexString): FactoryEvent | undefined  {
+    if (!this.sails) {
+      throw new Error(`sails is not initialized`);
+    }
+    const serviceName = getServiceNamePrefix(payload);
+    const functionName = getFnNamePrefix(payload);
+    if (!this.sails.services[serviceName].events[functionName]) {
+      return undefined;
+    }
+    const ev = this.sails.services[serviceName].events[functionName].decode(payload);
+    switch (functionName) {
+      case 'MemeCreated': {
+        const event = ev as { meme_id: number | string; meme_address: ActorId; init_config: InitConfig };
+        return {
+          type: FactoryEventType.MemeCreated,
+          address: event.meme_address.toString(),
+          config: {
+            name: event.init_config.name,
+            symbol: event.init_config.symbol,
+            decimals: safeUnwrapToNumber(event.init_config.decimals)!,
+            description: event.init_config.description,
+            initialSupply: safeUnwrapToBigInt(
+              event.init_config.initial_supply
+            )!,
+            totalSupply: safeUnwrapToBigInt(
+              event.init_config.total_supply
+            )!,
+            admin: event.init_config.admin.toString(),
+            initialCapacity: safeUnwrapToBigInt(event.init_config.initial_capacity)!,
+            image: event.init_config.external_links.image,
+            twitter: event.init_config.external_links.twitter,
+            telegram: event.init_config.external_links.telegram,
+            discord: event.init_config.external_links.discord,
+            website: event.init_config.external_links.website,
+            tokenomics: event.init_config.external_links.tokenomics,
+          },
+        };
+      }
+    }
+    return undefined;
   }
 }

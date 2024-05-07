@@ -62,33 +62,33 @@ export interface CoinEventPlain extends Enum {
 }
 
 export function getCoinEvent(event: CoinEventPlain): CoinEvent | undefined {
-  if (event.transferred) {
-    return {
-      type: CoinEventType.Transferred,
-      from: event.transferred.from.toString(),
-      to: event.transferred.to.toString(),
-      amount: safeUnwrapToBigInt(event.transferred.amount)!,
-    };
-  }
-  if (event.adminAdded) {
-    return {
-      type: CoinEventType.AdminAdded,
-      admin: event.adminAdded.adminId.toString(),
-    };
-  }
-  if (event.adminDeleted) {
-    return {
-      type: CoinEventType.AdminRemoved,
-      admin: event.adminDeleted.adminId.toString(),
-    };
-  }
-  if (event.transferredToUsers) {
-    return {
-      type: CoinEventType.TransferredToUsers,
-      from: event.transferredToUsers.from.toString(),
-      to: event.transferredToUsers.toUsers.map((u) => u.toString()),
-      amount: safeUnwrapToBigInt(event.transferredToUsers.amount)!,
-    };
-  }
+  // if (event.transferred) {
+  //   return {
+  //     type: CoinEventType.Transferred,
+  //     from: event.transferred.from.toString(),
+  //     to: event.transferred.to.toString(),
+  //     amount: safeUnwrapToBigInt(event.transferred.amount)!,
+  //   };
+  // }
+  // if (event.adminAdded) {
+  //   return {
+  //     type: CoinEventType.AdminAdded,
+  //     admin: event.adminAdded.adminId.toString(),
+  //   };
+  // }
+  // if (event.adminDeleted) {
+  //   return {
+  //     type: CoinEventType.AdminRemoved,
+  //     admin: event.adminDeleted.adminId.toString(),
+  //   };
+  // }
+  // if (event.transferredToUsers) {
+  //   return {
+  //     type: CoinEventType.TransferredToUsers,
+  //     from: event.transferredToUsers.from.toString(),
+  //     to: event.transferredToUsers.toUsers.map((u) => u.toString()),
+  //     amount: safeUnwrapToBigInt(event.transferredToUsers.amount)!,
+  //   };
+  // }
   return undefined;
 }
