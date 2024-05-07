@@ -9,5 +9,5 @@ erc20 = { path = "../app" }
 
 [build-dependencies]
 gwasm-builder.workspace = true
-sails-idlgen.workspace = true
+sails-idl-gen.workspace = true
 erc20 = { path = "../app" }

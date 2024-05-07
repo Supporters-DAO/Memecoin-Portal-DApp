@@ -1,5 +1,5 @@
 use erc20::Program;
-use sails_idlgen::program;
+use sails_idl_gen::program;
 use std::{env, fs::File, path::PathBuf};
 
 fn main() {

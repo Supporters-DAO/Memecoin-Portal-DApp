@@ -6,7 +6,7 @@ use gstd::{collections::HashMap, prog::ProgramGenerator, ActorId, CodeId};
 use parity_scale_codec::{Decode, Encode};
 use primitive_types::U256;
 use sails_macros::gservice;
-use sails_rtl::{gstd::events::EventTrigger, ExecContext};
+use sails_rtl::{gstd::{events::EventTrigger, ExecContext}};
 use scale_info::TypeInfo;
 
 static mut DATA: Option<MemeFactoryData> = None;
