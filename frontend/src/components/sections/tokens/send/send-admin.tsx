@@ -8,19 +8,21 @@ import { ScrollArea } from '@/components/common/scroll-area'
 import { Input } from '@/components/ui/input'
 import { isValidHexString } from '@/lib/utils'
 
-import { useMessageToken } from '@/lib/hooks/use-message-token'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/hooks/use-auth'
 import action from '@/app/actions'
+import { useMessages } from '@/lib/sails/use-send-message-ft'
 
 type Props = {
 	id: HexString
+	tokenBalance: string
 }
 
-export const SendAdmin = ({ id }: Props) => {
+export const SendAdmin = ({ id, tokenBalance }: Props) => {
 	const { walletAccount } = useAuth()
-	const handleMessage = useMessageToken(id)
 	const router = useRouter()
+
+	const sendMessage = useMessages()
 
 	const [isPending, setIsPending] = useState(false)
 	const [addresses, setAddresses] = useState<HexString[]>([])
@@ -79,28 +81,28 @@ export const SendAdmin = ({ id }: Props) => {
 		setParentHeight(newHeight)
 	}
 
-	const onSendCoins = () => {
-		if (inputAmount && walletAccount && addresses.length > 0) {
+	const onSendCoins = async () => {
+		if (
+			inputAmount &&
+			walletAccount &&
+			inputAmount <= Number(tokenBalance)
+		) {
 			setIsPending(true)
-			handleMessage({
-				payload: {
-					TransferToUsers: {
-						amount: inputAmount,
-						to_users: addresses,
-					},
-				},
-				onSuccess: () => {
-					setIsPending(false)
-					setAddresses([])
-					setInputAmount(undefined)
-					action('token')
-					action('balance')
-					router.push(`/tokens/${id}`)
-				},
-				onError: () => {
-					setIsPending(false)
-				},
+			const sendMessageResult = await sendMessage('transferToUsers', id, {
+				value: inputAmount,
+				toUsers: [...addresses],
 			})
+
+			if (sendMessageResult) {
+				setIsPending(false)
+				setAddresses([])
+				setInputAmount(undefined)
+				action('token')
+				action('balance')
+				router.push(`/tokens/${id}`)
+			} else {
+				setIsPending(false)
+			}
 		}
 	}
 
@@ -144,7 +146,8 @@ export const SendAdmin = ({ id }: Props) => {
 					addresses.length === 0 ||
 					!inputAmount ||
 					inputAmount <= 0 ||
-					isPending
+					isPending ||
+					!(inputAmount <= Number(tokenBalance))
 				}
 				onClick={onSendCoins}
 			>

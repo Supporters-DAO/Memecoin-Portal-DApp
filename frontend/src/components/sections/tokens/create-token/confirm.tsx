@@ -9,7 +9,7 @@ import { useAccount } from '@gear-js/react-hooks'
 import { stepAtom } from '.'
 import { Created } from './created'
 import { cn } from '@/lib/utils'
-import { useMessage } from '@/lib/hooks/use-message-factory'
+import { useMessages } from '@/lib/sails/use-send-message-factory'
 
 interface Props {
 	data: ICreateTokenForm | undefined
@@ -20,40 +20,40 @@ export const ConfirmCreate = ({ data }: Props) => {
 	const [step, setStep] = useAtom(stepAtom)
 	const [isCreated, setIsCreated] = useState(false)
 	const { account } = useAccount()
-	const handleMessage = useMessage()
+	const sendMessage = useMessages()
 
-	const onCreate = () => {
+	const onCreate = async () => {
 		setIsPending(true)
-		handleMessage({
-			payload: {
-				CreateMeme: {
-					initConfig: {
-						name: data?.name,
-						symbol: data?.symbol,
-						decimals: data?.decimals,
-						description: data?.description,
-						externalLinks: {
-							image: data?.external_links?.image,
-							website: data?.external_links?.website,
-							telegram: data?.external_links?.telegram,
-							twitter: data?.external_links?.twitter,
-							discord: data?.external_links?.discord,
-							tokenomics: data?.external_links?.tokenomics,
-						},
-						initialSupply: data?.initial_supply,
-						totalSupply: data?.total_supply,
-						admin: account?.decodedAddress,
+
+		if (account && data) {
+			try {
+				const sendMessageResult = await sendMessage('createFungibleProgram', {
+					name: data.name,
+					symbol: data.symbol,
+					decimals: data.decimals || 0,
+					description: data.description,
+					external_links: {
+						image: data?.external_links?.image,
+						website: data?.external_links?.website || null,
+						telegram: data?.external_links?.telegram || null,
+						twitter: data?.external_links?.twitter || null,
+						discord: data?.external_links?.discord || null,
+						tokenomics: data?.external_links?.tokenomics || null,
 					},
-				},
-			},
-			onSuccess: () => {
-				setIsCreated(true)
+					initial_supply: data.initial_supply || 0,
+					max_supply: data.total_supply || 0,
+					admin_id: account.decodedAddress,
+				})
+
+				if (sendMessageResult) {
+					setIsCreated(true)
+				}
+			} catch (error) {
+				console.error('Error sending message:', error)
+			} finally {
 				setIsPending(false)
-			},
-			onError: () => {
-				setIsPending(false)
-			},
-		})
+			}
+		}
 	}
 
 	return (

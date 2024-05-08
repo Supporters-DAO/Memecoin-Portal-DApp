@@ -52,7 +52,7 @@ export const SendCoin = ({ token }: Props) => {
 					<div className="flex flex-col gap-3 font-poppins">
 						Send to
 						{isAdmin ? (
-							<SendAdmin id={token.id} />
+							<SendAdmin id={token.id} tokenBalance={tokenBalance} />
 						) : (
 							<>
 								{walletAccount && (

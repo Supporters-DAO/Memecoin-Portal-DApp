@@ -6,7 +6,7 @@ import { HexString } from '@gear-js/api'
 import { Input } from '@/components/ui/input'
 import { BackButton } from '@/components/common/back-button'
 
-import { useMessageToken } from '@/lib/hooks/use-message-token'
+import { useMessages } from '@/lib/sails/use-send-message-ft'
 import { useFetchBalances } from '@/lib/hooks/use-fetch-balances'
 import { useAuth } from '@/lib/hooks/use-auth'
 import { Hero404 } from '../../404/hero'
@@ -34,8 +34,7 @@ export const BurnCoin = ({ token }: Props) => {
 	const { balances } = useFetchBalances(isPending)
 
 	const [inputAmount, setInputAmount] = useState<number | undefined>(undefined)
-
-	const handleMessage = useMessageToken(token.id)
+	const sendMessage = useMessages()
 
 	const tokenBalance = balances.find((b) => b.coin.id === token.id)?.balance
 
@@ -43,27 +42,23 @@ export const BurnCoin = ({ token }: Props) => {
 
 	if (!isAdmin) return <Hero404 />
 
-	const onSendCoins = () => {
+	const onSendCoins = async () => {
 		if (inputAmount) {
 			setIsPending(true)
-			handleMessage({
-				payload: {
-					Burn: {
-						amount: inputAmount,
-					},
-				},
-				onSuccess: () => {
-					setIsPending(false)
-					setInputAmount(undefined)
-					action('token')
-					action('balance')
-					router.push(`/tokens/${token.id}`)
-				},
-				onError: () => {
-					setInputAmount(undefined)
-					setIsPending(false)
-				},
+
+			const sendMessageResult = await sendMessage('burn', token.id, {
+				value: inputAmount,
+				from: walletAccount.decodedAddress,
+			}).finally(() => {
+				setInputAmount(undefined)
+				setIsPending(false)
 			})
+
+			if (sendMessageResult) {
+				action('token')
+				action('balance')
+				router.push(`/tokens/${token.id}`)
+			}
 		}
 	}
 

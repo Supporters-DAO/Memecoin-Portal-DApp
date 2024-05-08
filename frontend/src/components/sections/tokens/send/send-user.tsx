@@ -5,9 +5,9 @@ import { HexString, decodeAddress } from '@gear-js/api'
 
 import { Input } from '@/components/ui/input'
 import { isValidHexString } from '@/lib/utils'
-import { useMessageToken } from '@/lib/hooks/use-message-token'
 import { useRouter } from 'next/navigation'
 import action from '@/app/actions'
+import { useMessages } from '@/lib/sails/use-send-message-ft'
 
 type Props = {
 	id: HexString
@@ -17,38 +17,31 @@ type Props = {
 export const SendUser = ({ id, from }: Props) => {
 	const router = useRouter()
 
-	const handleMessage = useMessageToken(id)
 	const [isPending, setIsPending] = useState(false)
 	const [address, setAddress] = useState<string | HexString>()
 	const [inputAmount, setInputAmount] = useState<number>(0)
+
+	const sendMessage = useMessages()
 
 	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setAddress(e.target.value as string)
 	}
 
-	const onSendCoins = () => {
+	const onSendCoins = async () => {
 		if (address && inputAmount && isValidHexString(decodeAddress(address))) {
 			setIsPending(true)
-			handleMessage({
-				payload: {
-					Transfer: {
-						from,
-						to: decodeAddress(address),
-						amount: inputAmount,
-					},
-				},
-				onSuccess: () => {
-					setIsPending(false)
-					setAddress(undefined)
-					setInputAmount(0)
-					action('token')
-					action('balance')
-					router.push(`/tokens/${id}`)
-				},
-				onError: () => {
-					setIsPending(false)
-				},
-			})
+			const sendMessageResult = await sendMessage('transfer', id, {
+				value: inputAmount,
+				to: decodeAddress(address),
+			}).finally(() => setIsPending(false))
+
+			if (sendMessageResult) {
+				setAddress(undefined)
+				setInputAmount(0)
+				action('token')
+				action('balance')
+				router.push(`/tokens/${id}`)
+			}
 		}
 	}
 
@@ -68,7 +61,7 @@ export const SendUser = ({ id, from }: Props) => {
 				/>
 			</div>
 			<button
-				className="btn font-ps2p mx-auto mt-5 w-1/2 py-4 disabled:bg-[#D0D3D9]"
+				className="btn mx-auto mt-5 w-1/2 py-4 font-ps2p disabled:bg-[#D0D3D9]"
 				disabled={
 					address?.length === 0 || !inputAmount || inputAmount <= 0 || isPending
 				}

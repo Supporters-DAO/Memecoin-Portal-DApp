@@ -7,37 +7,32 @@ import { variantsOverlay, variantsPanel } from './mint-modal.variants'
 
 import styles from './mint-modal.module.scss'
 import { Input } from '@/components/ui/input'
-import { useMessageToken } from '@/lib/hooks/use-message-token'
+import { useMessages } from '@/lib/sails/use-send-message-ft'
 import { useAuth } from '@/lib/hooks/use-auth'
 import action from '@/app/actions'
 
 export const MintModal = ({ onClose, open, setOpen, id, available }: any) => {
 	const { walletAccount } = useAuth()
-	const handleMessage = useMessageToken(id)
 	const [isPending, setIsPending] = useState(false)
 	const [inputAmount, setInputAmount] = useState<number>()
+	const sendMessage = useMessages()
 
-	const onMintTokens = () => {
+	const onMintTokens = async () => {
 		if (inputAmount && walletAccount) {
 			setIsPending(true)
-			handleMessage({
-				payload: {
-					Mint: {
-						amount: inputAmount,
-						to: walletAccount.decodedAddress,
-					},
-				},
-				onSuccess: () => {
-					action('token')
-					setIsPending(false)
-					setInputAmount(undefined)
-					onClose()
-				},
-				onError: () => {
-					setInputAmount(undefined)
-					setIsPending(false)
-				},
+
+			const sendMessageResult = await sendMessage('mint', id, {
+				value: inputAmount,
+				to: walletAccount.decodedAddress,
+			}).finally(() => {
+				setInputAmount(undefined)
+				setIsPending(false)
 			})
+
+			if (sendMessageResult) {
+				action('token')
+				onClose()
+			}
 		}
 	}
 
