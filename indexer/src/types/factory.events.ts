@@ -69,30 +69,30 @@ export class MemeFactoryEventsParser {
         const event = ev as {
           meme_id: number | string;
           meme_address: ActorId;
-          init_config: Init;
+          init: Init;
         };
         return {
           type: FactoryEventType.MemeCreated,
           address: event.meme_address.toString(),
           config: {
-            name: event.init_config.name,
-            symbol: event.init_config.symbol,
-            decimals: safeUnwrapToNumber(event.init_config.decimals)!,
-            description: event.init_config.description,
+            name: event.init.name,
+            symbol: event.init.symbol,
+            decimals: safeUnwrapToNumber(event.init.decimals)!,
+            description: event.init.description,
             initialSupply: safeUnwrapToBigInt(
-              event.init_config.initial_supply
+              event.init.initial_supply
             )!,
-            totalSupply: safeUnwrapToBigInt(event.init_config.max_supply)!,
-            admin: event.init_config.admin_id.toString(),
+            totalSupply: safeUnwrapToBigInt(event.init.max_supply)!,
+            admin: event.init.admin_id.toString(),
             initialCapacity: safeUnwrapToBigInt(
-              event.init_config.initial_supply
+              event.init.initial_supply
             )!,
-            image: event.init_config.external_links.image,
-            twitter: event.init_config.external_links.twitter,
-            telegram: event.init_config.external_links.telegram,
-            discord: event.init_config.external_links.discord,
-            website: event.init_config.external_links.website,
-            tokenomics: event.init_config.external_links.tokenomics,
+            image: event.init.external_links.image,
+            twitter: event.init.external_links.twitter,
+            telegram: event.init.external_links.telegram,
+            discord: event.init.external_links.discord,
+            website: event.init.external_links.website,
+            tokenomics: event.init.external_links.tokenomics,
           },
         };
       }
