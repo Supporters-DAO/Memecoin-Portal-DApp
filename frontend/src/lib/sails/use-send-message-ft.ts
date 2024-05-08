@@ -1,7 +1,6 @@
 import {
 	Account,
 	AlertContainerFactory,
-	useAccount,
 	useAlert,
 	useApi,
 } from '@gear-js/react-hooks'
@@ -9,6 +8,7 @@ import { web3FromSource } from '@polkadot/extension-dapp'
 import { useCallback } from 'react'
 import { Program } from './meme-ft'
 import { TransactionBuilder } from 'sails-js'
+import { useAuth } from '../hooks/use-auth'
 
 export enum MessageTypes {
 	TRANSFER_TO_USERS = 'transferToUsers',
@@ -70,7 +70,8 @@ const executeTransaction = async (
 
 export const useMessages = () => {
 	const { api, isApiReady } = useApi()
-	const { account } = useAccount()
+	const { walletAccount: account } = useAuth()
+
 	const alert = useAlert()
 
 	const sendMessage = useCallback(
