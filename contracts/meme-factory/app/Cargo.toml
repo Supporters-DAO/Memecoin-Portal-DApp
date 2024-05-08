@@ -6,7 +6,6 @@ edition = "2021"
 [dependencies]
 sails-macros.workspace = true
 sails-rtl.workspace = true
-sails-idl-meta.workspace = true
 gstd.workspace = true
 primitive-types.workspace = true
 

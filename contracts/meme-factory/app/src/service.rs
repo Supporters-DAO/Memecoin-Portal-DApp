@@ -2,7 +2,7 @@ use alloc::{
     string::{String, ToString},
     vec::Vec,
 };
-use gstd::{collections::HashMap, debug, exec, prog::ProgramGenerator, ActorId, CodeId};
+use gstd::{collections::HashMap, prog::ProgramGenerator, ActorId, CodeId};
 use parity_scale_codec::{Decode, Encode};
 use primitive_types::U256;
 use sails_macros::gservice;
@@ -157,59 +157,55 @@ where
     }
 
     pub async fn create_fungible_program(&mut self, init: Init) -> Result<(), MemeError> {
-        debug!("CREATE");
-        // let data = MemeFactoryData::get_mut();
-        // let source = self.exec_context.actor_id().into();
-        // debug!("CREATE data {:?}", data);
-        // for meme_records in data.meme_coins.values() {
-        //     for (_, meme_record) in meme_records {
-        //         if meme_record.name == init.name {
-        //             return Err(MemeError::MemeExists);
-        //         }
-        //     }
-        // }
-        // debug!("CREATE 1");
-        // let payload = ["New".encode(), init.encode()].concat();
+        let data = MemeFactoryData::get_mut();
+        let source = self.exec_context.actor_id().into();
+        for meme_records in data.meme_coins.values() {
+            for (_, meme_record) in meme_records {
+                if meme_record.name == init.name {
+                    return Err(MemeError::MemeExists);
+                }
+            }
+        }
+        let payload = ["New".encode(), init.encode()].concat();
 
-        // let create_program_future = ProgramGenerator::create_program_bytes_with_gas_for_reply(
-        //     data.meme_code_id,
-        //     payload,
-        //     data.gas_for_program,
-        //     0,
-        //     10_000_000_000,
-        // )
-        // .map_err(|e| MemeError::ProgramInitializationFailedWithContext(e.to_string()))?;
-        // debug!("CREATE 2");
-        // let (address, _) = create_program_future
-        //     .await
-        //     .map_err(|e| MemeError::ProgramInitializationFailedWithContext(e.to_string()))?;
-        // debug!("CREATE 3");
-        // data.meme_number = data.meme_number.saturating_add(1);
+        let create_program_future = ProgramGenerator::create_program_bytes_with_gas_for_reply(
+            data.meme_code_id,
+            payload,
+            data.gas_for_program,
+            0,
+            10_000_000_000,
+        )
+        .map_err(|e| MemeError::ProgramInitializationFailedWithContext(e.to_string()))?;
+        let (address, _) = create_program_future
+            .await
+            .map_err(|e| MemeError::ProgramInitializationFailedWithContext(e.to_string()))?;
 
-        // data.id_to_address
-        //     .entry(data.meme_number)
-        //     .or_insert(address);
+        data.meme_number = data.meme_number.saturating_add(1);
 
-        // let meme_record = MemeRecord {
-        //     name: init.name.clone(),
-        //     symbol: init.symbol.clone(),
-        //     decimals: init.decimals,
-        //     meme_program_id: address,
-        //     admins: [init.admin_id].to_vec(),
-        // };
-        // debug!("CREATE 4");
-        // data.meme_coins
-        //     .entry(source)
-        //     .or_default()
-        //     .push((data.meme_number, meme_record));
-        // self.event_trigger
-        //     .trigger(MemeFactoryEvent::MemeCreated {
-        //         meme_id: data.meme_number,
-        //         meme_address: address,
-        //         init,
-        //     })
-        //     .unwrap();
-        // debug!("CREATE 5");
+        data.id_to_address
+            .entry(data.meme_number)
+            .or_insert(address);
+
+        let meme_record = MemeRecord {
+            name: init.name.clone(),
+            symbol: init.symbol.clone(),
+            decimals: init.decimals,
+            meme_program_id: address,
+            admins: [init.admin_id].to_vec(),
+        };
+
+        data.meme_coins
+            .entry(source)
+            .or_default()
+            .push((data.meme_number, meme_record));
+        self.event_trigger
+            .trigger(MemeFactoryEvent::MemeCreated {
+                meme_id: data.meme_number,
+                meme_address: address,
+                init,
+            })
+            .unwrap();
+
         Ok(())
     }
 

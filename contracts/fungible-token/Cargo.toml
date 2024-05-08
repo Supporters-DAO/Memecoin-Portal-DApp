@@ -17,7 +17,6 @@ gwasm-builder = { package = "gear-wasm-builder", version = "1.1.1" }
 parity-scale-codec = { version = "3.6", default-features = false }
 sails-clientgen = { git = "https://github.com/gear-tech/sails" }
 sails-exec-context-gstd = { git = "https://github.com/gear-tech/sails" }
-sails-idl-meta = { git = "https://github.com/gear-tech/sails" }
 sails-idl-gen = { git = "https://github.com/gear-tech/sails" }
 sails-idlparser = { git = "https://github.com/gear-tech/sails" }
 sails = { git = "https://github.com/gear-tech/sails" }
