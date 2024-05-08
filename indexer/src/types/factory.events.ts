@@ -1,7 +1,7 @@
 import { Sails, getFnNamePrefix, getServiceNamePrefix } from "sails-js";
 import { readFileSync } from "fs";
 import { HexString } from "@gear-js/api";
-import { ActorId, InitConfig } from "../factory-types/lib";
+import { ActorId, Init } from "../factory-types/lib";
 import { safeUnwrapToBigInt, safeUnwrapToNumber } from "./event.utils";
 
 let instance: MemeFactoryEventsParser | undefined;
@@ -69,7 +69,7 @@ export class MemeFactoryEventsParser {
         const event = ev as {
           meme_id: number | string;
           meme_address: ActorId;
-          init_config: InitConfig;
+          init_config: Init;
         };
         return {
           type: FactoryEventType.MemeCreated,
@@ -82,10 +82,10 @@ export class MemeFactoryEventsParser {
             initialSupply: safeUnwrapToBigInt(
               event.init_config.initial_supply
             )!,
-            totalSupply: safeUnwrapToBigInt(event.init_config.total_supply)!,
-            admin: event.init_config.admin.toString(),
+            totalSupply: safeUnwrapToBigInt(event.init_config.max_supply)!,
+            admin: event.init_config.admin_id.toString(),
             initialCapacity: safeUnwrapToBigInt(
-              event.init_config.initial_capacity
+              event.init_config.initial_supply
             )!,
             image: event.init_config.external_links.image,
             twitter: event.init_config.external_links.twitter,
