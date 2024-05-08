@@ -4,7 +4,7 @@
 #![allow(unused)]
 
 use crate::admin::utils::Init;
-use gstd::{msg, String};
+use gstd::{debug, msg, String};
 use sails_macros::{gprogram, groute};
 use services::{admin, aggregated, erc20, pausable, roles};
 
@@ -15,6 +15,7 @@ pub struct Program(());
 #[gprogram]
 impl Program {
     pub fn new(init: Init) -> Self {
+        debug!("INIT");
         let roles_service = roles::GstdDrivenService::seed();
         let erc20_service = <erc20::GstdDrivenService>::seed(init.name, init.symbol, init.decimals);
         let pausable_service =
@@ -30,7 +31,7 @@ impl Program {
             init.initial_supply,
             init.max_supply,
         );
-
+        debug!("INIT END");
         Self(())
     }
 

@@ -39,6 +39,14 @@ type ExternalLinks = struct {
   tokenomics: opt str,
 };
 
+type MemeRecord = struct {
+  name: str,
+  symbol: str,
+  decimals: u8,
+  meme_program_id: ActorId,
+  admins: vec ActorId,
+};
+
 constructor {
   New : (config: InitConfigFactory);
 };
@@ -49,6 +57,12 @@ service MemeFactory {
   RemoveMeme : (meme_id: u64) -> result (null, MemeError);
   UpdateCodeId : (new_code_id: CodeId) -> result (null, MemeError);
   UpdateGasForProgram : (new_gas_amount: u64) -> result (null, MemeError);
+  query Admins : () -> vec ActorId;
+  query GasForProgram : () -> u64;
+  query IdToAddress : () -> vec struct { u64, ActorId };
+  query MemNumber : () -> u64;
+  query MemeCodeId : () -> CodeId;
+  query MemeCoins : () -> vec struct { ActorId, vec struct { u64, MemeRecord } };
 
   events {
     MemeCreated: struct { meme_id: u64, meme_address: ActorId, init: Init };

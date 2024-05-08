@@ -18,8 +18,10 @@ sails-idl-meta = { git = "https://github.com/gear-tech/sails" }
 sails-client-gen = { git = "https://github.com/gear-tech/sails" }
 gstd = "1.1.1"
 gtest = "1.1.1"
+gclient  = "1.1.1"
 gear-wasm-builder = "1.1.1"
 parity-scale-codec = { version = "3", default-features = false }
 scale-info = { version = "2", default-features = false }
 log = "0.4.21"
 primitive-types = { version = "*", default-features = false }
+tokio = "1"

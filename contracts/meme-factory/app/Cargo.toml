@@ -18,3 +18,5 @@ debug = ["gstd/debug"]
 
 [dev-dependencies]
 gtest.workspace = true
+gclient.workspace = true
+tokio.workspace = true
