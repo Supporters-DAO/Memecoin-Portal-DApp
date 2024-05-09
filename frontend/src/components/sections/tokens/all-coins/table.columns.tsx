@@ -26,6 +26,11 @@ export const coinsTypesTableColumns: ColumnDef<Token>[] = [
 					width={60}
 					height={60}
 					className="size-15 rounded-full object-cover"
+					onError={(e) => {
+						const target = e.target as HTMLImageElement
+						target.onerror = null // prevents looping
+						target.src = '/images/no-token.png'
+					}}
 				/>
 			</>
 		),

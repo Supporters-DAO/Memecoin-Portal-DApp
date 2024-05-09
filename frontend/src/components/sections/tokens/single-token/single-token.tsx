@@ -92,6 +92,11 @@ export function Token({ token: { id, ...token } }: Props) {
 							height={160}
 							className="relative size-max h-40 max-w-40 rounded-full object-cover"
 							unoptimized={true}
+							onError={(e) => {
+								const target = e.target as HTMLImageElement
+								target.onerror = null // prevents looping
+								target.src = '/images/no-token.png'
+							}}
 						/>
 					</div>
 					<div className="flex flex-col gap-5 font-poppins">

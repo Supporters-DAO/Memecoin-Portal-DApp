@@ -48,6 +48,11 @@ export function AllCoins({ className }: Props) {
 										alt="Coin Image"
 										fill
 										className="object-cover"
+										onError={(e) => {
+											const target = e.target as HTMLImageElement
+											target.onerror = null // prevents looping
+											target.src = '/images/no-token.png'
+										}}
 									/>
 								</div>
 								<div className="grow space-y-1 md:space-y-3">

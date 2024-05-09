@@ -102,6 +102,11 @@ export const ConfirmCreate = ({ data }: Props) => {
 										height={100}
 										unoptimized={true}
 										className="h-25 w-25 rounded-full object-cover"
+										onError={(e) => {
+											const target = e.target as HTMLImageElement
+											target.onerror = null // prevents looping
+											target.src = '/images/no-token.png'
+										}}
 									/>
 								</div>
 

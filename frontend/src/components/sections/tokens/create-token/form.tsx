@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
@@ -16,6 +17,7 @@ import { dataTokenAtom, stepAtom } from '.'
 import { cn } from '@/lib/utils'
 import { BackButton } from '@/components/common/back-button'
 
+
 export const CreateForm = () => {
 	const [step, setStep] = useAtom(stepAtom)
 	const [dataToken, setDataToken] = useAtom(dataTokenAtom)
@@ -23,13 +25,20 @@ export const CreateForm = () => {
 	const {
 		register,
 		handleSubmit,
-		formState: { errors },
+		formState: { errors, touchedFields },
 		control,
+		trigger,
+		watch,
 	} = useForm<ICreateTokenForm>({
 		mode: 'onChange',
 		defaultValues: createTokenDefault,
 		resolver: zodResolver(createTokenSchema),
 	})
+
+	useEffect(() => {
+		trigger('initial_supply')
+		trigger('total_supply')
+	}, [watch('total_supply'), watch('initial_supply')])
 
 	const onSubmit = (data: ICreateTokenForm) => {
 		if (data) {
@@ -150,7 +159,11 @@ export const CreateForm = () => {
 												const value = e.target.value
 												field.onChange(value ? parseInt(value) : null)
 											}}
-											error={error?.message}
+											error={
+												(touchedFields.initial_supply &&
+													(errors.initial_supply?.message || error?.message)) ||
+												''
+											}
 											tooltip="The number of created tokens"
 										/>
 									)}
@@ -165,7 +178,7 @@ export const CreateForm = () => {
 											{...field}
 											label="Total Supply"
 											placeholder="Total number of your memecoins"
-											error={error?.message}
+											error={error?.message || errors.total_supply?.message}
 											type="number"
 											onChange={(e) => {
 												const value = e.target.value
@@ -292,7 +305,7 @@ export const CreateForm = () => {
 						</div> */}
 						<button
 							type="submit"
-							className="font-ps2p mx-auto rounded-lg bg-[#D0D3D9] px-35 py-3 text-black hover:bg-primary"
+							className="mx-auto rounded-lg bg-[#D0D3D9] px-35 py-3 font-ps2p text-black hover:bg-primary"
 						>
 							Next
 						</button>
