@@ -17,7 +17,6 @@ import { dataTokenAtom, stepAtom } from '.'
 import { cn } from '@/lib/utils'
 import { BackButton } from '@/components/common/back-button'
 
-
 export const CreateForm = () => {
 	const [step, setStep] = useAtom(stepAtom)
 	const [dataToken, setDataToken] = useAtom(dataTokenAtom)
@@ -178,7 +177,11 @@ export const CreateForm = () => {
 											{...field}
 											label="Total Supply"
 											placeholder="Total number of your memecoins"
-											error={error?.message || errors.total_supply?.message}
+											error={
+												(touchedFields.total_supply &&
+													(errors.total_supply?.message || error?.message)) ||
+												''
+											}
 											type="number"
 											onChange={(e) => {
 												const value = e.target.value
