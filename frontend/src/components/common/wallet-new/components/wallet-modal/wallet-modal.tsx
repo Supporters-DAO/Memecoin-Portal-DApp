@@ -107,8 +107,7 @@ function WalletModal({ onClose, open, setOpen }: WalletModalProps) {
 			}
 
 			const handleCopyClick = async () => {
-				const decodedAddress = decodeAddress(address)
-				await copyToClipboard({ value: decodedAddress, alert })
+				await copyToClipboard({ value: address, alert })
 				setOpen(false)
 				onClose()
 			}

@@ -50,6 +50,7 @@ export function Input({
 			<div className={clsx(styles.wrapper, error && styles.error)}>
 				<label className="w-full">
 					<input
+						value={value || ''}
 						type={type}
 						className={clsx(styles.input, error && styles.inputError)}
 						placeholder={placeholder}

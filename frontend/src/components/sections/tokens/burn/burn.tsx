@@ -33,7 +33,7 @@ export const BurnCoin = ({ token }: Props) => {
 	const [isPending, setIsPending] = useState(false)
 	const { balances } = useFetchBalances(isPending)
 
-	const [inputAmount, setInputAmount] = useState<number | undefined>(undefined)
+	const [inputAmount, setInputAmount] = useState<number | undefined>(0)
 	const sendMessage = useMessages()
 
 	const tokenBalance = balances.find((b) => b.coin.id === token.id)?.balance
@@ -66,8 +66,10 @@ export const BurnCoin = ({ token }: Props) => {
 		!inputAmount ||
 		inputAmount <= 0 ||
 		isPending ||
-		(tokenBalance && parseFloat(tokenBalance) <= 0)
+		(tokenBalance && parseFloat(tokenBalance) <= 0) ||
+		(tokenBalance && inputAmount > parseFloat(tokenBalance))
 
+	console.log('inputAmount', inputAmount)
 	return (
 		<div className="ju my-10 flex items-start">
 			<BackButton />
@@ -111,7 +113,7 @@ export const BurnCoin = ({ token }: Props) => {
 									className="w-full"
 									value={inputAmount || ''}
 								/>
-								{/* {tokenBalance && (
+								{tokenBalance && (
 									<button
 										className="mt-1 rounded-lg bg-[#2E3B55] px-6 py-3"
 										onClick={() => {
@@ -120,7 +122,7 @@ export const BurnCoin = ({ token }: Props) => {
 									>
 										All
 									</button>
-								)} */}
+								)}
 							</div>
 						</div>
 					</div>

@@ -24,7 +24,7 @@ export const CreateForm = () => {
 	const {
 		register,
 		handleSubmit,
-		formState: { errors, touchedFields },
+		formState: { errors, touchedFields, dirtyFields },
 		control,
 		trigger,
 		watch,
@@ -35,8 +35,10 @@ export const CreateForm = () => {
 	})
 
 	useEffect(() => {
-		trigger('initial_supply')
-		trigger('total_supply')
+		if (dirtyFields.total_supply || dirtyFields.initial_supply) {
+			trigger('initial_supply')
+			trigger('total_supply')
+		}
 	}, [watch('total_supply'), watch('initial_supply')])
 
 	const onSubmit = (data: ICreateTokenForm) => {
