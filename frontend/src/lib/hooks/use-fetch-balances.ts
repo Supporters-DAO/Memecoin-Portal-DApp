@@ -5,11 +5,11 @@ import { useAuth } from './use-auth'
 const endpoint = EXPLORER.BACK
 
 export type Balances = {
-	id: string
+	id: `0x${string}`
 	address: string
 	balance: string
 	coin: {
-		id: string
+		id: `0x${string}`
 	}
 }
 

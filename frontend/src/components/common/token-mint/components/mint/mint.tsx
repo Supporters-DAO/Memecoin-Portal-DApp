@@ -12,7 +12,7 @@ type Props = {
 	isMintModalOpen?: boolean
 	mintModalHandler?: (bool: boolean) => void
 	available: number
-	id: string
+	id: `0x${string}`
 }
 
 export function Mint({
@@ -40,7 +40,7 @@ export function Mint({
 			<MintModal
 				onClose={closeModal}
 				open={isModalOpen}
-				setOpen={openModal}
+				// setOpen={openModal}
 				available={available}
 				id={id}
 			/>

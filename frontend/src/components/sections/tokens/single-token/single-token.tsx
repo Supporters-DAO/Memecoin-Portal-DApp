@@ -18,7 +18,7 @@ export interface IToken {
 	decimals: number
 	distributed: string
 	image: string
-	id: string
+	id: `0x${string}`
 	name: string
 	symbol: string
 	initialSupply: string
@@ -154,12 +154,14 @@ export function Token({ token: { id, ...token } }: Props) {
 							)}
 						</div>
 
-						<div className="flex gap-3">
+						<div className="flex items-center gap-3">
 							{tokenBalance &&
 								parseFloat(tokenBalance) > 0 &&
 								walletAccount && (
 									<Link href={`/tokens/${id}/send/`}>
-										<button className="btn py-3 font-medium">Send</button>
+										<button className="btn items-center py-3 font-medium">
+											Send
+										</button>
 									</Link>
 								)}
 							{isAdmin && (
@@ -167,14 +169,14 @@ export function Token({ token: { id, ...token } }: Props) {
 									{availableMint > 0 && (
 										<button
 											onClick={() => setIsOpenMintModal(true)}
-											className="btn border-2 !border-[#2E3B55] bg-[#0F1B34] py-3 font-medium text-[#FDFDFD]"
+											className="btn items-center border-2 !border-[#2E3B55] bg-[#0F1B34] py-3 font-medium text-[#FDFDFD]"
 										>
 											Mint Tokens
 										</button>
 									)}
 									{tokenBalance && parseFloat(tokenBalance) > 0 && (
 										<Link href={`/tokens/${id}/burn/`}>
-											<button className="btn border-2 !border-[#2E3B55] bg-[#0F1B34] py-3 font-medium text-[#FDFDFD]">
+											<button className="btn items-center border-2 !border-[#2E3B55] bg-[#0F1B34] py-3 font-medium text-[#FDFDFD]">
 												Burn
 											</button>
 										</Link>
@@ -184,29 +186,33 @@ export function Token({ token: { id, ...token } }: Props) {
 						</div>
 					</div>
 				</div>
-				<div className="ml-auto flex h-max w-[30%] flex-col items-end rounded-lg border-2 border-[#2E3B55]">
+				<div className="ml-auto flex h-max min-w-[30%] flex-col items-end rounded-lg border-2 border-[#2E3B55]">
 					<div className="w-full">
-						<div className="flex w-full justify-between p-3">
+						<div className="flex w-full items-center justify-between p-3">
 							<span className="font-poppins text-[12px] font-semibold text-[#FDFDFD]/[80%]">
 								Holders
 							</span>{' '}
-							<p className="text-[12px]">{token.holders}</p>
+							<p className="ml-2 text-[x-small]">
+								{Number(token.holders).toLocaleString('us')}
+							</p>
 						</div>
 					</div>
 					<div className="w-full bg-[#FDFDFD]/[2%]">
-						<div className="flex w-full justify-between p-3">
+						<div className="flex w-full items-center justify-between p-3">
 							<span className="font-poppins text-[12px] font-semibold text-[#FDFDFD]/[80%]">
 								Circulating supply
 							</span>{' '}
-							<p className="text-[12px]">{token.circulatingSupply}</p>
+							<p className="ml-2 text-[x-small]">
+								{Number(token.circulatingSupply).toLocaleString('us')}
+							</p>
 						</div>
 					</div>
 					<div className="w-full">
-						<div className="flex w-full justify-between p-3">
+						<div className="flex w-full items-center justify-between p-3">
 							<span className="font-poppins text-[12px] font-semibold text-[#FDFDFD]/[80%]">
 								Distributed
 							</span>{' '}
-							<p className="text-[12px]">
+							<p className="ml-2 text-[x-small]">
 								{(
 									(Number(token.distributed) / Number(token.maxSupply)) *
 									100
@@ -216,35 +222,43 @@ export function Token({ token: { id, ...token } }: Props) {
 						</div>
 					</div>
 					<div className="w-full bg-[#FDFDFD]/[2%]">
-						<div className="flex w-full justify-between p-3">
+						<div className="flex w-full items-center justify-between p-3">
 							<span className="font-poppins text-[12px] font-semibold text-[#FDFDFD]/[80%]">
 								Burned
 							</span>{' '}
-							<p className="text-[12px]">{token.burned}</p>
+							<p className="ml-2 text-[x-small]">
+								{Number(token.burned).toLocaleString('us')}
+							</p>
 						</div>
 					</div>
 					<div className="w-full">
-						<div className="flex w-full justify-between p-3">
+						<div className="flex w-full items-center justify-between p-3">
 							<span className="font-poppins text-[12px] font-semibold text-[#FDFDFD]/[80%]">
 								Initial Supply
 							</span>{' '}
-							<p className="text-[12px]">{token.initialSupply}</p>
+							<p className="ml-2 text-[x-small]">
+								{Number(token.initialSupply).toLocaleString('us')}
+							</p>
 						</div>
 					</div>
 					<div className="w-full bg-[#FDFDFD]/[2%]">
-						<div className="flex w-full justify-between p-3">
+						<div className="flex w-full items-center justify-between p-3">
 							<span className="font-poppins text-[12px] font-semibold text-[#FDFDFD]/[80%]">
-								Total Supply
+								Max Supply
 							</span>{' '}
-							<p className="text-[12px]">{token.maxSupply}</p>
+							<p className="ml-2 text-[x-small]">
+								{Number(token.maxSupply).toLocaleString('us')}
+							</p>
 						</div>
 					</div>
 					<div className="w-full">
-						<div className="flex w-full justify-between p-3">
+						<div className="flex w-full items-center justify-between p-3">
 							<span className="font-poppins text-[12px] font-semibold text-[#FDFDFD]/[80%]">
 								Decimals
 							</span>{' '}
-							<p className="text-[12px]">{token.decimals}</p>
+							<p className="ml-2 text-[x-small]">
+								{Number(token.decimals).toLocaleString('us')}
+							</p>
 						</div>
 					</div>
 				</div>

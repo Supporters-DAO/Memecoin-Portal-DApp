@@ -11,7 +11,14 @@ import { useMessages } from '@/lib/sails/use-send-message-ft'
 import { useAuth } from '@/lib/hooks/use-auth'
 import action from '@/app/actions'
 
-export const MintModal = ({ onClose, open, setOpen, id, available }: any) => {
+type Props = {
+	onClose: () => void
+	open: boolean
+	id: `0x${string}`
+	available: number
+}
+
+export const MintModal = ({ onClose, open, id, available }: Props) => {
 	const { walletAccount } = useAuth()
 	const [isPending, setIsPending] = useState(false)
 	const [inputAmount, setInputAmount] = useState<number>()
@@ -79,6 +86,7 @@ export const MintModal = ({ onClose, open, setOpen, id, available }: any) => {
 									</div>
 									<div className={styles.body}>
 										<Input
+											value={inputAmount}
 											label="Amount"
 											placeholder="Set amount"
 											type="number"
@@ -86,7 +94,7 @@ export const MintModal = ({ onClose, open, setOpen, id, available }: any) => {
 										/>
 										<div className={styles.available}>
 											Available:
-											<span className={styles.availableCount}>{available}</span>
+											<span className={styles.availableCount}>{available.toLocaleString('us')}</span>
 										</div>
 									</div>
 									<div className={styles.button}>

@@ -10,7 +10,7 @@ export type Token = {
 	decimals: number
 	distributed: string
 	image: string
-	id: string
+	id: `0x${string}`
 	name: string
 	symbol: string
 	initialSupply: string

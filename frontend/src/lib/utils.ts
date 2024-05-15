@@ -65,3 +65,14 @@ export const prettyWord = (word: string) => {
 export const isValidHexString = (value: string): value is HexString => {
 	return /^0x[0-9A-Fa-f]+$/.test(value)
 }
+
+export function compactFormatNumber(
+	num: number,
+	options: Intl.NumberFormatOptions = {
+		notation: 'compact',
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2,
+	}
+) {
+	return Intl.NumberFormat('en-US', options).format(num)
+}

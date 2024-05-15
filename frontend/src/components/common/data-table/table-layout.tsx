@@ -25,7 +25,7 @@ export function TableLayout<TData>({
 				className="text-[14px]/[1.5] text-white [&_th]:pb-2"
 			/>
 
-			<TableBody className="border-t border-[#FDFDFD]/[4%] text-[16px]/[1.5] [&_td:first-child]:pl-4 lg:[&_td:last-child]:pr-4">
+			<TableBody className="border-t border-[#FDFDFD]/[4%] text-[16px]/[1.5] [&_td:first-child]:px-4 lg:[&_td:last-child]:pr-4">
 				{isLoading ? (
 					<TableRowSkeleton table={table} />
 				) : table.getRowModel().rows?.length > 0 ? (

@@ -134,6 +134,7 @@ export const SendAdmin = ({ id, tokenBalance }: Props) => {
 			<span className="text-[13px]">Each address should be on a new line</span>
 			<div className="mt-3">
 				<Input
+					value={inputAmount}
 					label="Amount"
 					placeholder="Set amount"
 					type="number"

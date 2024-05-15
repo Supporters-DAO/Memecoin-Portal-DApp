@@ -2,7 +2,7 @@ import { ColumnDef } from '@tanstack/react-table'
 import { type AlertContainerFactory, useAlert } from '@gear-js/react-hooks'
 import Image from 'next/image'
 
-import { copyToClipboard, prettyWord } from '@/lib/utils'
+import { compactFormatNumber, copyToClipboard, prettyWord } from '@/lib/utils'
 import { Sprite } from '@/components/ui/sprite'
 import {
 	DropdownMenu,
@@ -73,7 +73,7 @@ export const coinsTypesTableColumns: ColumnDef<Token>[] = [
 		id: 'initialSupply',
 		cell: (info) => (
 			<div className="text-right">
-				{Number(info.row.original.initialSupply).toLocaleString('us')}
+				{compactFormatNumber(Number(info.row.original.initialSupply))}
 			</div>
 		),
 		header: () => (
@@ -86,11 +86,11 @@ export const coinsTypesTableColumns: ColumnDef<Token>[] = [
 		id: 'maxSupply',
 		cell: (info) => (
 			<div className="text-right">
-				{Number(info.row.original.maxSupply).toLocaleString('us')}
+				{compactFormatNumber(Number(info.row.original.maxSupply))}
 			</div>
 		),
 		header: () => (
-			<div className="group flex items-center justify-end">Total Supply</div>
+			<div className="group flex items-center justify-end">Max Supply</div>
 		),
 		enableSorting: false,
 	},
@@ -99,7 +99,7 @@ export const coinsTypesTableColumns: ColumnDef<Token>[] = [
 		id: 'circulatingSupply',
 		cell: (info) => (
 			<div className="text-right">
-				{Number(info.row.original.circulatingSupply).toLocaleString('us')}
+				{compactFormatNumber(Number(info.row.original.circulatingSupply))}
 			</div>
 		),
 		header: () => (
@@ -170,7 +170,7 @@ export const coinsTypesTableColumns: ColumnDef<Token>[] = [
 	},
 ]
 
-function TokenId(id: string) {
+function TokenId(id: `0x${string}`) {
 	const alert = useAlert()
 
 	return (
@@ -183,17 +183,18 @@ function TokenId(id: string) {
 	)
 }
 
-function Balance(id: string) {
+function Balance(id: `0x${string}`) {
 	const { balances } = useFetchBalances()
+	const balance = balances.find((b) => b.coin.id === id)?.balance || 0
 
 	return (
 		<div className="flex items-center justify-center gap-3 text-center">
-			{balances.find((b) => b.coin.id === id)?.balance || 0}
+			{compactFormatNumber(Number(balance))}
 		</div>
 	)
 }
 
-function Buttons(id: string, availableMint: number) {
+function Buttons(id: `0x${string}`, availableMint: number) {
 	const [isOpenMintModal, setIsOpenMintModal] = useState(false)
 	const [open, setOpen] = useState(false)
 	const router = useRouter()
@@ -209,7 +210,7 @@ function Buttons(id: string, availableMint: number) {
 
 			<DropdownMenu open={open} onOpenChange={setOpen}>
 				<DropdownMenuTrigger asChild>
-					<button type="button" className="link-primary -mr-2 inline-flex p-2 ">
+					<button type="button" className="link-primary -mr-2 inline-flex">
 						<Sprite name="more" color="white" className="size-6" />
 					</button>
 				</DropdownMenuTrigger>

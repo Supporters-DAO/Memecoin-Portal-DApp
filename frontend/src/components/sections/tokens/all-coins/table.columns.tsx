@@ -2,7 +2,7 @@ import { ColumnDef } from '@tanstack/react-table'
 import { type AlertContainerFactory, useAlert } from '@gear-js/react-hooks'
 import Image from 'next/image'
 
-import { copyToClipboard, prettyWord } from '@/lib/utils'
+import { compactFormatNumber, copyToClipboard, prettyWord } from '@/lib/utils'
 import { Sprite } from '@/components/ui/sprite'
 import { Token } from '@/lib/hooks/use-fetch-coins'
 
@@ -62,7 +62,7 @@ export const coinsTypesTableColumns: ColumnDef<Token>[] = [
 		id: 'initialSupply',
 		cell: (info) => (
 			<div className="text-right">
-				{Number(info.row.original.initialSupply).toLocaleString('us')}
+				{compactFormatNumber(Number(info.row.original.initialSupply))}
 			</div>
 		),
 		header: () => (
@@ -75,11 +75,11 @@ export const coinsTypesTableColumns: ColumnDef<Token>[] = [
 		id: 'maxSupply',
 		cell: (info) => (
 			<div className="text-right">
-				{Number(info.row.original.maxSupply).toLocaleString('us')}
+				{compactFormatNumber(Number(info.row.original.maxSupply))}
 			</div>
 		),
 		header: () => (
-			<div className="group flex items-center justify-end">Total Supply</div>
+			<div className="group flex items-center justify-end">Max Supply</div>
 		),
 		enableSorting: false,
 	},
@@ -88,7 +88,7 @@ export const coinsTypesTableColumns: ColumnDef<Token>[] = [
 		id: 'circulatingSupply',
 		cell: (info) => (
 			<div className="text-right">
-				{Number(info.row.original.circulatingSupply).toLocaleString('us')}
+				{compactFormatNumber(Number(info.row.original.circulatingSupply))}
 			</div>
 		),
 		header: () => (
@@ -138,7 +138,7 @@ export const coinsTypesTableColumns: ColumnDef<Token>[] = [
 	},
 ]
 
-function TokenId(id: string) {
+function TokenId(id: `0x${string}`) {
 	const alert = useAlert()
 
 	return (

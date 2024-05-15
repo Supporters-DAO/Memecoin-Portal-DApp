@@ -54,6 +54,7 @@ export const SendUser = ({ id, from }: Props) => {
 			/>
 			<div className="mt-3">
 				<Input
+					value={inputAmount}
 					label="Amount"
 					placeholder="Set amount"
 					type="number"

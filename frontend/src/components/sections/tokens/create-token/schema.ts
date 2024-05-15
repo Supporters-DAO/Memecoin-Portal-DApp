@@ -78,11 +78,11 @@ export const createTokenSchema = z
 			.refine((val) => val !== null, { message: 'Required' })
 			.transform((value) => value ?? null),
 
-		total_supply: z
+		max_supply: z
 			.number()
-			.min(2, { message: 'Total Supply must be at least 2 characters long' })
+			.min(2, { message: 'Max Supply must be at least 2 characters long' })
 			.max(3000000000000, {
-				message: 'Total Supply must be no more than 3000000000000',
+				message: 'Max Supply must be no more than 3000000000000',
 			})
 			.positive()
 			.nullable()
@@ -92,25 +92,25 @@ export const createTokenSchema = z
 	.refine(
 		(data) =>
 			data.initial_supply &&
-			data.total_supply &&
+			data.max_supply &&
 			data.initial_supply > 0 &&
-			data.total_supply > 0 &&
-			data.initial_supply <= data.total_supply,
+			data.max_supply > 0 &&
+			data.initial_supply <= data.max_supply,
 		{
-			message: 'Initial Supply cannot be greater than Total Supply',
+			message: 'Initial Supply cannot be greater than Max Supply',
 			path: ['initial_supply'],
 		}
 	)
 	.refine(
 		(data) =>
 			data.initial_supply &&
-			data.total_supply &&
+			data.max_supply &&
 			data.initial_supply > 0 &&
-			data.total_supply > 0 &&
-			data.total_supply >= data.initial_supply,
+			data.max_supply > 0 &&
+			data.max_supply >= data.initial_supply,
 		{
-			message: 'Initial Supply cannot be greater than Total Supply',
-			path: ['total_supply'],
+			message: 'Initial Supply cannot be greater than Max Supply',
+			path: ['max_supply'],
 		}
 	)
 
@@ -130,5 +130,5 @@ export const createTokenDefault = {
 		tokenomics: '',
 	},
 	initial_supply: null,
-	total_supply: null,
+	max_supply: null,
 } satisfies ICreateTokenForm

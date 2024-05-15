@@ -35,11 +35,11 @@ export const CreateForm = () => {
 	})
 
 	useEffect(() => {
-		if (dirtyFields.total_supply || dirtyFields.initial_supply) {
+		if (dirtyFields.max_supply || dirtyFields.initial_supply) {
 			trigger('initial_supply')
-			trigger('total_supply')
+			trigger('max_supply')
 		}
-	}, [watch('total_supply'), watch('initial_supply')])
+	}, [watch('max_supply'), watch('initial_supply')])
 
 	const onSubmit = (data: ICreateTokenForm) => {
 		if (data) {
@@ -172,16 +172,16 @@ export const CreateForm = () => {
 							</div>
 							<div className="flex w-full flex-col gap-2">
 								<Controller
-									name="total_supply"
+									name="max_supply"
 									control={control}
 									render={({ field, fieldState: { error } }) => (
 										<Input
 											{...field}
-											label="Total Supply"
+											label="Max Supply"
 											placeholder="Total number of your memecoins"
 											error={
-												(touchedFields.total_supply &&
-													(errors.total_supply?.message || error?.message)) ||
+												(touchedFields.max_supply &&
+													(errors.max_supply?.message || error?.message)) ||
 												''
 											}
 											type="number"

@@ -41,7 +41,7 @@ export const ConfirmCreate = ({ data }: Props) => {
 						tokenomics: data?.external_links?.tokenomics || null,
 					},
 					initial_supply: data.initial_supply || 0,
-					max_supply: data.total_supply || 0,
+					max_supply: data.max_supply || 0,
 					admin_id: account.decodedAddress,
 				})
 
@@ -134,8 +134,8 @@ export const ConfirmCreate = ({ data }: Props) => {
 									</div>
 
 									<div className="w-1/2">
-										<span className="text-sm text-[#A4AAB6]">Total Supply</span>
-										<p>{data.total_supply?.toLocaleString('us')}</p>
+										<span className="text-sm text-[#A4AAB6]">Max Supply</span>
+										<p>{data.max_supply?.toLocaleString('us')}</p>
 									</div>
 								</div>
 
