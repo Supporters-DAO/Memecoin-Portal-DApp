@@ -1,7 +1,6 @@
-// @ts-noCheck
-
-import { GearApi } from '@gear-js/api';
+import { GearApi, decodeAddress } from '@gear-js/api';
 import { TypeRegistry } from '@polkadot/types';
+// @ts-ignore
 import { TransactionBuilder, getServiceNamePrefix, getFnNamePrefix, ZERO_ADDRESS } from 'sails-js';
 
 export interface InitConfigFactory {
@@ -40,6 +39,14 @@ export interface ExternalLinks {
   tokenomics: string | null;
 }
 
+export interface MemeRecord {
+  name: string;
+  symbol: string;
+  decimals: number | string;
+  meme_program_id: ActorId;
+  admins: Array<ActorId>;
+}
+
 export class Program {
   public readonly registry: TypeRegistry;
   public readonly memeFactory: MemeFactory;
@@ -52,6 +59,7 @@ export class Program {
       MemeError: {"_enum":{"ProgramInitializationFailedWithContext":"String","Unauthorized":"Null","MemeExists":"Null","MemeNotFound":"Null"}},
       Init: {"name":"String","symbol":"String","decimals":"u8","description":"String","external_links":"ExternalLinks","initial_supply":"U256","max_supply":"U256","admin_id":"ActorId"},
       ExternalLinks: {"image":"String","website":"Option<String>","telegram":"Option<String>","twitter":"Option<String>","discord":"Option<String>","tokenomics":"Option<String>"},
+      MemeRecord: {"name":"String","symbol":"String","decimals":"u8","meme_program_id":"ActorId","admins":"Vec<ActorId>"},
     }
 
     this.registry = new TypeRegistry();
@@ -160,6 +168,102 @@ export class MemeFactory {
     );
   }
 
+  public async admins(originAddress: string, value?: number | string | bigint, atBlock?: `0x${string}`): Promise<Array<ActorId>> {
+    const payload = this._program.registry.createType('(String, String)', '[MemeFactory, Admins]').toHex();
+    const reply = await this._program.api.message.calculateReply({
+      // @ts-ignore
+      destination: this._program.programId,
+      origin: decodeAddress(originAddress),
+      payload,
+      value: value || 0,
+      gasLimit: this._program.api.blockGasLimit.toBigInt(),
+      // @ts-ignore
+      at: atBlock || null,
+    });
+    const result = this._program.registry.createType('(String, String, Vec<ActorId>)', reply.payload);
+    return result[2].toJSON() as unknown as Array<ActorId>;
+  }
+
+  public async gasForProgram(originAddress: string, value?: number | string | bigint, atBlock?: `0x${string}`): Promise<number | string> {
+    const payload = this._program.registry.createType('(String, String)', '[MemeFactory, GasForProgram]').toHex();
+    const reply = await this._program.api.message.calculateReply({
+      // @ts-ignore
+      destination: this._program.programId,
+      origin: decodeAddress(originAddress),
+      payload,
+      value: value || 0,
+      gasLimit: this._program.api.blockGasLimit.toBigInt(),
+      // @ts-ignore
+      at: atBlock || null,
+    });
+    const result = this._program.registry.createType('(String, String, u64)', reply.payload);
+    return result[2].toBigInt() as unknown as number | string;
+  }
+
+  public async idToAddress(originAddress: string, value?: number | string | bigint, atBlock?: `0x${string}`): Promise<Array<[number | string, ActorId]>> {
+    const payload = this._program.registry.createType('(String, String)', '[MemeFactory, IdToAddress]').toHex();
+    const reply = await this._program.api.message.calculateReply({
+      // @ts-ignore
+      destination: this._program.programId,
+      origin: decodeAddress(originAddress),
+      payload,
+      value: value || 0,
+      gasLimit: this._program.api.blockGasLimit.toBigInt(),
+      // @ts-ignore
+      at: atBlock || null,
+    });
+    const result = this._program.registry.createType('(String, String, Vec<(u64, ActorId)>)', reply.payload);
+    return result[2].toJSON() as unknown as Array<[number | string, ActorId]>;
+  }
+
+  public async memNumber(originAddress: string, value?: number | string | bigint, atBlock?: `0x${string}`): Promise<number | string> {
+    const payload = this._program.registry.createType('(String, String)', '[MemeFactory, MemNumber]').toHex();
+    const reply = await this._program.api.message.calculateReply({
+      // @ts-ignore
+      destination: this._program.programId,
+      origin: decodeAddress(originAddress),
+      payload,
+      value: value || 0,
+      gasLimit: this._program.api.blockGasLimit.toBigInt(),
+      // @ts-ignore
+      at: atBlock || null,
+    });
+    const result = this._program.registry.createType('(String, String, u64)', reply.payload);
+    return result[2].toBigInt() as unknown as number | string;
+  }
+
+  public async memeCodeId(originAddress: string, value?: number | string | bigint, atBlock?: `0x${string}`): Promise<CodeId> {
+    const payload = this._program.registry.createType('(String, String)', '[MemeFactory, MemeCodeId]').toHex();
+    const reply = await this._program.api.message.calculateReply({
+      // @ts-ignore
+      destination: this._program.programId,
+      origin: decodeAddress(originAddress),
+      payload,
+      value: value || 0,
+      gasLimit: this._program.api.blockGasLimit.toBigInt(),
+      // @ts-ignore
+      at: atBlock || null,
+    });
+    const result = this._program.registry.createType('(String, String, CodeId)', reply.payload);
+    return result[2].toJSON() as unknown as CodeId;
+  }
+
+  public async memeCoins(originAddress: string, value?: number | string | bigint, atBlock?: `0x${string}`): Promise<Array<[ActorId, Array<[number | string, MemeRecord]>]>> {
+    const payload = this._program.registry.createType('(String, String)', '[MemeFactory, MemeCoins]').toHex();
+    const reply = await this._program.api.message.calculateReply({
+      // @ts-ignore
+      destination: this._program.programId,
+      origin: decodeAddress(originAddress),
+      payload,
+      value: value || 0,
+      gasLimit: this._program.api.blockGasLimit.toBigInt(),
+      // @ts-ignore
+      at: atBlock || null,
+    });
+    const result = this._program.registry.createType('(String, String, Vec<(ActorId, Vec<(u64, MemeRecord)>)>)', reply.payload);
+    return result[2].toJSON() as unknown as Array<[ActorId, Array<[number | string, MemeRecord]>]>;
+  }
+
   public subscribeToMemeCreatedEvent(callback: (data: { meme_id: number | string; meme_address: ActorId; init: Init }) => void | Promise<void>): Promise<() => void> {
     return this._program.api.gearEvents.subscribeToGearEvent('UserMessageSent', ({ data: { message } }) => {;
       if (!message.source.eq(this._program.programId) || !message.destination.eq(ZERO_ADDRESS)) {
@@ -168,7 +272,7 @@ export class MemeFactory {
 
       const payload = message.payload.toHex();
       if (getServiceNamePrefix(payload) === 'MemeFactory' && getFnNamePrefix(payload) === 'MemeCreated') {
-        callback(this._program.registry.createType('(String, String, {"meme_id":"u64","meme_address":"ActorId","init":"Init"})', message.payload)[2].toJSON() as { meme_id: number | string; meme_address: ActorId; init: Init });
+        callback(this._program.registry.createType('(String, String, {"meme_id":"u64","meme_address":"ActorId","init":"Init"})', message.payload)[2].toJSON() as unknown as { meme_id: number | string; meme_address: ActorId; init: Init });
       }
     });
   }

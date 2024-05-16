@@ -1,7 +1,6 @@
-// @ts-nocheck
-
 import { GearApi, decodeAddress } from '@gear-js/api';
 import { TypeRegistry } from '@polkadot/types';
+// @ts-ignore
 import { TransactionBuilder, getServiceNamePrefix, getFnNamePrefix, ZERO_ADDRESS } from 'sails-js';
 
 export interface Init {
@@ -24,16 +23,17 @@ export interface ExternalLinks {
   tokenomics: string | null;
 }
 
-export type ActorId = [Array<number | string>];
+export type ActorId = `0x${string}`;
 
 export type Role = "admin" | "burner" | "minter";
+
+export type Error = "paused";
 
 export class Program {
   public readonly registry: TypeRegistry;
   public readonly admin: Admin;
   public readonly erc20: Erc20;
   public readonly pausable: Pausable;
-  public readonly roles: Roles;
 
   constructor(public api: GearApi, public programId?: `0x${string}`) {
     const types: Record<string, any> = {
@@ -41,6 +41,7 @@ export class Program {
       ExternalLinks: {"image":"String","website":"Option<String>","telegram":"Option<String>","twitter":"Option<String>","discord":"Option<String>","tokenomics":"Option<String>"},
       ActorId: "([u8; 32])",
       Role: {"_enum":["Admin","Burner","Minter"]},
+      Error: {"_enum":["Paused"]},
     }
 
     this.registry = new TypeRegistry();
@@ -50,7 +51,6 @@ export class Program {
     this.admin = new Admin(this);
     this.erc20 = new Erc20(this);
     this.pausable = new Pausable(this);
-    this.roles = new Roles(this);
   }
 
   newCtorFromCode(code: Uint8Array | Buffer, init: Init): TransactionBuilder<null> {
@@ -194,11 +194,13 @@ export class Admin {
   public async allowances(skip: number | string, take: number | string, originAddress: string, value?: number | string | bigint, atBlock?: `0x${string}`): Promise<Array<[[`0x${string}` | Uint8Array, `0x${string}` | Uint8Array], number | string]>> {
     const payload = this._program.registry.createType('(String, String, u32, u32)', ['Admin', 'Allowances', skip, take]).toHex();
     const reply = await this._program.api.message.calculateReply({
+      // @ts-ignore
       destination: this._program.programId,
       origin: decodeAddress(originAddress),
       payload,
       value: value || 0,
       gasLimit: this._program.api.blockGasLimit.toBigInt(),
+      // @ts-ignore
       at: atBlock || null,
     });
     const result = this._program.registry.createType('(String, String, Vec<(([u8;32], [u8;32]), U256)>)', reply.payload);
@@ -208,11 +210,13 @@ export class Admin {
   public async balances(skip: number | string, take: number | string, originAddress: string, value?: number | string | bigint, atBlock?: `0x${string}`): Promise<Array<[`0x${string}` | Uint8Array, number | string]>> {
     const payload = this._program.registry.createType('(String, String, u32, u32)', ['Admin', 'Balances', skip, take]).toHex();
     const reply = await this._program.api.message.calculateReply({
+      // @ts-ignore
       destination: this._program.programId,
       origin: decodeAddress(originAddress),
       payload,
       value: value || 0,
       gasLimit: this._program.api.blockGasLimit.toBigInt(),
+      // @ts-ignore
       at: atBlock || null,
     });
     const result = this._program.registry.createType('(String, String, Vec<([u8;32], U256)>)', reply.payload);
@@ -222,11 +226,13 @@ export class Admin {
   public async description(originAddress: string, value?: number | string | bigint, atBlock?: `0x${string}`): Promise<string> {
     const payload = this._program.registry.createType('(String, String)', '[Admin, Description]').toHex();
     const reply = await this._program.api.message.calculateReply({
+      // @ts-ignore
       destination: this._program.programId,
       origin: decodeAddress(originAddress),
       payload,
       value: value || 0,
       gasLimit: this._program.api.blockGasLimit.toBigInt(),
+      // @ts-ignore
       at: atBlock || null,
     });
     const result = this._program.registry.createType('(String, String, String)', reply.payload);
@@ -236,11 +242,13 @@ export class Admin {
   public async externalLinks(originAddress: string, value?: number | string | bigint, atBlock?: `0x${string}`): Promise<ExternalLinks> {
     const payload = this._program.registry.createType('(String, String)', '[Admin, ExternalLinks]').toHex();
     const reply = await this._program.api.message.calculateReply({
+      // @ts-ignore
       destination: this._program.programId,
       origin: decodeAddress(originAddress),
       payload,
       value: value || 0,
       gasLimit: this._program.api.blockGasLimit.toBigInt(),
+      // @ts-ignore
       at: atBlock || null,
     });
     const result = this._program.registry.createType('(String, String, ExternalLinks)', reply.payload);
@@ -250,11 +258,13 @@ export class Admin {
   public async mapsData(originAddress: string, value?: number | string | bigint, atBlock?: `0x${string}`): Promise<[[number | string, number | string], [number | string, number | string]]> {
     const payload = this._program.registry.createType('(String, String)', '[Admin, MapsData]').toHex();
     const reply = await this._program.api.message.calculateReply({
+      // @ts-ignore
       destination: this._program.programId,
       origin: decodeAddress(originAddress),
       payload,
       value: value || 0,
       gasLimit: this._program.api.blockGasLimit.toBigInt(),
+      // @ts-ignore
       at: atBlock || null,
     });
     const result = this._program.registry.createType('(String, String, ((u32, u32), (u32, u32)))', reply.payload);
@@ -264,11 +274,13 @@ export class Admin {
   public async maxSupply(originAddress: string, value?: number | string | bigint, atBlock?: `0x${string}`): Promise<number | string> {
     const payload = this._program.registry.createType('(String, String)', '[Admin, MaxSupply]').toHex();
     const reply = await this._program.api.message.calculateReply({
+      // @ts-ignore
       destination: this._program.programId,
       origin: decodeAddress(originAddress),
       payload,
       value: value || 0,
       gasLimit: this._program.api.blockGasLimit.toBigInt(),
+      // @ts-ignore
       at: atBlock || null,
     });
     const result = this._program.registry.createType('(String, String, U256)', reply.payload);
@@ -373,11 +385,13 @@ export class Erc20 {
   public async allowance(owner: `0x${string}` | Uint8Array, spender: `0x${string}` | Uint8Array, originAddress: string, value?: number | string | bigint, atBlock?: `0x${string}`): Promise<number | string> {
     const payload = this._program.registry.createType('(String, String, [u8;32], [u8;32])', ['Erc20', 'Allowance', owner, spender]).toHex();
     const reply = await this._program.api.message.calculateReply({
+      // @ts-ignore
       destination: this._program.programId,
       origin: decodeAddress(originAddress),
       payload,
       value: value || 0,
       gasLimit: this._program.api.blockGasLimit.toBigInt(),
+      // @ts-ignore
       at: atBlock || null,
     });
     const result = this._program.registry.createType('(String, String, U256)', reply.payload);
@@ -387,11 +401,13 @@ export class Erc20 {
   public async balanceOf(owner: `0x${string}` | Uint8Array, originAddress: string, value?: number | string | bigint, atBlock?: `0x${string}`): Promise<number | string> {
     const payload = this._program.registry.createType('(String, String, [u8;32])', ['Erc20', 'BalanceOf', owner]).toHex();
     const reply = await this._program.api.message.calculateReply({
+      // @ts-ignore
       destination: this._program.programId,
       origin: decodeAddress(originAddress),
       payload,
       value: value || 0,
       gasLimit: this._program.api.blockGasLimit.toBigInt(),
+      // @ts-ignore
       at: atBlock || null,
     });
     const result = this._program.registry.createType('(String, String, U256)', reply.payload);
@@ -401,11 +417,13 @@ export class Erc20 {
   public async decimals(originAddress: string, value?: number | string | bigint, atBlock?: `0x${string}`): Promise<number | string> {
     const payload = this._program.registry.createType('(String, String)', '[Erc20, Decimals]').toHex();
     const reply = await this._program.api.message.calculateReply({
+      // @ts-ignore
       destination: this._program.programId,
       origin: decodeAddress(originAddress),
       payload,
       value: value || 0,
       gasLimit: this._program.api.blockGasLimit.toBigInt(),
+      // @ts-ignore
       at: atBlock || null,
     });
     const result = this._program.registry.createType('(String, String, u8)', reply.payload);
@@ -415,11 +433,13 @@ export class Erc20 {
   public async name(originAddress: string, value?: number | string | bigint, atBlock?: `0x${string}`): Promise<string> {
     const payload = this._program.registry.createType('(String, String)', '[Erc20, Name]').toHex();
     const reply = await this._program.api.message.calculateReply({
+      // @ts-ignore
       destination: this._program.programId,
       origin: decodeAddress(originAddress),
       payload,
       value: value || 0,
       gasLimit: this._program.api.blockGasLimit.toBigInt(),
+      // @ts-ignore
       at: atBlock || null,
     });
     const result = this._program.registry.createType('(String, String, String)', reply.payload);
@@ -429,11 +449,13 @@ export class Erc20 {
   public async symbol(originAddress: string, value?: number | string | bigint, atBlock?: `0x${string}`): Promise<string> {
     const payload = this._program.registry.createType('(String, String)', '[Erc20, Symbol]').toHex();
     const reply = await this._program.api.message.calculateReply({
+      // @ts-ignore
       destination: this._program.programId,
       origin: decodeAddress(originAddress),
       payload,
       value: value || 0,
       gasLimit: this._program.api.blockGasLimit.toBigInt(),
+      // @ts-ignore
       at: atBlock || null,
     });
     const result = this._program.registry.createType('(String, String, String)', reply.payload);
@@ -443,11 +465,13 @@ export class Erc20 {
   public async totalSupply(originAddress: string, value?: number | string | bigint, atBlock?: `0x${string}`): Promise<number | string> {
     const payload = this._program.registry.createType('(String, String)', '[Erc20, TotalSupply]').toHex();
     const reply = await this._program.api.message.calculateReply({
+      // @ts-ignore
       destination: this._program.programId,
       origin: decodeAddress(originAddress),
       payload,
       value: value || 0,
       gasLimit: this._program.api.blockGasLimit.toBigInt(),
+      // @ts-ignore
       at: atBlock || null,
     });
     const result = this._program.registry.createType('(String, String, U256)', reply.payload);
@@ -523,14 +547,32 @@ export class Pausable {
     );
   }
 
-  public async isPaused(originAddress: string, value?: number | string | bigint, atBlock?: `0x${string}`): Promise<boolean> {
-    const payload = this._program.registry.createType('(String, String)', '[Pausable, IsPaused]').toHex();
+  public async ensureUnpaused(originAddress: string, value?: number | string | bigint, atBlock?: `0x${string}`): Promise<{ ok: null } | { err: Error }> {
+    const payload = this._program.registry.createType('(String, String)', '[Pausable, EnsureUnpaused]').toHex();
     const reply = await this._program.api.message.calculateReply({
+      // @ts-ignore
       destination: this._program.programId,
       origin: decodeAddress(originAddress),
       payload,
       value: value || 0,
       gasLimit: this._program.api.blockGasLimit.toBigInt(),
+      // @ts-ignore
+      at: atBlock || null,
+    });
+    const result = this._program.registry.createType('(String, String, Result<Null, Error>)', reply.payload);
+    return result[2].toJSON() as unknown as { ok: null } | { err: Error };
+  }
+
+  public async isPaused(originAddress: string, value?: number | string | bigint, atBlock?: `0x${string}`): Promise<boolean> {
+    const payload = this._program.registry.createType('(String, String)', '[Pausable, IsPaused]').toHex();
+    const reply = await this._program.api.message.calculateReply({
+      // @ts-ignore
+      destination: this._program.programId,
+      origin: decodeAddress(originAddress),
+      payload,
+      value: value || 0,
+      gasLimit: this._program.api.blockGasLimit.toBigInt(),
+      // @ts-ignore
       at: atBlock || null,
     });
     const result = this._program.registry.createType('(String, String, bool)', reply.payload);
@@ -559,64 +601,6 @@ export class Pausable {
       const payload = message.payload.toHex();
       if (getServiceNamePrefix(payload) === 'Pausable' && getFnNamePrefix(payload) === 'Unpaused') {
         callback(null);
-      }
-    });
-  }
-}
-
-export class Roles {
-  constructor(private _program: Program) {}
-
-  public async hasRole(actor: `0x${string}` | Uint8Array, role: string, originAddress: string, value?: number | string | bigint, atBlock?: `0x${string}`): Promise<boolean> {
-    const payload = this._program.registry.createType('(String, String, [u8;32], String)', ['Roles', 'HasRole', actor, role]).toHex();
-    const reply = await this._program.api.message.calculateReply({
-      destination: this._program.programId,
-      origin: decodeAddress(originAddress),
-      payload,
-      value: value || 0,
-      gasLimit: this._program.api.blockGasLimit.toBigInt(),
-      at: atBlock || null,
-    });
-    const result = this._program.registry.createType('(String, String, bool)', reply.payload);
-    return result[2].toJSON() as unknown as boolean;
-  }
-
-  public async roles(originAddress: string, value?: number | string | bigint, atBlock?: `0x${string}`): Promise<Array<string>> {
-    const payload = this._program.registry.createType('(String, String)', '[Roles, Roles]').toHex();
-    const reply = await this._program.api.message.calculateReply({
-      destination: this._program.programId,
-      origin: decodeAddress(originAddress),
-      payload,
-      value: value || 0,
-      gasLimit: this._program.api.blockGasLimit.toBigInt(),
-      at: atBlock || null,
-    });
-    const result = this._program.registry.createType('(String, String, Vec<String>)', reply.payload);
-    return result[2].toJSON() as unknown as Array<string>;
-  }
-
-  public subscribeToRoleGrantedEvent(callback: (data: { actor: `0x${string}` | Uint8Array; role: string }) => void | Promise<void>): Promise<() => void> {
-    return this._program.api.gearEvents.subscribeToGearEvent('UserMessageSent', ({ data: { message } }) => {;
-      if (!message.source.eq(this._program.programId) || !message.destination.eq(ZERO_ADDRESS)) {
-        return;
-      }
-
-      const payload = message.payload.toHex();
-      if (getServiceNamePrefix(payload) === 'Roles' && getFnNamePrefix(payload) === 'RoleGranted') {
-        callback(this._program.registry.createType('(String, String, {"actor":"[u8;32]","role":"String"})', message.payload)[2].toJSON() as { actor: `0x${string}` | Uint8Array; role: string });
-      }
-    });
-  }
-
-  public subscribeToRoleRemovedEvent(callback: (data: { actor: `0x${string}` | Uint8Array; role: string }) => void | Promise<void>): Promise<() => void> {
-    return this._program.api.gearEvents.subscribeToGearEvent('UserMessageSent', ({ data: { message } }) => {;
-      if (!message.source.eq(this._program.programId) || !message.destination.eq(ZERO_ADDRESS)) {
-        return;
-      }
-
-      const payload = message.payload.toHex();
-      if (getServiceNamePrefix(payload) === 'Roles' && getFnNamePrefix(payload) === 'RoleRemoved') {
-        callback(this._program.registry.createType('(String, String, {"actor":"[u8;32]","role":"String"})', message.payload)[2].toJSON() as { actor: `0x${string}` | Uint8Array; role: string });
       }
     });
   }

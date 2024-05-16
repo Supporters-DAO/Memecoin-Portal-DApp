@@ -14,6 +14,10 @@
       font-weight: 700;
       line-height: 22px;
       letter-spacing: -0.02em;
+
+      @media screen and (max-width: 767px) {
+        font-size: 11px;
+      }
     }
 
     .unit {
@@ -23,6 +27,10 @@
       font-size: 16px;
       font-weight: 600;
       line-height: 20px;
+
+      @media screen and (max-width: 767px) {
+        font-size: 9px;
+      }
     }
   }
 }

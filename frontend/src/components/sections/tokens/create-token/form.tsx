@@ -49,25 +49,27 @@ export const CreateForm = () => {
 	}
 
 	return (
-		<div className="ju my-10 flex items-start">
+		<div className="ju my-10 flex items-start max-sm:flex-col">
 			<BackButton />
-			<div className="flex flex-col items-center gap-3">
-				<h1 className="text-[28px] text-primary">Memecoin Creator</h1>
-				<div className="flex w-[660px] flex-col gap-6 rounded-[40px] bg-blue-light p-10">
-					<div className="mx-auto w-2/5">
+			<div className="flex flex-col items-center gap-3 max-sm:w-full">
+				<h1 className="text-[28px] text-primary max-sm:text-center max-sm:text-[16px]">
+					Memecoin Creator
+				</h1>
+				<div className="flex w-[660px] flex-col gap-6 rounded-[40px] bg-blue-light p-3 max-sm:w-full max-sm:rounded-[20px]">
+					<div className="mx-auto w-2/5 max-sm:w-[70%] max-sm:mt-5">
 						<ol className="flex w-full items-center">
 							<li className="flex w-full items-center text-[#0F1B34] after:inline-block after:h-1 after:w-full after:border-4 after:border-b after:border-[#D0D3D9] after:content-['']">
-								<span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary">
+								<span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary max-sm:size-7 max-sm:text-[12px]">
 									1
 								</span>
 							</li>
 							<li className="flex w-full items-center text-[#0F1B34] after:inline-block after:h-1 after:w-full after:border-4 after:border-b after:border-[#D0D3D9] after:content-['']">
-								<span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#D0D3D9] ">
+								<span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#D0D3D9] max-sm:size-7 max-sm:text-[12px]">
 									2
 								</span>
 							</li>
-							<li className="flex w-0 items-center text-[#0F1B34]">
-								<span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#D0D3D9]">
+							<li className="flex w-0 items-center text-[#0F1B34] max-sm:w-auto">
+								<span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#D0D3D9] max-sm:size-7 max-sm:text-[12px]">
 									3
 								</span>
 							</li>
@@ -145,7 +147,7 @@ export const CreateForm = () => {
 							/>
 						</div>
 
-						<div className="flex justify-between gap-5">
+						<div className="flex justify-between gap-5 max-sm:flex-col">
 							<div className="flex w-full flex-col gap-2">
 								<Controller
 									name="initial_supply"
@@ -196,7 +198,7 @@ export const CreateForm = () => {
 							</div>
 						</div>
 
-						<div className="flex justify-between gap-5">
+						<div className="flex justify-between gap-5 max-sm:flex-col">
 							<div className="flex w-full flex-col gap-2">
 								<Controller
 									name="external_links.website"
@@ -227,7 +229,7 @@ export const CreateForm = () => {
 							</div>
 						</div>
 
-						<div className="flex justify-between gap-5">
+						<div className="flex justify-between gap-5 max-sm:flex-col">
 							<div className="flex w-full flex-col gap-2">
 								<Controller
 									name="external_links.twitter"
@@ -310,7 +312,7 @@ export const CreateForm = () => {
 						</div> */}
 						<button
 							type="submit"
-							className="mx-auto rounded-lg bg-[#D0D3D9] px-35 py-3 font-ps2p text-black hover:bg-primary"
+							className="mx-auto rounded-lg bg-[#D0D3D9] px-35 py-3 font-ps2p text-black hover:bg-primary max-sm:mb-5 max-sm:w-full max-sm:px-0"
 						>
 							Next
 						</button>

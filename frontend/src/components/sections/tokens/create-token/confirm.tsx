@@ -58,12 +58,14 @@ export const ConfirmCreate = ({ data }: Props) => {
 
 	return (
 		<div className="flex flex-col items-center gap-3 overflow-hidden">
-			<h1 className="text-[28px] text-primary">Memecoin Creator</h1>
-			<div className="flex w-[660px] flex-col gap-6 rounded-[40px] bg-blue-light p-10">
-				<div className="mx-auto w-2/5">
+			<h1 className="text-[28px] text-primary max-sm:text-center max-sm:text-[16px]">
+					Memecoin Creator
+				</h1>
+			<div className="flex w-[660px] flex-col gap-6 rounded-[40px] bg-blue-light p-10 max-sm:w-full max-sm:rounded-[20px]">
+				<div className="mx-auto w-2/5 max-sm:w-[70%]">
 					<ol className="flex w-full items-center">
 						<li className="flex w-full items-center text-[#0F1B34] after:inline-block after:h-1 after:w-full after:border-4 after:border-b after:border-primary after:content-['']">
-							<span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary">
+						<span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary max-sm:size-7 max-sm:text-[12px]">
 								1
 							</span>
 						</li>
@@ -73,14 +75,14 @@ export const ConfirmCreate = ({ data }: Props) => {
 								isCreated && 'after:border-primary'
 							)}
 						>
-							<span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary">
+							<span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary max-sm:size-7 max-sm:text-[12px]">
 								2
 							</span>
 						</li>
-						<li className="flex w-0 items-center text-[#0F1B34]">
+						<li className="flex w-0 items-center text-[#0F1B34] max-sm:w-auto">
 							<span
 								className={cn(
-									'flex size-10 shrink-0 items-center justify-center rounded-full bg-[#D0D3D9]',
+									'flex size-10 shrink-0 items-center justify-center rounded-full bg-[#D0D3D9] max-sm:size-7 max-sm:text-[12px]',
 									isCreated && 'bg-primary'
 								)}
 							>
@@ -141,16 +143,16 @@ export const ConfirmCreate = ({ data }: Props) => {
 
 								{(data.external_links.website ||
 									data.external_links.twitter) && (
-									<div className="flex justify-between">
+									<div className="flex justify-between max-sm:flex-col">
 										{data.external_links.website && (
-											<div className="w-1/2">
+											<div className="w-1/2 max-sm:w-full">
 												<span className="text-sm text-[#A4AAB6]">Website</span>
 												<p className="">{data.external_links.website}</p>
 											</div>
 										)}
 
 										{data.external_links.twitter && (
-											<div className="w-1/2">
+											<div className="w-1/2 max-sm:w-full">
 												<span className="text-sm text-[#A4AAB6]">Twitter</span>
 												<p>{data.external_links.twitter}</p>
 											</div>
@@ -160,16 +162,16 @@ export const ConfirmCreate = ({ data }: Props) => {
 
 								{(data.external_links.telegram ||
 									data.external_links.discord) && (
-									<div className="flex justify-between">
+									<div className="flex justify-between max-sm:flex-col">
 										{data.external_links.website && (
-											<div className="w-1/2">
+											<div className="w-1/2 max-sm:w-full">
 												<span className="text-sm text-[#A4AAB6]">Telegram</span>
 												<p>{data.external_links.telegram}</p>
 											</div>
 										)}
 
 										{data.external_links.discord && (
-											<div className="w-1/2">
+											<div className="w-1/2 max-sm:w-full">
 												<span className="text-sm text-[#A4AAB6]">Discord</span>
 												<p>{data.external_links.discord}</p>
 											</div>
@@ -186,7 +188,7 @@ export const ConfirmCreate = ({ data }: Props) => {
 
 						<div className="mt-7 flex gap-3">
 							<button
-								className="mx-auto w-full rounded-lg bg-[#0F1B34] py-3 text-white"
+								className="mx-auto w-full rounded-lg bg-[#0F1B34] py-3 text-white max-sm:text-[3vw]"
 								onClick={() => setStep('create')}
 								disabled={isPending}
 							>
@@ -198,7 +200,7 @@ export const ConfirmCreate = ({ data }: Props) => {
 								disabled={isPending}
 							>
 								{isPending ? (
-									<span className="mx-auto flex w-1/2">
+									<span className="mx-auto flex w-1/2 max-sm:w-4/5 max-sm:text-[3vw]">
 										Pending
 										<span className="w-full after:flex after:animate-dots after:content-['']"></span>
 									</span>

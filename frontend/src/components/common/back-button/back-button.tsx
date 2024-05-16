@@ -9,9 +9,9 @@ export const BackButton = () => {
 	return (
 		<button
 			onClick={router.back}
-			className="mr-40 flex items-center gap-3 text-xl"
+			className="mr-40 flex items-center gap-3 text-xl max-sm:mb-5 max-sm:text-sm"
 		>
-			<Sprite name="arrow-left" className="size-6 " />
+			<Sprite name="arrow-left" className="size-6 max-sm:size-4 " />
 			Back
 		</button>
 	)

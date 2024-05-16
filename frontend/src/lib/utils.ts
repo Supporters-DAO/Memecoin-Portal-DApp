@@ -58,8 +58,8 @@ export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs))
 }
 
-export const prettyWord = (word: string) => {
-	return word.slice(0, 6) + '...' + word.slice(-4)
+export const prettyWord = (word: string, length: number = 8) => {
+	return word.slice(0, length) + '...' + word.slice(-4)
 }
 
 export const isValidHexString = (value: string): value is HexString => {

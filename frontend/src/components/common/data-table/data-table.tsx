@@ -30,9 +30,9 @@ export function DataTable<TData>({
 }: ContentTableLayoutProps<TData>) {
 	return (
 		<TableLayoutWrapper>
-			<div className="flex items-center justify-between">
+			<div className="flex items-center justify-between max-sm:flex-col max-sm:gap-5">
 				{nameTable && (
-					<h1 className="w-full text-[28px] text-primary">{nameTable}</h1>
+					<h1 className="w-full text-[28px] text-primary max-sm:text-center max-sm:text-[16px]">{nameTable}</h1>
 				)}
 				{setGlobalFilter && (
 					<TableGlobalFilter

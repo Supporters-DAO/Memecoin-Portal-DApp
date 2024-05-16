@@ -68,7 +68,6 @@ export function SearchForm({
 					label=""
 					placeholder={placeholder || 'Search by user name, address'}
 					autoComplete="off"
-					className=""
 				/>
 			</div>
 		</form>
