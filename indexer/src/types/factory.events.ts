@@ -30,7 +30,7 @@ export type CreatedConfig = {
   decimals: number;
   description: string;
   initialSupply: bigint;
-  totalSupply: bigint;
+  maxSupply: bigint;
   admin: string;
   initialCapacity: bigint;
   image?: string | null;
@@ -82,7 +82,7 @@ export class MemeFactoryEventsParser {
             initialSupply: safeUnwrapToBigInt(
               event.init.initial_supply
             )!,
-            totalSupply: safeUnwrapToBigInt(event.init.max_supply)!,
+            maxSupply: safeUnwrapToBigInt(event.init.max_supply)!,
             admin: event.init.admin_id.toString(),
             initialCapacity: safeUnwrapToBigInt(
               event.init.initial_supply

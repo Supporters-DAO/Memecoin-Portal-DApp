@@ -19,7 +19,7 @@ export class MemeCreatedHandler implements IFactoryEventHandler {
         description,
         initialCapacity,
         initialSupply,
-        totalSupply,
+        maxSupply,
         admin,
         image,
         twitter,
@@ -53,7 +53,7 @@ export class MemeCreatedHandler implements IFactoryEventHandler {
       distributed: 0n,
       admins: [admin],
       screenshots: [],
-      maxSupply: totalSupply,
+      maxSupply,
       createdBy: admin || eventInfo.destination,
       timestamp: eventInfo.timestamp,
     });
