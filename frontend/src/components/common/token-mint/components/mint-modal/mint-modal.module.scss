@@ -187,7 +187,7 @@
 	// font-family: 'ps2p';
 
 	position: relative;
-	z-index: 39;
+	z-index: 40;
 
 	& .backdrop {
 		position: fixed;
@@ -196,10 +196,11 @@
 		right: 0;
 		bottom: 0;
 		background-color: rgba(36, 36, 36, 0.3);
+		backdrop-filter: blur(5px);
 
 		@media screen and (min-width: 768px) {
-			background-color: rgba(36, 36, 36, 0.3);
-			backdrop-filter: blur(10px);
+			background-color: rgba(36, 36, 36, 0.8);
+			// backdrop-filter: blur(100px);
 		}
 	}
 

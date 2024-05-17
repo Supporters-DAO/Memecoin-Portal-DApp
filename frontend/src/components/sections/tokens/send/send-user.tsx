@@ -49,6 +49,7 @@ export const SendUser = ({ id, from }: Props) => {
 		<>
 			<Input
 				label=""
+				value={address}
 				placeholder="Add one address"
 				onChange={handleInputChange}
 			/>

@@ -112,7 +112,7 @@ export function Token({ token: { id, ...token } }: Props) {
 						</div>
 					</div>
 				</div>
-				<div className="col-span-2 col-start-2 row-start-4 max-sm:col-span-3 max-sm:col-start-1 max-sm:row-start-3 max-sm:text-[14px]">
+				<div className="col-span-2 col-start-2 row-start-4 max-sm:col-span-3 max-sm:col-start-1 max-sm:row-start-2 max-sm:text-[14px]">
 					<div className="flex items-center gap-3 font-poppins">
 						<button className="flex items-center gap-2" onClick={onCopyAddress}>
 							<Sprite name="copy" color="#B4FF69" className="size-4" />

@@ -69,16 +69,15 @@ export const BurnCoin = ({ token }: Props) => {
 		(tokenBalance && parseFloat(tokenBalance) <= 0) ||
 		(tokenBalance && inputAmount > parseFloat(tokenBalance))
 
-	console.log('inputAmount', inputAmount)
 	return (
-		<div className="ju my-10 flex items-start">
+		<div className="ju my-10 flex items-start max-sm:flex-col">
 			<BackButton />
-			<div className="flex flex-col items-center gap-3">
+			<div className="flex flex-col items-center gap-3 max-sm:w-full">
 				<div className="flex items-center justify-between">
-					<h1 className="text-[28px] text-primary">Burn</h1>
+					<h1 className="text-[28px] text-primary max-sm:text-[16px]">Burn</h1>
 				</div>
 
-				<div className="flex w-[660px] flex-col gap-6 rounded-[40px] bg-blue-light p-10">
+				<div className="flex w-[660px] flex-col gap-6 rounded-[40px] bg-blue-light p-10 max-sm:py-10 max-sm:px-4 max-sm:w-full max-sm:rounded-[20px]">
 					<h3 className="text-center uppercase">{token.name}</h3>
 					<p className="text-center font-poppins text-[16px] font-medium text-primary">
 						{tokenBalance && parseFloat(tokenBalance).toLocaleString('us')}{' '}
@@ -127,7 +126,7 @@ export const BurnCoin = ({ token }: Props) => {
 						</div>
 					</div>
 					<button
-						className="btn mx-25 py-4 disabled:bg-[#D0D3D9]"
+						className="btn mx-25 py-4 disabled:bg-[#D0D3D9] max-sm:mx-0  max-sm:w-full"
 						disabled={!!disableBurnButton}
 						onClick={onSendCoins}
 					>
