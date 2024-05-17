@@ -55,7 +55,7 @@ export function Input({
 						className={clsx(styles.input, error && styles.inputError)}
 						placeholder={placeholder}
 						onBlur={onBlur}
-						autoFocus
+						autoFocus={autoFocus}
 						{...props}
 					/>
 				</label>
