@@ -50,7 +50,7 @@ const AccordionContent = React.forwardRef<
 		)}
 		{...props}
 	>
-		<div className={cn('pt-4', classNameInner)}>{children}</div>
+		<div className={cn(classNameInner)}>{children}</div>
 	</AccordionPrimitive.Content>
 ))
 
