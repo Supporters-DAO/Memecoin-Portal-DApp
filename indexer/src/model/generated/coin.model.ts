@@ -87,6 +87,12 @@ export class Coin {
     transformer: marshal.bigintTransformer,
     nullable: false,
   })
+  minted!: bigint;
+
+  @Column_("numeric", {
+    transformer: marshal.bigintTransformer,
+    nullable: false,
+  })
   burned!: bigint;
 
   @Column_("int4", { nullable: false })

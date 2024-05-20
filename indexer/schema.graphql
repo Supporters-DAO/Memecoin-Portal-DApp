@@ -25,6 +25,7 @@ type Coin @entity {
   screenshots: [String!]!
   admins: [String!]!
   distributed: BigInt!
+  minted: BigInt!
   burned: BigInt!
   holders: Int!
   factory: Factory!

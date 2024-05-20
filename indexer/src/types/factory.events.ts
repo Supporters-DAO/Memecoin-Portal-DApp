@@ -79,14 +79,10 @@ export class MemeFactoryEventsParser {
             symbol: event.init.symbol,
             decimals: safeUnwrapToNumber(event.init.decimals)!,
             description: event.init.description,
-            initialSupply: safeUnwrapToBigInt(
-              event.init.initial_supply
-            )!,
+            initialSupply: safeUnwrapToBigInt(event.init.initial_supply)!,
             maxSupply: safeUnwrapToBigInt(event.init.max_supply)!,
             admin: event.init.admin_id.toString(),
-            initialCapacity: safeUnwrapToBigInt(
-              event.init.initial_supply
-            )!,
+            initialCapacity: safeUnwrapToBigInt(event.init.initial_supply)!,
             image: event.init.external_links.image,
             twitter: event.init.external_links.twitter,
             telegram: event.init.external_links.telegram,

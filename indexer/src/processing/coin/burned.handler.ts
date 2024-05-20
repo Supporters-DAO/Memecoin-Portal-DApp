@@ -33,6 +33,7 @@ export class BurnedHandler implements ICoinEventHandler {
       })
     );
     deductBalance(fromBalance, amount);
+    coin.circulatingSupply = coin.circulatingSupply - amount;
     coin.burned = coin.burned + amount;
 
     if (fromBalance.balance === BigInt(0)) {

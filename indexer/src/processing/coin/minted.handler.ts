@@ -37,6 +37,7 @@ export class MintedHandler implements ICoinEventHandler {
     toBalance.balance += amount;
     await storage.setAccountBalance(toBalance);
     coin.circulatingSupply = coin.circulatingSupply + amount;
+    coin.minted = coin.minted + amount;
 
     await storage.setCoin(
       new Coin({
