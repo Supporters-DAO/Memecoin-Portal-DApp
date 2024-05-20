@@ -23,6 +23,7 @@ async function getData(id: string) {
 			initialSupply
 			maxSupply
 			createdBy
+			minted
 			burned
 			circulatingSupply
 			holders
