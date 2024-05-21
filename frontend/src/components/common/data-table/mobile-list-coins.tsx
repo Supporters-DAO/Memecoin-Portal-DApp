@@ -73,19 +73,26 @@ export function MobileList({ data }: ContentLayoutProps) {
 						>
 							<AccordionTrigger noIcon className="p-4 md:px-8">
 								<div className="flex gap-3 ">
-									<Image
-										src={i.image}
-										key={i.id}
-										alt={''}
-										width={60}
-										height={60}
-										className="size-10 rounded-full object-cover"
-										onError={(e) => {
-											const target = e.target as HTMLImageElement
-											target.onerror = null // prevents looping
-											target.src = '/images/no-token.png'
-										}}
-									/>
+									<div className="flex flex-col items-center">
+										<Image
+											src={i.image}
+											key={i.id}
+											alt={''}
+											width={60}
+											height={60}
+											className="size-10 rounded-full object-cover"
+											onError={(e) => {
+												const target = e.target as HTMLImageElement
+												target.onerror = null // prevents looping
+												target.src = '/images/no-token.png'
+											}}
+										/>
+										{isAdmin && (
+											<p className="-m-2 w-max rounded-sm bg-white p-1 font-ps2p text-[5px] uppercase text-black">
+												Creator
+											</p>
+										)}
+									</div>
 									<div>
 										<span className="block text-sm">{i.name}</span>
 										<div className="flex gap-1 text-sm">
