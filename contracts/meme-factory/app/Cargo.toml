@@ -4,14 +4,17 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-sails-macros.workspace = true
 sails-rtl.workspace = true
-sails-idl-meta.workspace = true
 gstd.workspace = true
-fungible-token-io.workspace = true
+primitive-types.workspace = true
 
 scale-info.workspace = true
 parity-scale-codec.workspace = true
 
 [features]
 debug = ["gstd/debug"]
+
+[dev-dependencies]
+gtest.workspace = true
+gclient.workspace = true
+tokio.workspace = true

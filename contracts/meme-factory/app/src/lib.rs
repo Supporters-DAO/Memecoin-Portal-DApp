@@ -5,13 +5,13 @@
 
 extern crate alloc;
 
-mod service;
+pub mod service;
 
 pub use service::{
     InitConfigFactory, MemeError, MemeFactoryData, MemeFactoryEvent, MemeId, MemeRecord,
 };
 
-use sails_macros::{gprogram, groute};
+use sails_rtl::gstd::gprogram;
 use sails_rtl::gstd::{events::GStdEventTrigger, GStdExecContext};
 
 type MemeFactory = service::MemeFactory<GStdExecContext, GStdEventTrigger<MemeFactoryEvent>>;
@@ -26,7 +26,6 @@ impl Program {
     }
 
     // Expose hosted service
-    #[groute("")]
     pub fn meme_factory(&self) -> MemeFactory {
         MemeFactory::new(GStdExecContext::new(), GStdEventTrigger::new())
     }
