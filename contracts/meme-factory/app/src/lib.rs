@@ -11,7 +11,7 @@ pub use service::{
     InitConfigFactory, MemeError, MemeFactoryData, MemeFactoryEvent, MemeId, MemeRecord,
 };
 
-use sails_macros::gprogram;
+use sails_rtl::gstd::gprogram;
 use sails_rtl::gstd::{events::GStdEventTrigger, GStdExecContext};
 
 type MemeFactory = service::MemeFactory<GStdExecContext, GStdEventTrigger<MemeFactoryEvent>>;
