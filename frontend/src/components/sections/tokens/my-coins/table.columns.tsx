@@ -14,7 +14,7 @@ import {
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useFetchBalances } from '@/lib/hooks/use-fetch-balances'
-import { Token } from '@/lib/hooks/use-fetch-coins'
+import { Token } from '@/lib/hooks/use-fetch-my-coins'
 import { Mint } from '@/components/common/token-mint'
 
 const handleCopyClickAddress = async (
@@ -29,7 +29,7 @@ export const coinsTypesTableColumns: ColumnDef<Token>[] = [
 		accessorFn: (row) => row.image,
 		id: 'image',
 		cell: (info) => (
-			<>
+			<div className="relative flex flex-col items-center justify-center">
 				<Image
 					src={info?.row?.original?.image}
 					alt={info?.row?.original?.name}
@@ -43,7 +43,12 @@ export const coinsTypesTableColumns: ColumnDef<Token>[] = [
 						target.src = '/images/no-token.png'
 					}}
 				/>
-			</>
+				{info?.row?.original?.isAdmin && (
+					<p className="-m-2 w-max rounded-sm bg-white p-1 font-ps2p text-[8px] uppercase text-black">
+						Creator
+					</p>
+				)}
+			</div>
 		),
 		header: 'Image',
 		enableSorting: false,
@@ -150,7 +155,11 @@ export const coinsTypesTableColumns: ColumnDef<Token>[] = [
 	{
 		accessorFn: (row) => row.id,
 		id: 'Balance',
-		cell: (info) => Balance(info.row.original.id),
+		cell: (info) => (
+			<div className="flex items-center justify-center gap-3 text-center">
+				{compactFormatNumber(Number(info.row.original.balance))}
+			</div>
+		),
 		header: () => (
 			<div className="group flex items-center justify-center">Balance</div>
 		),
@@ -179,17 +188,6 @@ function TokenId(id: `0x${string}`) {
 			<button onClick={() => handleCopyClickAddress(id, alert)}>
 				<Sprite name="copy" size={16} />
 			</button>
-		</div>
-	)
-}
-
-function Balance(id: `0x${string}`) {
-	const { balances } = useFetchBalances()
-	const balance = balances.find((b) => b.coin.id === id)?.balance || 0
-
-	return (
-		<div className="flex items-center justify-center gap-3 text-center">
-			{compactFormatNumber(Number(balance))}
 		</div>
 	)
 }
