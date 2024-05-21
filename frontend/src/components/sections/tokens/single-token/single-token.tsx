@@ -84,7 +84,7 @@ export function Token({ token: { id, ...token } }: Props) {
 				<BackButton />
 			</div>
 
-			<div className="grid h-[250px] grid-cols-4 grid-rows-1 gap-4 max-sm:h-auto max-sm:grid-cols-none">
+			<div className="grid h-[250px] grid-cols-4 grid-rows-1 gap-10 max-sm:h-auto max-sm:grid-cols-none">
 				<div className="">
 					<Image
 						src={token.image}
