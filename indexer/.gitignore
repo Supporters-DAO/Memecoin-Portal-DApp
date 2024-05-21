@@ -8,6 +8,3 @@
 # IDE files
 /.idea
 .env
-Cargo.lock
-target/
-.binpath

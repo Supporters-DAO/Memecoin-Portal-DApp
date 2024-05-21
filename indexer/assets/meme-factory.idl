@@ -1,0 +1,75 @@
+type InitConfigFactory = struct {
+  meme_code_id: CodeId,
+  factory_admin_account: vec ActorId,
+  gas_for_program: u64,
+};
+
+type CodeId = struct {
+  [u8, 32],
+};
+
+type ActorId = struct {
+  [u8, 32],
+};
+
+type MemeError = enum {
+  ProgramInitializationFailedWithContext: str,
+  Unauthorized,
+  MemeExists,
+  MemeNotFound,
+};
+
+type Init = struct {
+  name: str,
+  symbol: str,
+  decimals: u8,
+  description: str,
+  external_links: ExternalLinks,
+  initial_supply: u256,
+  max_supply: u256,
+  admin_id: ActorId,
+};
+
+type ExternalLinks = struct {
+  image: str,
+  website: opt str,
+  telegram: opt str,
+  twitter: opt str,
+  discord: opt str,
+  tokenomics: opt str,
+};
+
+type MemeRecord = struct {
+  name: str,
+  symbol: str,
+  decimals: u8,
+  meme_program_id: ActorId,
+  admins: vec ActorId,
+};
+
+constructor {
+  New : (config: InitConfigFactory);
+};
+
+service MemeFactory {
+  AddAdminToFactory : (admin_actor_id: ActorId) -> result (null, MemeError);
+  CreateFungibleProgram : (init: Init) -> result (null, MemeError);
+  RemoveMeme : (meme_id: u64) -> result (null, MemeError);
+  UpdateCodeId : (new_code_id: CodeId) -> result (null, MemeError);
+  UpdateGasForProgram : (new_gas_amount: u64) -> result (null, MemeError);
+  query Admins : () -> vec ActorId;
+  query GasForProgram : () -> u64;
+  query IdToAddress : () -> vec struct { u64, ActorId };
+  query MemNumber : () -> u64;
+  query MemeCodeId : () -> CodeId;
+  query MemeCoins : () -> vec struct { ActorId, vec struct { u64, MemeRecord } };
+
+  events {
+    MemeCreated: struct { meme_id: u64, meme_address: ActorId, init: Init };
+    MemeRemoved: struct { removed_by: ActorId, meme_id: u64 };
+    GasUpdatedSuccessfully: struct { updated_by: ActorId, new_gas_amount: u64 };
+    CodeIdUpdatedSuccessfully: struct { updated_by: ActorId, new_code_id: CodeId };
+    AdminAdded: struct { updated_by: ActorId, admin_actor_id: ActorId };
+  }
+};
+
