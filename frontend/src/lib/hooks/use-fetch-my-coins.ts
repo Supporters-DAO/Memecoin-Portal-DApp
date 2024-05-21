@@ -16,7 +16,8 @@ export type Token = {
 	initialSupply: string
 	maxSupply: string
 	admins: HexString[]
-	holders: string
+	holders: number
+	createdBy: string
 	circulatingSupply: string
 	balance: string
 	address: string
@@ -112,27 +113,36 @@ export const useFetchMyCoins = (limit = 20, offset = 0, searchQuery = '') => {
 
 			const filteredData = coins.flatMap((coinResponse) =>
 				coinResponse.balances.filter(
-					(balance) =>
-						balance.address === walletAddress ||
-						balance.coin.createdBy === walletAddress
+					(balance) => balance.address === walletAddress
 				)
 			)
+
+			const tokenMap: Record<string, Token> = {}
+
+			filteredData.forEach((current) => {
+				const tokenId = current.coin.id
+				if (!tokenMap[tokenId]) {
+					tokenMap[tokenId] = {
+						...current.coin,
+						balance: current.balance,
+						address: current.address,
+						isAdmin: current.coin.admins.includes(walletAddress),
+					}
+				}
+			})
+
+			const tokenList = Object.values(tokenMap)
 
 			const myTokens: Token[] = []
 			const otherTokens: Token[] = []
 
-			filteredData.forEach((current) => {
-				const token: Token = {
-					...current.coin,
-					balance: current.balance,
-					address: current.address,
-					isAdmin: current.coin.admins.includes(walletAddress),
-				}
-
-				if (current.coin.createdBy === walletAddress) {
-					myTokens.push(token)
-				} else {
-					otherTokens.push(token)
+			tokenList.forEach((token) => {
+				if (BigInt(token.balance) > 0) {
+					if (token.createdBy === walletAddress) {
+						myTokens.push(token)
+					} else {
+						otherTokens.push(token)
+					}
 				}
 			})
 
