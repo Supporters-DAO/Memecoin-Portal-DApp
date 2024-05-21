@@ -1,0 +1,53 @@
+// @use '@/assets/styles/utils' as *;
+
+.wrapper {
+	background: #172542;
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	width: 100%;
+	padding: 12px 16px;
+	border: 2px solid #2e3a55;
+	border-radius: 8px;
+	transition: border-color 250ms ease;
+	margin-top: 5px;
+
+	&.error {
+		border: 2px solid #743648;
+	}
+
+	&[aria-invalid='true'] {
+		border-color: #ff4f4f;
+	}
+
+	.input {
+		background: transparent;
+		width: 100%;
+		padding: 0;
+		outline: none;
+		color: var(--white);
+
+		&::placeholder {
+			color: #737b8d;
+		}
+
+		&[type='number'] {
+			appearance: textfield;
+		}
+
+		&::-webkit-outer-spin-button,
+		&::-webkit-inner-spin-button {
+			appearance: none;
+			margin: 0;
+		}
+	}
+
+	.inputError {
+		color: #ff4f4f;
+	}
+}
+
+.error {
+	margin-top: 4px;
+	color: #ff4f4f;
+}

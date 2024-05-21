@@ -1,0 +1,36 @@
+.balance {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #B4FF69;
+
+  .text {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+
+    .value {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 22px;
+      letter-spacing: -0.02em;
+
+      @media screen and (max-width: 767px) {
+        font-size: 11px;
+      }
+    }
+
+    .unit {
+      font-family: "Silkscreen", system-ui, sans-serif;
+      color: #B4FF69;
+      opacity: 0.8;
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 20px;
+
+      @media screen and (max-width: 767px) {
+        font-size: 9px;
+      }
+    }
+  }
+}
