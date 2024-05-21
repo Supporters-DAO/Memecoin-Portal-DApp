@@ -1,0 +1,20 @@
+[package]
+name = "factory-wasm"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+app = { workspace = true }
+gstd.workspace = true
+
+[dev-dependencies]
+gtest.workspace = true
+parity-scale-codec.workspace = true
+
+[build-dependencies]
+app.workspace = true
+sails-idl-gen.workspace = true
+gear-wasm-builder.workspace = true
+
+[features]
+debug = ["app/debug"]
