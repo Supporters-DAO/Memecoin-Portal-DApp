@@ -1,5 +1,5 @@
 [package]
-name = "wasm"
+name = "factory-wasm"
 version = "0.1.0"
 edition = "2021"
 
@@ -10,12 +10,10 @@ gstd.workspace = true
 [dev-dependencies]
 gtest.workspace = true
 parity-scale-codec.workspace = true
-fungible-token-io.workspace = true
 
 [build-dependencies]
 app.workspace = true
-sails-clientgen.workspace = true
-sails-idlgen.workspace = true
+sails-idl-gen.workspace = true
 gear-wasm-builder.workspace = true
 
 [features]

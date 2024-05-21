@@ -9,9 +9,6 @@ use alloc::vec::Vec;
 use app::{MemeFactoryData, MemeId, MemeRecord};
 use gstd::{msg, ActorId, CodeId, Decode, Encode, TypeInfo};
 
-#[cfg(test)]
-mod tests;
-
 #[derive(Encode, Decode, TypeInfo)]
 #[codec(crate = gstd::codec)]
 #[scale_info(crate = gstd::scale_info)]

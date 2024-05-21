@@ -11,17 +11,14 @@ members = ["app", "wasm"]
 
 [workspace.dependencies]
 app = { path = "app" }
-
-fungible-token-io = { path = "../fungible-token/io" }
-
-sails-macros = { git = "https://github.com/gear-tech/sails" }
-sails-idlgen = { git = "https://github.com/gear-tech/sails" }
-sails-rtl = { git = "https://github.com/gear-tech/sails" }
-sails-idl-meta = { git = "https://github.com/gear-tech/sails" }
-sails-clientgen = { git = "https://github.com/gear-tech/sails" }
+sails-idl-gen = { git = "https://github.com/gear-tech/sails", rev = "51b731ef8f064a23c6c98fa92d06eeafe44d3f9d" }
+sails-rtl = { git = "https://github.com/gear-tech/sails", rev = "51b731ef8f064a23c6c98fa92d06eeafe44d3f9d" }
 gstd = "1.1.1"
 gtest = "1.1.1"
+gclient  = "1.1.1"
 gear-wasm-builder = "1.1.1"
 parity-scale-codec = { version = "3", default-features = false }
 scale-info = { version = "2", default-features = false }
 log = "0.4.21"
+primitive-types = { version = "*", default-features = false }
+tokio = "1"
