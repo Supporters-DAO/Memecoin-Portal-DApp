@@ -1,15 +1,15 @@
-use self::utils::Role;
 use crate::services;
 use crate::services::admin::roles::{FungibleAdmin, FungibleBurner, FungibleMinter};
+use crate::ServiceOf;
 use core::marker::PhantomData;
 use gstd::{exec, msg, String};
 use gstd::{ActorId, Decode, Encode, ToString, TypeInfo, Vec};
 use primitive_types::U256;
-use sails_macros::gservice;
 use sails_rtl::gstd::events::{EventTrigger, GStdEventTrigger};
+use sails_rtl::gstd::gservice;
+pub use utils::*;
 
 use super::erc20::storage::{AllowancesStorage, BalancesStorage, TotalSupplyStorage};
-use crate::admin::utils::ExternalLinks;
 use storage::AdditionalMetaStorage;
 pub mod funcs;
 pub mod storage;
@@ -39,14 +39,14 @@ pub enum Event {
 
 pub struct Service<X> {
     roles_service: services::roles::GstdDrivenService,
-    aggregated_service: services::aggregated::GstdDrivenService,
+    pausable_service: ServiceOf<services::pausable::GstdDrivenService>,
     _phantom: PhantomData<X>,
 }
 
 impl<X: EventTrigger<Event>> Service<X> {
     pub fn seed(
         mut roles_service: services::roles::GstdDrivenService,
-        aggregated_service: services::aggregated::GstdDrivenService,
+        pausable_service: ServiceOf<services::pausable::GstdDrivenService>,
         admin: ActorId,
         description: String,
         external_links: ExternalLinks,
@@ -80,11 +80,18 @@ impl<X: EventTrigger<Event>> Service<X> {
                 unreachable!("Infallible since fn is noop on zero value; qed");
             };
             balances.insert(admin, non_zero_initial_supply);
+
+            let mut total_supply = TotalSupplyStorage::as_mut();
+            if let Some(new_total_supply) = total_supply.checked_add(initial_supply) {
+                *total_supply = new_total_supply;
+            } else {
+                panic!("NumericOverflow");
+            }
         }
 
         Self {
             roles_service,
-            aggregated_service,
+            pausable_service,
             _phantom: PhantomData,
         }
     }
@@ -97,21 +104,21 @@ where
 {
     pub fn new(
         roles_service: services::roles::GstdDrivenService,
-        aggregated_service: services::aggregated::GstdDrivenService,
+        pausable_service: ServiceOf<services::pausable::GstdDrivenService>,
     ) -> Self {
         Self {
             roles_service,
-            aggregated_service,
+            pausable_service,
             _phantom: PhantomData,
         }
     }
 
     pub fn mint(&mut self, to: sails_rtl::ActorId, value: U256) -> bool {
-        services::utils::panicking(|| self.aggregated_service.pausable_service.ensure_unpaused());
-
-        self.roles_service
-            .ensure_has_role::<FungibleMinter>(msg::source());
-
+        services::utils::panicking(|| self.pausable_service.ensure_unpaused());
+        services::utils::panicking(|| {
+            self.roles_service
+                .ensure_has_role::<FungibleMinter>(msg::source())
+        });
         let mutated = services::utils::panicking(|| {
             funcs::mint(
                 BalancesStorage::as_mut(),
@@ -130,13 +137,18 @@ where
     }
 
     pub fn burn(&mut self, from: sails_rtl::ActorId, value: U256) -> bool {
-        services::utils::panicking(|| self.aggregated_service.pausable_service.ensure_unpaused());
-
-        self.roles_service
-            .ensure_has_role::<FungibleBurner>(msg::source());
-
+        services::utils::panicking(|| self.pausable_service.ensure_unpaused());
+        services::utils::panicking(|| {
+            self.roles_service
+                .ensure_has_role::<FungibleBurner>(msg::source())
+        });
         let mutated = services::utils::panicking(|| {
-            funcs::burn(BalancesStorage::as_mut(), from.into(), value)
+            funcs::burn(
+                BalancesStorage::as_mut(),
+                TotalSupplyStorage::as_mut(),
+                from.into(),
+                value,
+            )
         });
 
         if mutated {
@@ -166,13 +178,13 @@ where
     }
 
     pub fn allowances_reserve(&mut self, additional: u32) -> () {
-        services::utils::panicking(|| self.aggregated_service.pausable_service.ensure_unpaused());
+        services::utils::panicking(|| self.pausable_service.ensure_unpaused());
 
         funcs::allowances_reserve(AllowancesStorage::as_mut(), additional as usize)
     }
 
     pub fn balances_reserve(&mut self, additional: u32) -> () {
-        services::utils::panicking(|| self.aggregated_service.pausable_service.ensure_unpaused());
+        services::utils::panicking(|| self.pausable_service.ensure_unpaused());
 
         funcs::balances_reserve(BalancesStorage::as_mut(), additional as usize)
     }
@@ -203,7 +215,7 @@ where
     }
 
     pub fn grant_role(&mut self, to: sails_rtl::ActorId, role: Role) -> bool {
-        services::utils::panicking(|| self.aggregated_service.pausable_service.ensure_unpaused());
+        services::utils::panicking(|| self.pausable_service.ensure_unpaused());
 
         services::utils::panicking(|| -> Result<bool, services::roles::Error> {
             self.roles_service
@@ -220,7 +232,7 @@ where
     }
 
     pub fn remove_role(&mut self, from: sails_rtl::ActorId, role: Role) -> bool {
-        services::utils::panicking(|| self.aggregated_service.pausable_service.ensure_unpaused());
+        services::utils::panicking(|| self.pausable_service.ensure_unpaused());
 
         services::utils::panicking(|| -> Result<bool, services::roles::Error> {
             self.roles_service

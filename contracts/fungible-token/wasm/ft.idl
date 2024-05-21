@@ -28,6 +28,10 @@ type Role = enum {
   Minter,
 };
 
+type Error = enum {
+  Paused,
+};
+
 constructor {
   New : (init: Init);
 };
@@ -77,21 +81,12 @@ service Pausable {
   DelegateAdmin : (actor: actor_id) -> bool;
   Pause : () -> bool;
   Unpause : () -> bool;
+  query EnsureUnpaused : () -> result (null, Error);
   query IsPaused : () -> bool;
 
   events {
     Paused;
     Unpaused;
-  }
-};
-
-service Roles {
-  query HasRole : (actor: actor_id, role: str) -> bool;
-  query Roles : () -> vec str;
-
-  events {
-    RoleGranted: struct { actor: actor_id, role: str };
-    RoleRemoved: struct { actor: actor_id, role: str };
   }
 };
 

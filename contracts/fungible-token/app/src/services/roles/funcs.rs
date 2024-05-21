@@ -1,12 +1,13 @@
 use super::utils::*;
 use core::any::TypeId;
-use gstd::ActorId;
+use gstd::{debug, ActorId};
 
 pub fn grant_role<T: Role>(roles: &mut RolesMap, actor: ActorId) -> bool {
     let set = roles.entry(actor).or_default();
     set.insert(TypeId::of::<T>())
 }
 
+// TODO (breathx): optimize me
 pub fn remove_role<T: Role>(roles: &mut RolesMap, actor: ActorId) -> bool {
     let Some(set) = roles.get_mut(&actor) else {
         return false;

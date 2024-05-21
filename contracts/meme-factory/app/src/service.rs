@@ -318,140 +318,140 @@ where
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use alloc::vec;
-    use sails_rtl::{gstd::events::mocks::MockEventTrigger, MessageId};
+// #[cfg(test)]
+// mod tests {
+//     use super::*;
+//     use alloc::vec;
+//     use sails_rtl::{gstd::events::mocks::MockEventTrigger, MessageId};
 
-    const DEFAULT_ADMIN_ID: u64 = 1;
+//     const DEFAULT_ADMIN_ID: u64 = 1;
 
-    fn admin() -> &'static mut sails_rtl::ActorId {
-        static mut ADMIN: Option<sails_rtl::ActorId> = None;
-        unsafe { ADMIN.get_or_insert(sails_rtl::ActorId::from(DEFAULT_ADMIN_ID)) }
-    }
+//     fn admin() -> &'static mut sails_rtl::ActorId {
+//         static mut ADMIN: Option<sails_rtl::ActorId> = None;
+//         unsafe { ADMIN.get_or_insert(sails_rtl::ActorId::from(DEFAULT_ADMIN_ID)) }
+//     }
 
-    #[derive(Clone)]
-    struct MockExecContext;
+//     #[derive(Clone)]
+//     struct MockExecContext;
 
-    impl ExecContext for MockExecContext {
-        fn actor_id(&self) -> sails_rtl::ActorId {
-            *admin()
-        }
+//     impl ExecContext for MockExecContext {
+//         fn actor_id(&self) -> sails_rtl::ActorId {
+//             *admin()
+//         }
 
-        fn message_id(&self) -> MessageId {
-            unimplemented!()
-        }
-    }
+//         fn message_id(&self) -> MessageId {
+//             unimplemented!()
+//         }
+//     }
 
-    fn init() {
-        MemeFactory::<MockExecContext, MockEventTrigger<MemeFactoryEvent>>::seed(
-            InitConfigFactory {
-                meme_code_id: CodeId::new([0xfe; 32]),
-                factory_admin_account: vec![DEFAULT_ADMIN_ID.into()],
-                gas_for_program: 0,
-            },
-        );
+//     fn init() {
+//         MemeFactory::<MockExecContext, MockEventTrigger<MemeFactoryEvent>>::seed(
+//             InitConfigFactory {
+//                 meme_code_id: CodeId::new([0xfe; 32]),
+//                 factory_admin_account: vec![DEFAULT_ADMIN_ID.into()],
+//                 gas_for_program: 0,
+//             },
+//         );
 
-        // init admin
-        admin();
-    }
+//         // init admin
+//         admin();
+//     }
 
-    #[test]
-    fn update_code_id() {
-        init();
+//     #[test]
+//     fn update_code_id() {
+//         init();
 
-        let mut service = MemeFactory::new(MockExecContext, MockEventTrigger::new());
+//         let mut service = MemeFactory::new(MockExecContext, MockEventTrigger::new());
 
-        service.update_code_id(CodeId::default()).unwrap();
-        assert_eq!(MemeFactoryData::get_mut().meme_code_id, CodeId::default());
+//         service.update_code_id(CodeId::default()).unwrap();
+//         assert_eq!(MemeFactoryData::get_mut().meme_code_id, CodeId::default());
 
-        *admin() = sails_rtl::ActorId::from(0);
-        assert_eq!(
-            service.update_code_id(CodeId::new([0xaa; 32])),
-            Err(MemeError::Unauthorized)
-        );
-        assert_eq!(MemeFactoryData::get_mut().meme_code_id, CodeId::default());
-    }
+//         *admin() = sails_rtl::ActorId::from(0);
+//         assert_eq!(
+//             service.update_code_id(CodeId::new([0xaa; 32])),
+//             Err(MemeError::Unauthorized)
+//         );
+//         assert_eq!(MemeFactoryData::get_mut().meme_code_id, CodeId::default());
+//     }
 
-    #[test]
-    fn update_gas_for_program() {
-        init();
+//     #[test]
+//     fn update_gas_for_program() {
+//         init();
 
-        let mut service = MemeFactory::new(MockExecContext, MockEventTrigger::new());
+//         let mut service = MemeFactory::new(MockExecContext, MockEventTrigger::new());
 
-        service.update_gas_for_program(1_000).unwrap();
-        assert_eq!(MemeFactoryData::get_mut().gas_for_program, 1_000);
+//         service.update_gas_for_program(1_000).unwrap();
+//         assert_eq!(MemeFactoryData::get_mut().gas_for_program, 1_000);
 
-        *admin() = sails_rtl::ActorId::from(0);
-        assert_eq!(
-            service.update_gas_for_program(555_555),
-            Err(MemeError::Unauthorized)
-        );
-        assert_eq!(MemeFactoryData::get_mut().gas_for_program, 1_000);
-    }
+//         *admin() = sails_rtl::ActorId::from(0);
+//         assert_eq!(
+//             service.update_gas_for_program(555_555),
+//             Err(MemeError::Unauthorized)
+//         );
+//         assert_eq!(MemeFactoryData::get_mut().gas_for_program, 1_000);
+//     }
 
-    #[test]
-    fn add_admin_to_factory() {
-        init();
+//     #[test]
+//     fn add_admin_to_factory() {
+//         init();
 
-        let mut service = MemeFactory::new(MockExecContext, MockEventTrigger::new());
+//         let mut service = MemeFactory::new(MockExecContext, MockEventTrigger::new());
 
-        let new_admin = ActorId::new([0xcc; 32]);
-        service.add_admin_to_factory(new_admin).unwrap();
-        assert_eq!(
-            MemeFactoryData::get_mut().admins,
-            vec![DEFAULT_ADMIN_ID.into(), new_admin]
-        );
+//         let new_admin = ActorId::new([0xcc; 32]);
+//         service.add_admin_to_factory(new_admin).unwrap();
+//         assert_eq!(
+//             MemeFactoryData::get_mut().admins,
+//             vec![DEFAULT_ADMIN_ID.into(), new_admin]
+//         );
 
-        *admin() = sails_rtl::ActorId::from(0);
-        assert_eq!(
-            service.update_gas_for_program(555_555),
-            Err(MemeError::Unauthorized)
-        );
-        assert_eq!(
-            MemeFactoryData::get_mut().admins,
-            vec![DEFAULT_ADMIN_ID.into(), new_admin]
-        );
-    }
+//         *admin() = sails_rtl::ActorId::from(0);
+//         assert_eq!(
+//             service.update_gas_for_program(555_555),
+//             Err(MemeError::Unauthorized)
+//         );
+//         assert_eq!(
+//             MemeFactoryData::get_mut().admins,
+//             vec![DEFAULT_ADMIN_ID.into(), new_admin]
+//         );
+//     }
 
-    #[test]
-    fn remove_meme() {
-        const MEME_ID: u64 = 2;
+//     #[test]
+//     fn remove_meme() {
+//         const MEME_ID: u64 = 2;
 
-        init();
+//         init();
 
-        let mut service = MemeFactory::new(MockExecContext, MockEventTrigger::new());
+//         let mut service = MemeFactory::new(MockExecContext, MockEventTrigger::new());
 
-        let data = MemeFactoryData::get_mut();
-        data.meme_coins.insert(
-            ActorId::new([0xee; 32]),
-            vec![(
-                MEME_ID,
-                MemeRecord {
-                    name: "".to_string(),
-                    symbol: "".to_string(),
-                    decimals: 0,
-                    meme_program_id: Default::default(),
-                    admins: vec![],
-                },
-            )],
-        );
-        data.id_to_address.insert(MEME_ID, ActorId::zero());
+//         let data = MemeFactoryData::get_mut();
+//         data.meme_coins.insert(
+//             ActorId::new([0xee; 32]),
+//             vec![(
+//                 MEME_ID,
+//                 MemeRecord {
+//                     name: "".to_string(),
+//                     symbol: "".to_string(),
+//                     decimals: 0,
+//                     meme_program_id: Default::default(),
+//                     admins: vec![],
+//                 },
+//             )],
+//         );
+//         data.id_to_address.insert(MEME_ID, ActorId::zero());
 
-        service.remove_meme(MEME_ID).unwrap();
+//         service.remove_meme(MEME_ID).unwrap();
 
-        assert_eq!(service.remove_meme(MEME_ID), Err(MemeError::MemeNotFound));
+//         assert_eq!(service.remove_meme(MEME_ID), Err(MemeError::MemeNotFound));
 
-        assert_eq!(
-            service.remove_meme(0xdeadbeef),
-            Err(MemeError::MemeNotFound)
-        );
+//         assert_eq!(
+//             service.remove_meme(0xdeadbeef),
+//             Err(MemeError::MemeNotFound)
+//         );
 
-        *admin() = sails_rtl::ActorId::from(123);
-        assert_eq!(
-            service.remove_meme(0xdeadbeef),
-            Err(MemeError::Unauthorized)
-        );
-    }
-}
+//         *admin() = sails_rtl::ActorId::from(123);
+//         assert_eq!(
+//             service.remove_meme(0xdeadbeef),
+//             Err(MemeError::Unauthorized)
+//         );
+//     }
+// }

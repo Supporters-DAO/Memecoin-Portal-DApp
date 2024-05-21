@@ -1,8 +1,8 @@
 use crate::services;
 use core::{any::TypeId, marker::PhantomData};
 use gstd::{ActorId, Decode, Encode, String, ToString, TypeInfo, Vec};
-use sails_macros::gservice;
 use sails_rtl::gstd::events::{EventTrigger, GStdEventTrigger};
+use sails_rtl::gstd::gservice;
 use storage::{RolesRegistryStorage, RolesStorage};
 
 pub mod funcs;
@@ -25,6 +25,8 @@ pub enum Event {
     },
 }
 
+// TODO (sails): impl Clone for gstd event depositor
+// #[derive(Clone)]
 pub struct Service<X>(PhantomData<X>);
 
 impl Clone for GstdDrivenService {
@@ -42,24 +44,6 @@ impl<X> Service<X> {
         debug_assert!(_res.is_ok());
 
         Self(PhantomData)
-    }
-
-    pub fn register_role<T: Role>(&mut self) -> Result<()> {
-        let role_name = T::name();
-        let role_type_id = TypeId::of::<T>();
-
-        let registry = RolesRegistryStorage::as_mut();
-
-        let Some(&type_id) = registry.get(&role_name) else {
-            registry.insert(role_name, role_type_id);
-            return Ok(());
-        };
-
-        if type_id != role_type_id {
-            Err(Error::DuplicateRole)
-        } else {
-            Ok(())
-        }
     }
 
     pub fn ensure_role_registered<T: Role>(&self) -> Result<()> {
@@ -129,6 +113,24 @@ impl<X: EventTrigger<Event>> Service<X> {
 
         mutated
     }
+
+    pub fn register_role<T: Role>(&mut self) -> Result<()> {
+        let role_name = T::name();
+        let role_type_id = TypeId::of::<T>();
+
+        let registry = RolesRegistryStorage::as_mut();
+
+        let Some(&type_id) = registry.get(&role_name) else {
+            registry.insert(role_name, role_type_id);
+            return Ok(());
+        };
+
+        if type_id != role_type_id {
+            Err(Error::DuplicateRole)
+        } else {
+            Ok(())
+        }
+    }
 }
 
 #[gservice]
@@ -150,4 +152,6 @@ where
             .map(ToString::to_string)
             .collect()
     }
+
+    // TODO (breathx): actors keys, actors role queries
 }

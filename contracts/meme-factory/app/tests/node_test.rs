@@ -76,6 +76,8 @@ async fn gclient_create_meme() -> Result<()> {
         .calculate_handle_gas(None, program_id, request.clone(), 0, true)
         .await?;
 
+    println!("request {:?}", request);
+
     let (message_id, _) = api
         .send_message_bytes(program_id, request.clone(), gas_info.min_limit, 0)
         .await?;

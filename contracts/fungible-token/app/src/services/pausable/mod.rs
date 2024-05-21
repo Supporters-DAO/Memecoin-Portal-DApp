@@ -1,8 +1,8 @@
 use crate::services::{self, pausable::roles::PauseAdmin, roles::storage::RolesStorage};
 use core::marker::PhantomData;
-use gstd::{debug, msg, ActorId, Decode, Encode, String, TypeInfo, Vec};
-use sails_macros::gservice;
+use gstd::{msg, ActorId, Decode, Encode, String, TypeInfo, Vec};
 use sails_rtl::gstd::events::{EventTrigger, GStdEventTrigger};
+use sails_rtl::gstd::gservice;
 use storage::StateStorage;
 
 pub use utils::*;
@@ -27,16 +27,14 @@ impl<X: EventTrigger<Event>> Service<X> {
         debug_assert!(_res.is_ok());
 
         roles_service.register_role::<PauseAdmin>();
+
         let _res = roles_service.grant_role::<PauseAdmin>(admin);
         debug_assert!(_res);
+
         Self {
             roles_service,
             _phantom: PhantomData,
         }
-    }
-
-    pub fn ensure_unpaused(&self) -> Result<(), Error> {
-        (!self.is_paused()).then_some(()).ok_or(Error::Paused)
     }
 }
 
@@ -54,6 +52,10 @@ where
 
     pub fn is_paused(&self) -> bool {
         StateStorage::as_ref().paused()
+    }
+
+    pub fn ensure_unpaused(&self) -> Result<(), Error> {
+        (!self.is_paused()).then_some(()).ok_or(Error::Paused)
     }
 
     pub fn pause(&mut self) -> bool {
@@ -86,6 +88,7 @@ where
         })
     }
 
+    // TODO (breathx): consider as atomic
     pub fn delegate_admin(&mut self, actor: sails_rtl::ActorId) -> bool {
         services::utils::panicking(move || -> services::roles::Result<bool> {
             let source = msg::source();

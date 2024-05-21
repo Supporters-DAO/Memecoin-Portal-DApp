@@ -1,5 +1,5 @@
 use core::fmt::Debug;
-use gstd::{debug, exec, ext, format, Encode};
+use gstd::{exec, ext, format, Encode};
 use sails_rtl::gstd::events::{EventTrigger, GStdEventTrigger};
 use scale_info::StaticTypeInfo;
 
@@ -15,13 +15,9 @@ pub fn panic(err: impl Debug) -> ! {
 }
 
 pub fn deposit_event<E: Encode + StaticTypeInfo>(event: E) {
-    debug!("deposit_event");
     if GStdEventTrigger::<E>::new().trigger(event).is_err() {
-        debug!("Failed");
         panic("Failed to deposit event");
     }
-    debug!("deposit_event");
-
     // exec::leave()
 }
 

@@ -8,7 +8,6 @@ license.workspace = true
 gstd.workspace = true
 primitive-types.workspace = true
 log.workspace = true
-sails-macros.workspace = true
 sails-rtl.workspace = true
 parity-scale-codec.workspace = true
 scale-info.workspace = true
