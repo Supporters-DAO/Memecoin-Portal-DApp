@@ -54,7 +54,7 @@ export function MobileList({ data }: ContentLayoutProps) {
 
 	return (
 		<div className="flex flex-col gap-4 font-poppins">
-			{data.length ? (
+			{data.length > 0 ? (
 				data.map((i: Token) => {
 					const balance = balances.find((b) => b.coin.id === i.id)?.balance
 					const isAdmin = i.admins.find((i) => i === account?.decodedAddress)
