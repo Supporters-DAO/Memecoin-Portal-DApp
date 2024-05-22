@@ -67,6 +67,18 @@ export function AboutCreateSlider() {
 		})
 	}, [thumbsApi])
 
+	// Autoscroll effect
+	useEffect(() => {
+		if (!api) return
+
+		const interval = setInterval(() => {
+			const nextIndex = (api.selectedScrollSnap() + 1) % dataImages.length
+			api.scrollTo(nextIndex)
+		}, 5000) // Change slide every 5 seconds
+
+		return () => clearInterval(interval)
+	}, [api])
+
 	return (
 		<>
 			{/*Controls*/}
@@ -114,11 +126,12 @@ export function AboutCreateSlider() {
 			<Carousel
 				setApi={setApi}
 				opts={{
-					startIndex: 1,
+					startIndex: 0,
 					align: 'center',
 					containScroll: false,
+					loop: true,
 				}}
-				className="mt-6 overflow-hidden sm:mt-10 z-1"
+				className="z-1 mt-6 overflow-hidden sm:mt-10"
 			>
 				<div className="w-full [--img-h:266px] [--img-w:375px] [--offset:2rem] sm:[--img-h:278px] sm:[--img-w:392px] sm:[--offset:6.875rem] md:px-2.5 lg:[--img-h:400px] lg:[--img-w:563px] lg:[--offset:10rem]">
 					<CarouselContent
