@@ -59,7 +59,9 @@ export function DataTable<TData>({
 				/>
 			)}
 
-			<TableNavigation table={table} total={total} limit={limit} />
+			{table.options.data.length > 0 && (
+				<TableNavigation table={table} total={total} limit={limit} />
+			)}
 		</TableLayoutWrapper>
 	)
 }

@@ -11,12 +11,14 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { useAuth } from '@/lib/hooks/use-auth'
 
 type Props = {
 	className?: string
 }
 
 export function HeaderMenu({ className }: Props) {
+	const { walletAccount } = useAuth()
 	const [open, setOpen] = useState(false)
 	const pathname = usePathname()
 
@@ -37,20 +39,25 @@ export function HeaderMenu({ className }: Props) {
 					side="bottom"
 					className="min-w-55 font-poppins text-[14px] leading-none tracking-[0.03em] md:mt-2"
 				>
-					<DropdownMenuItem
-						asChild
-						className={cn(pathname === '/tokens/create' && 'text-primary')}
-					>
-						<Link href="/tokens/create">Memecoins Creator</Link>
-					</DropdownMenuItem>
-					<DropdownMenuSeparator />
-					<DropdownMenuItem
-						asChild
-						className={cn(pathname === '/tokens/my' && 'text-primary')}
-					>
-						<Link href="/tokens/my">My Coins – My Rules</Link>
-					</DropdownMenuItem>
-					<DropdownMenuSeparator />
+					{walletAccount && (
+						<>
+							<DropdownMenuItem
+								asChild
+								className={cn(pathname === '/tokens/create' && 'text-primary')}
+							>
+								<Link href="/tokens/create">Memecoins Creator</Link>
+							</DropdownMenuItem>
+							<DropdownMenuSeparator />
+
+							<DropdownMenuItem
+								asChild
+								className={cn(pathname === '/tokens/my' && 'text-primary')}
+							>
+								<Link href="/tokens/my">My Coins – My Rules</Link>
+							</DropdownMenuItem>
+							<DropdownMenuSeparator />
+						</>
+					)}
 					<DropdownMenuItem
 						asChild
 						className={cn(pathname === '/tokens' && 'text-primary')}
