@@ -17,7 +17,7 @@ pub(crate) mod utils;
 
 pub type GstdDrivenService = Service<GStdEventTrigger<Event>>;
 
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Encode, Decode, TypeInfo)]
+#[derive(Clone, Debug, Encode, Decode, TypeInfo)]
 pub enum Event {
     Minted {
         to: sails_rtl::ActorId,
@@ -34,6 +34,15 @@ pub enum Event {
         from: sails_rtl::ActorId,
         to: Vec<sails_rtl::ActorId>,
         value: U256,
+    },
+    DescriptionChanged {
+        new_description: String,
+    },
+    ImageLinkChanged {
+        new_image_link: String,
+    },
+    ExternalLinksChanged {
+        new_external_links: ExternalLinks,
     },
 }
 
@@ -250,6 +259,33 @@ where
 
             Ok(res)
         })
+    }
+    pub fn change_description(&mut self, new_description: String) -> () {
+        services::utils::panicking(|| {
+            self.roles_service
+                .ensure_has_role::<FungibleAdmin>(msg::source())
+        });
+        let add_meta = AdditionalMetaStorage::as_mut();
+        add_meta.description = new_description.clone();
+        services::utils::deposit_event(Event::DescriptionChanged { new_description });
+    }
+    pub fn change_image_link(&mut self, new_image_link: String) -> () {
+        services::utils::panicking(|| {
+            self.roles_service
+                .ensure_has_role::<FungibleAdmin>(msg::source())
+        });
+        let add_meta = AdditionalMetaStorage::as_mut();
+        add_meta.external_links.image = new_image_link.clone();
+        services::utils::deposit_event(Event::ImageLinkChanged { new_image_link });
+    }
+    pub fn change_external_links(&mut self, new_external_links: ExternalLinks) -> () {
+        services::utils::panicking(|| {
+            self.roles_service
+                .ensure_has_role::<FungibleAdmin>(msg::source())
+        });
+        let add_meta = AdditionalMetaStorage::as_mut();
+        add_meta.external_links = new_external_links.clone();
+        services::utils::deposit_event(Event::ExternalLinksChanged { new_external_links });
     }
 
     pub fn kill(&mut self, inheritor: sails_rtl::ActorId) -> () {

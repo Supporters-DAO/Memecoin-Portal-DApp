@@ -18,7 +18,7 @@ fn test() {
     sys.init_logger();
     let ft = Program::from_file(
         &sys,
-        "../target/wasm32-unknown-unknown/debug/erc20_wasm.opt.wasm",
+        "../target/wasm32-unknown-unknown/release/erc20_wasm.opt.wasm",
     );
 
     let init = Init {
@@ -40,8 +40,8 @@ fn test() {
     };
 
     let encoded_request = ["New".encode(), init.encode()].concat();
-    ft.send_bytes(USERS[0], encoded_request);
-
+    let res = ft.send_bytes(USERS[0], encoded_request);
+    assert!(!res.main_failed());
     let user: ActorId = USERS[0].into();
     let encoded_request = ["Erc20".encode(), "TotalSupply".encode(), (user).encode()].concat();
     let state = ft.send_bytes(USERS[0], encoded_request);
