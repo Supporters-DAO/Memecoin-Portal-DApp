@@ -40,6 +40,9 @@ service Admin {
   AllowancesReserve : (additional: u32) -> null;
   BalancesReserve : (additional: u32) -> null;
   Burn : (from: actor_id, value: u256) -> bool;
+  ChangeDescription : (new_description: str) -> null;
+  ChangeExternalLinks : (new_external_links: ExternalLinks) -> null;
+  ChangeImageLink : (new_image_link: str) -> null;
   GrantRole : (to: actor_id, role: Role) -> bool;
   Kill : (inheritor: actor_id) -> null;
   Mint : (to: actor_id, value: u256) -> bool;
@@ -57,6 +60,9 @@ service Admin {
     Burned: struct { from: actor_id, value: u256 };
     Killed: struct { inheritor: actor_id };
     TransferredToUsers: struct { from: actor_id, to: vec actor_id, value: u256 };
+    DescriptionChanged: struct { new_description: str };
+    ImageLinkChanged: struct { new_image_link: str };
+    ExternalLinksChanged: struct { new_external_links: ExternalLinks };
   }
 };
 

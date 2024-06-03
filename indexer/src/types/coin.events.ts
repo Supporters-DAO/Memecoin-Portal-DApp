@@ -2,6 +2,7 @@ import { safeUnwrapToBigInt } from "./event.utils";
 import { getFnNamePrefix, getServiceNamePrefix, Sails } from "sails-js";
 import { readFileSync } from "fs";
 import { HexString } from "@gear-js/api";
+import { ExternalLinks } from '../coin-types/lib';
 
 let instance: CoinEventsParser | undefined;
 
@@ -18,6 +19,9 @@ export enum CoinEventType {
   TransferredToUsers = "TransferredToUsers",
   AdminAdded = "AdminAdded",
   AdminRemoved = "AdminRemoved",
+  DescriptionChanged = "DescriptionChanged",
+  ExternalLinksChanged = "ExternalLinksChanged",
+  ImageLinkChanged = "ImageLinkChanged",
   Minted = "Minted",
   Burned = "Burned",
 }
@@ -58,13 +62,31 @@ export type AdminDeletedEvent = {
   admin: string;
 };
 
+export type DescriptionChangedEvent = {
+  type: CoinEventType.DescriptionChanged;
+  description: string;
+};
+
+export type ImageLinkChangedEvent = {
+  type: CoinEventType.ImageLinkChanged;
+  imageLink: string;
+};
+
+export type ExternalLinksChangedEvent = {
+  type: CoinEventType.ExternalLinksChanged;
+  externalLink: ExternalLinks;
+};
+
 export type CoinEvent =
   | TransferEvent
   | TransferredToUsersEvent
   | AdminAddedEvent
   | AdminDeletedEvent
   | MintedEvent
-  | BurnedEvent;
+  | BurnedEvent
+  | DescriptionChangedEvent
+  | ImageLinkChangedEvent
+  | ExternalLinksChangedEvent;
 
 export class CoinEventsParser {
   private sails?: Sails;
@@ -134,6 +156,33 @@ export class CoinEventsParser {
           from: event.from.toString(),
           to: event.to.map((t) => t.toString()),
           amount: safeUnwrapToBigInt(event.value)!,
+        };
+      }
+      case "DescriptionChanged": {
+        const event = ev as {
+          new_description: string;
+        };
+        return {
+          type: CoinEventType.DescriptionChanged,
+          description: event.new_description,
+        };
+      }
+      case "ExternalLinksChanged": {
+        const event = ev as {
+          new_external_links: ExternalLinks;
+        };
+        return {
+          type: CoinEventType.ExternalLinksChanged,
+          externalLink: event.new_external_links,
+        };
+      }
+      case "ImageLinkChanged": {
+        const event = ev as {
+          new_image_link: string;
+        };
+        return {
+          type: CoinEventType.ImageLinkChanged,
+          imageLink: event.new_image_link,
         };
       }
     }

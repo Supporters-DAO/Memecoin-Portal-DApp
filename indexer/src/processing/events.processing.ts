@@ -21,6 +21,9 @@ import { TransferredHandler } from "./coin/transferred.handler";
 import { TransferredToUsersHandler } from "./coin/transferred-to-users.handler";
 import { BurnedHandler } from "./coin/burned.handler";
 import { MintedHandler } from "./coin/minted.handler";
+import { DescriptionChangedHandler } from './coin/description-changed.handler';
+import { ImageLinkChangedHandler } from './coin/image-link-changed.handler';
+import { ExternalLinkChangedHandler } from './coin/external-link-changed.handler';
 
 const factoryEventsToHandler: Record<
   FactoryEventType,
@@ -39,6 +42,9 @@ const coinEventsToHandler: Record<
   [CoinEventType.TransferredToUsers]: new TransferredToUsersHandler(),
   [CoinEventType.Burned]: new BurnedHandler(),
   [CoinEventType.Minted]: new MintedHandler(),
+  [CoinEventType.DescriptionChanged]: new DescriptionChangedHandler(),
+  [CoinEventType.ImageLinkChanged]: new ImageLinkChangedHandler(),
+  [CoinEventType.ExternalLinksChanged]: new ExternalLinkChangedHandler(),
 };
 
 export class EventsProcessing {
