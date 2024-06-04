@@ -30,7 +30,7 @@ export const CreateForm = () => {
 		watch,
 	} = useForm<ICreateTokenForm>({
 		mode: 'onChange',
-		defaultValues: createTokenDefault,
+		defaultValues: dataToken || createTokenDefault,
 		resolver: zodResolver(createTokenSchema),
 	})
 
