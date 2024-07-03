@@ -35,7 +35,12 @@ export function Wallet({
 	walletModalHandler,
 	className,
 }: Props) {
-	const { setWalletAccount, setsAccountReadyAtom, walletAccount } = useAuth()
+	const {
+		setWalletAccount,
+		setsAccountReadyAtom,
+		walletAccount,
+		setIsLoadingWallet,
+	} = useAuth()
 
 	const { account, isAccountReady, logout } = useAccount()
 	const { resetWalletId } = useWallet()
@@ -52,6 +57,12 @@ export function Wallet({
 
 	useEffect(() => {
 		setsAccountReadyAtom(isAccountReady)
+	}, [isAccountReady])
+
+	useEffect(() => {
+		if (isAccountReady) {
+			setIsLoadingWallet(false)
+		}
 	}, [isAccountReady])
 
 	useEffect(() => {

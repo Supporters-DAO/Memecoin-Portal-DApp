@@ -6,11 +6,13 @@ const withBundleAnalyzer = BundleAnalyzer({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-	reactStrictMode: false,
+	reactStrictMode: true,
 	output: 'standalone',
 	webpack: (config, options) => {
 		config.module.rules.push({
-			test: /\.txt/, type: 'asset/resource', generator: {
+			test: /\.txt/,
+			type: 'asset/resource',
+			generator: {
 				filename: 'static/[hash][ext]',
 			},
 		})
