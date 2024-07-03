@@ -6,7 +6,7 @@ const withBundleAnalyzer = BundleAnalyzer({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-	reactStrictMode: true,
+	reactStrictMode: process.env.NODE_ENV === 'development',
 	output: 'standalone',
 	webpack: (config, options) => {
 		config.module.rules.push({
