@@ -10,7 +10,9 @@ const nextConfig = {
 	output: 'standalone',
 	webpack: (config, options) => {
 		config.module.rules.push({
-			test: /\.txt/, type: 'asset/resource', generator: {
+			test: /\.txt/,
+			type: 'asset/resource',
+			generator: {
 				filename: 'static/[hash][ext]',
 			},
 		})

@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic'
 import { useEffect, useState } from 'react'
 import { GearApiProvider } from '@/components/providers/gear-api'
 import { useWalletOpenState } from '@/components/common/wallet-new/components/wallet/wallet.atoms'
+import { useAuth } from '@/lib/hooks/use-auth'
 
 const LazyCreateButton = dynamic(
 	() =>
@@ -13,7 +14,7 @@ const LazyCreateButton = dynamic(
 
 export function CreateButtonLazy() {
 	const [openState, setOpenState] = useWalletOpenState()
-
+	const { isLoadingWallet } = useAuth()
 	const [isReady, setIsReady] = useState(false)
 
 	useEffect(() => {
@@ -22,7 +23,7 @@ export function CreateButtonLazy() {
 		}
 	}, [])
 
-	if (!isReady) return null
+	if (!isReady || isLoadingWallet) return null
 
 	return (
 		<GearApiProvider>
