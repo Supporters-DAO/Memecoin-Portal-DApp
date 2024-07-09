@@ -31,6 +31,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Lowercase github.repository
+        run: |
+          echo "REPO=`echo ${{env.REGISTRY}} | tr '[:upper:]' '[:lower:]'`" >>${GITHUB_ENV}
+
       - name: Get branch
         id: branch
         run: |
@@ -46,7 +50,7 @@ jobs:
       - name: Set IMAGE_NAME
         id: image
         run: |
-          image_name=${{ env.REGISTRY }}-${{ env.KUBE_DEPLOYMENT_PREFIX }}:${{ env.branch_name }}-${{ env.sha_short }}
+          image_name=${{ env.REPO }}-${{ env.KUBE_DEPLOYMENT_PREFIX }}:${{ env.branch_name }}-${{ env.sha_short }}
           echo "image_name=$image_name" >> $GITHUB_OUTPUT
 
   build-and-push-image:
