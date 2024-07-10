@@ -2,6 +2,7 @@ import { HexString } from '@gear-js/api'
 import { AlertContainerFactory } from '@gear-js/react-hooks'
 import clsx, { ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
+import { ADDRESS } from './consts'
 
 export const copyToClipboard = async ({
 	alert,
@@ -75,4 +76,25 @@ export function compactFormatNumber(
 	}
 ) {
 	return Intl.NumberFormat('en-US', options).format(num)
+}
+
+export const getGatewayUrl = (ipfsUrl: string) => {
+	const ipfsHash = ipfsUrl.split('ipfs://')[1]
+	return `${ADDRESS.IPFS_GETAWAY}${ipfsHash}`
+}
+
+export const uploadToIpfs = async (files: File[]) => {
+	const formData = new FormData()
+	files.forEach((file) => formData.append('file', file))
+
+	const response = await fetch(ADDRESS.IPFS_UPLOAD, {
+		method: 'POST',
+		body: formData,
+	})
+	if (!response.ok) throw new Error(response.statusText)
+
+	const result = await (response.json() as Promise<
+		Record<'ipfsHash', string>[]
+	>)
+	return result.map(({ ipfsHash }) => `ipfs://${ipfsHash}`)
 }
