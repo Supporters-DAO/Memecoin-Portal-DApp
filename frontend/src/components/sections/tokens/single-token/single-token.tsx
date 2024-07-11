@@ -91,7 +91,7 @@ export function Token({ token: { id, ...token } }: Props) {
 						alt={`Logo ${token.name}`}
 						width={160}
 						height={160}
-						className="relative size-max h-40 max-w-40 rounded-full object-cover max-sm:size-20"
+						className="relative size-max h-40 w-full max-w-40 rounded-full object-cover max-sm:size-20"
 						unoptimized={true}
 						onError={(e) => {
 							const target = e.target as HTMLImageElement
@@ -100,12 +100,12 @@ export function Token({ token: { id, ...token } }: Props) {
 						}}
 					/>
 				</div>
-				<div className="max-sm:col-span-1 max-sm:col-start-2 max-sm:w-full max-sm:content-center">
-					<div className="sm:flex sm:items-center sm:gap-4">
+				<div className="max-sm:col-span-1 max-sm:col-start-2 max-sm:w-full max-sm:content-center md:w-max">
+					<div className="gap-0 sm:flex sm:flex-col sm:items-baseline sm:gap-4">
 						<h2 className="font-ps2p text-[32px] text-primary max-sm:text-[16px]">
 							{token.name}
 						</h2>
-						<div className="flex gap-2 font-poppins text-[24px] font-semibold text-white/[80%] max-sm:text-[14px]">
+						<div className="mt-2 flex flex-col gap-0 font-poppins text-[24px] font-semibold text-white/[80%] max-sm:text-[14px] md:mt-0 md:flex-row md:gap-2">
 							{tokenBalance && (
 								<span>{parseFloat(tokenBalance).toLocaleString('us')}</span>
 							)}
@@ -228,7 +228,7 @@ export function Token({ token: { id, ...token } }: Props) {
 				</div>
 
 				<div className="col-span-2 col-start-2 row-start-5 font-poppins max-sm:col-span-3 max-sm:row-start-4 max-sm:text-[14px]">
-					<div className="flex flex-col gap-3">
+					<div className="flex flex-col gap-3 break-all">
 						<div>
 							<p>{token.description}</p>
 						</div>

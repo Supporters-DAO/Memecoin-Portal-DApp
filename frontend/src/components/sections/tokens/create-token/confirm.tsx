@@ -8,7 +8,7 @@ import { ICreateTokenForm } from './schema'
 import { useAccount } from '@gear-js/react-hooks'
 import { stepAtom } from '.'
 import { Created } from './created'
-import { cn } from '@/lib/utils'
+import { cn, getGatewayUrl, uploadToIpfs } from '@/lib/utils'
 import { useMessages } from '@/lib/sails/use-send-message-factory'
 
 interface Props {
@@ -19,13 +19,21 @@ export const ConfirmCreate = ({ data }: Props) => {
 	const [isPending, setIsPending] = useState(false)
 	const [step, setStep] = useAtom(stepAtom)
 	const [isCreated, setIsCreated] = useState(false)
+	const [imageLink, setImageLink] = useState('')
 	const { account } = useAccount()
 	const sendMessage = useMessages()
 
 	const onCreate = async () => {
 		setIsPending(true)
+		if (!data) return
 
-		if (account && data) {
+		let imageFile = data.image
+
+		const [ipfsUrl] = await uploadToIpfs([imageFile])
+		const linkIPFSImage = await getGatewayUrl(ipfsUrl)
+		setImageLink(linkIPFSImage)
+
+		if (account && linkIPFSImage) {
 			try {
 				const sendMessageResult = await sendMessage('createFungibleProgram', {
 					name: data.name,
@@ -33,7 +41,7 @@ export const ConfirmCreate = ({ data }: Props) => {
 					decimals: data.decimals || 0,
 					description: data.description,
 					external_links: {
-						image: data?.external_links?.image,
+						image: linkIPFSImage,
 						website: data?.external_links?.website || null,
 						telegram: data?.external_links?.telegram || null,
 						twitter: data?.external_links?.twitter || null,
@@ -59,13 +67,13 @@ export const ConfirmCreate = ({ data }: Props) => {
 	return (
 		<div className="flex flex-col items-center gap-3 overflow-hidden">
 			<h1 className="text-[28px] text-primary max-sm:text-center max-sm:text-[16px]">
-					Memecoin Creator
-				</h1>
+				Memecoin Creator
+			</h1>
 			<div className="flex w-[660px] flex-col gap-6 rounded-[40px] bg-blue-light p-10 max-sm:w-full max-sm:rounded-[20px]">
 				<div className="mx-auto w-2/5 max-sm:w-[70%]">
 					<ol className="flex w-full items-center">
 						<li className="flex w-full items-center text-[#0F1B34] after:inline-block after:h-1 after:w-full after:border-4 after:border-b after:border-primary after:content-['']">
-						<span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary max-sm:size-7 max-sm:text-[12px]">
+							<span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary max-sm:size-7 max-sm:text-[12px]">
 								1
 							</span>
 						</li>
@@ -98,7 +106,7 @@ export const ConfirmCreate = ({ data }: Props) => {
 							<div className="flex flex-col gap-5 break-words font-poppins">
 								<div className="flex justify-center">
 									<Image
-										src={data.external_links.image}
+										src={URL.createObjectURL(data.image)}
 										alt={`Logo ${data.name}`}
 										width={100}
 										height={100}
@@ -211,7 +219,7 @@ export const ConfirmCreate = ({ data }: Props) => {
 						</div>
 					</>
 				) : (
-					<Created name={data!.name} image={data!.external_links!.image} />
+					<Created name={data!.name} image={imageLink} />
 				)}
 			</div>
 		</div>
