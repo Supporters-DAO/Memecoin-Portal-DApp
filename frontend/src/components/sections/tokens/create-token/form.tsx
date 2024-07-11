@@ -34,18 +34,24 @@ export const CreateForm = () => {
 		resolver: zodResolver(createTokenSchema),
 	})
 
+	const [max_supply, initial_supply, decimals] = watch([
+		'max_supply',
+		'initial_supply',
+		'decimals',
+	])
+
 	useEffect(() => {
 		if (dirtyFields.max_supply || dirtyFields.initial_supply) {
 			trigger('initial_supply')
 			trigger('max_supply')
 		}
-	}, [watch('max_supply'), watch('initial_supply')])
+	}, [max_supply, initial_supply])
 
 	useEffect(() => {
 		if (dirtyFields.decimals) {
 			trigger('decimals')
 		}
-	}, [watch('decimals')])
+	}, [decimals])
 
 	const onSubmit = (data: ICreateTokenForm) => {
 		setDataToken(data)

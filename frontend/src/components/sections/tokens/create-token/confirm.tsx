@@ -25,41 +25,41 @@ export const ConfirmCreate = ({ data }: Props) => {
 
 	const onCreate = async () => {
 		setIsPending(true)
-		if (data) {
-			let imageFile = data.image
+		if (!data) return
 
-			const [ipfsUrl] = await uploadToIpfs([imageFile])
-			const linkIPFSImage = await getGatewayUrl(ipfsUrl)
-			setImageLink(linkIPFSImage)
+		let imageFile = data.image
 
-			if (account && linkIPFSImage) {
-				try {
-					const sendMessageResult = await sendMessage('createFungibleProgram', {
-						name: data.name,
-						symbol: data.symbol,
-						decimals: data.decimals || 0,
-						description: data.description,
-						external_links: {
-							image: linkIPFSImage,
-							website: data?.external_links?.website || null,
-							telegram: data?.external_links?.telegram || null,
-							twitter: data?.external_links?.twitter || null,
-							discord: data?.external_links?.discord || null,
-							tokenomics: data?.external_links?.tokenomics || null,
-						},
-						initial_supply: data.initial_supply || 0,
-						max_supply: data.max_supply || 0,
-						admin_id: account.decodedAddress,
-					})
+		const [ipfsUrl] = await uploadToIpfs([imageFile])
+		const linkIPFSImage = await getGatewayUrl(ipfsUrl)
+		setImageLink(linkIPFSImage)
 
-					if (sendMessageResult) {
-						setIsCreated(true)
-					}
-				} catch (error) {
-					console.error('Error sending message:', error)
-				} finally {
-					setIsPending(false)
+		if (account && linkIPFSImage) {
+			try {
+				const sendMessageResult = await sendMessage('createFungibleProgram', {
+					name: data.name,
+					symbol: data.symbol,
+					decimals: data.decimals || 0,
+					description: data.description,
+					external_links: {
+						image: linkIPFSImage,
+						website: data?.external_links?.website || null,
+						telegram: data?.external_links?.telegram || null,
+						twitter: data?.external_links?.twitter || null,
+						discord: data?.external_links?.discord || null,
+						tokenomics: data?.external_links?.tokenomics || null,
+					},
+					initial_supply: data.initial_supply || 0,
+					max_supply: data.max_supply || 0,
+					admin_id: account.decodedAddress,
+				})
+
+				if (sendMessageResult) {
+					setIsCreated(true)
 				}
+			} catch (error) {
+				console.error('Error sending message:', error)
+			} finally {
+				setIsPending(false)
 			}
 		}
 	}
