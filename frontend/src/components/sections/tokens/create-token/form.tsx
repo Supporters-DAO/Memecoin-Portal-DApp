@@ -34,10 +34,11 @@ export const CreateForm = () => {
 		resolver: zodResolver(createTokenSchema),
 	})
 
-	const [max_supply, initial_supply, decimals] = watch([
+	const [max_supply, initial_supply, decimals, image] = watch([
 		'max_supply',
 		'initial_supply',
 		'decimals',
+		'image',
 	])
 
 	useEffect(() => {
@@ -53,6 +54,12 @@ export const CreateForm = () => {
 		}
 	}, [decimals])
 
+	useEffect(() => {
+		if (dirtyFields.image) {
+			trigger('image')
+		}
+	}, [image])
+
 	const onSubmit = (data: ICreateTokenForm) => {
 		setDataToken(data)
 		setStep('confirm')
@@ -62,11 +69,12 @@ export const CreateForm = () => {
 		const file = e.target.files?.[0]
 		if (!file) return
 
-		setValue('image', file)
+		setValue('image', file, { shouldValidate: true })
 		setDataToken((prev) => ({
 			...prev!,
 			image: file,
 		}))
+		trigger('image')
 	}
 
 	return (
@@ -162,6 +170,7 @@ export const CreateForm = () => {
 								Image
 							</label>
 							<input
+								name="image"
 								id="image-upload"
 								type="file"
 								accept="image/*"

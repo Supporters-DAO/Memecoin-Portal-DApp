@@ -6,6 +6,7 @@ const ACCEPTED_IMAGE_TYPES = [
 	'image/jpg',
 	'image/png',
 	'image/webp',
+	'image/gif',
 ]
 
 export const createTokenSchema = z
@@ -45,8 +46,9 @@ export const createTokenSchema = z
 			.refine((file) => file?.size <= MAX_FILE_SIZE, `Max image size is 5MB.`)
 			.refine(
 				(file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
-				'Only .jpg, .jpeg, .png and .webp formats are supported.'
-			),
+				'Only .jpg, .jpeg, .png and .webp .gif formats are supported.'
+			)
+			.transform((value) => value ?? null),
 		external_links: z.object({
 			website: z
 				.string()
