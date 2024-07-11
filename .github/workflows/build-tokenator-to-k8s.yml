@@ -3,7 +3,7 @@ name: Tokenator - Build and Deploy
 on:
   workflow_dispatch:
   push:
-    branches: ['master', 'main', 'frontend'] # frontend = build staging 
+    branches: ["master", "main", "frontend"] # frontend = build staging
     paths:
       - frontend/**
 
@@ -17,7 +17,7 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   AWS_REGION: ${{ secrets.AWS_REGION }}
   KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
-  KUBECTL_VERSION: 'v1.22.17'
+  KUBECTL_VERSION: "v1.22.17"
   KUBE_NAMESPACE: memecoin
   KUBE_DEPLOYMENT_PREFIX: tokenator
   REGISTRY: ghcr.io/${{ github.repository }}
@@ -87,6 +87,8 @@ jobs:
             NEXT_PUBLIC_NODE_ADDRESS=${{ secrets.NEXT_PUBLIC_NODE_ADDRESS }}
             NEXT_PUBLIC_CONTRACT_ADDRESS=${{ secrets.NEXT_PUBLIC_CONTRACT_ADDRESS }}
             NEXT_PUBLIC_EXPLORER=${{ secrets.NEXT_PUBLIC_EXPLORER }}
+            NEXT_PUBLIC_IPFS_GETAWAY=${{ secrets.NEXT_PUBLIC_IPFS_GETAWAY }}
+            NEXT_PUBLIC_IPFS_GETAWAY=${{ secrets.NEXT_PUBLIC_IPFS_GETAWAY }}
 
   deploy-to-k8s:
     needs: [prepair, build-and-push-image]
