@@ -82,6 +82,8 @@ jobs:
           file: pinata-proxy/Dockerfile
           push: true
           tags: ${{ needs.prepair.outputs.image_name }}
+          build-args: |
+            NEXT_PUBLIC_IPFS_UPLOAD_ADDRESS=${{ secrets.NEXT_PUBLIC_IPFS_UPLOAD_ADDRESS }}
 
   deploy-to-k8s:
     needs: [prepair, build-and-push-image]
