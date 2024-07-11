@@ -23,7 +23,7 @@ export const createTokenSchema = z
 			.string()
 			.regex(/^[A-Za-z]+$/, { message: 'Only Latin letters are allowed' })
 			.min(2, { message: 'Symbol must be at least 2 characters long' })
-			.max(15, { message: 'Symbol must be no more than 15 characters long' }),
+			.max(5, { message: 'Symbol must be no more than 5 characters long' }),
 		decimals: z.nullable(
 			z
 				.number()
