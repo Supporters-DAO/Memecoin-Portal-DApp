@@ -23,7 +23,7 @@ export const createTokenSchema = z
 			.string()
 			.regex(/^[A-Za-z]+$/, { message: 'Only Latin letters are allowed' })
 			.min(2, { message: 'Symbol must be at least 2 characters long' })
-			.max(5, { message: 'Symbol must be no more than 5 characters long' }),
+			.max(8, { message: 'Symbol must be no more than 8 characters long' }),
 		decimals: z.nullable(
 			z
 				.number()
@@ -43,6 +43,7 @@ export const createTokenSchema = z
 			}),
 		image: z
 			.any()
+			.refine((file) => file?.size > 0, 'Required image')
 			.refine((file) => file?.size <= MAX_FILE_SIZE, `Max image size is 5MB.`)
 			.refine(
 				(file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),

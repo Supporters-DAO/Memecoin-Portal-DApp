@@ -254,10 +254,10 @@
   resolved "https://registry.yarnpkg.com/@gear-js/api/-/api-0.38.0.tgz#7a2f6745d3e2a476e226a44c0814f8a2d9f09ca2"
   integrity sha512-zc+h5tv1P/qNPaihk8Za4x3IqBqseKDlMLzHNSk4GR5P3B4IN7xRzTtE/nK5v3Aunhej8DxEyO8iZwUsuib8wQ==
 
-"@gear-js/react-hooks@0.10.5":
-  version "0.10.5"
-  resolved "https://registry.yarnpkg.com/@gear-js/react-hooks/-/react-hooks-0.10.5.tgz#07a3e78009bffe752e44e10998c0a6a718ebf653"
-  integrity sha512-OCReZICEE/5Z9JJ3fhwYDFboqaXrwhyT0tMMSMEUqPMW7Ho/+feA58Kj6lmT3qRn4al839YQu24Rp5UBjFTuCg==
+"@gear-js/react-hooks@0.10.6":
+  version "0.10.6"
+  resolved "https://registry.yarnpkg.com/@gear-js/react-hooks/-/react-hooks-0.10.6.tgz#8202bfce876c8b722bc2f341a6bd99391997f2ee"
+  integrity sha512-dFAvLzMMaWC0RMHp/S4Z1KKdSXWhleio327DYcopnqLPvneDpe3ft+0gLJwBTWZG7YyalPPm/9tsK9hXa30guw==
   dependencies:
     "@polkadot/api-derive" "10.11.2"
     "@polkadot/extension-inject" "0.46.5"
