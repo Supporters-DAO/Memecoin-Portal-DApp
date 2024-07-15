@@ -1,7 +1,6 @@
-use super::utils::{Result, *};
+use super::utils::{Error, Result, *};
 use gstd::{prelude::*, ActorId};
-use primitive_types::U256;
-
+use sails::prelude::*;
 pub fn allowance(allowances: &AllowancesMap, owner: ActorId, spender: ActorId) -> U256 {
     allowances
         .get(&(owner, spender))
@@ -22,7 +21,7 @@ pub fn approve(
 
     let key = (owner, spender);
 
-    let Ok(non_zero_value) = value.try_into() else {
+    let Some(non_zero_value) = NonZeroU256::new(value) else {
         return allowances.remove(&key).is_some();
     };
 
@@ -57,11 +56,11 @@ pub fn transfer(
         .checked_add(value)
         .ok_or(Error::NumericOverflow)?;
 
-    let Ok(non_zero_new_to) = new_to.try_into() else {
+    let Some(non_zero_new_to) = NonZeroU256::new(new_to) else {
         unreachable!("Infallible since fn is noop on zero value; qed");
     };
 
-    if let Ok(non_zero_new_from) = new_from.try_into() {
+    if let Some(non_zero_new_from) = NonZeroU256::new(new_from) {
         balances.insert(from, non_zero_new_from);
     } else {
         balances.remove(&from);
@@ -97,7 +96,7 @@ pub fn transfer_from(
 
     let key = (from, spender);
 
-    if let Ok(non_zero_new_allowance) = new_allowance.try_into() {
+    if let Some(non_zero_new_allowance) = NonZeroU256::new(new_allowance) {
         allowances.insert(key, non_zero_new_allowance);
     } else {
         allowances.remove(&key);
@@ -109,10 +108,9 @@ pub fn transfer_from(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::erc20::funcs;
+    use crate::services::vft::funcs;
     use utils::*;
 
-    // TODO (breathx): force macros to assert storage noop.
     macro_rules! assert_ok {
         ( $x:expr, $y: expr $(,)? ) => {{
             assert_eq!($x.unwrap(), $y);
@@ -595,12 +593,12 @@ mod tests {
                 funcs::balance_of(&bmap, dave()),
                 U256::exp10(42).saturating_mul(2.into())
             );
-            assert!(funcs::allowance(&amap, charlie().into(), alice()).is_zero());
+            assert!(funcs::allowance(&amap, charlie(), alice()).is_zero());
         }
     }
 
     mod utils {
-        use super::{AllowancesMap, BalancesMap};
+        use super::*;
         use gstd::ActorId;
         use primitive_types::U256;
 
@@ -609,14 +607,14 @@ mod tests {
         ) -> AllowancesMap {
             content
                 .into_iter()
-                .map(|(k1, k2, v)| ((k1, k2), v.try_into().unwrap()))
+                .map(|(k1, k2, v)| ((k1, k2), NonZeroU256::new(v).unwrap()))
                 .collect()
         }
 
         pub fn balances_map<const N: usize>(content: [(ActorId, U256); N]) -> BalancesMap {
             content
                 .into_iter()
-                .map(|(k, v)| (k, v.try_into().unwrap()))
+                .map(|(k, v)| (k, NonZeroU256::new(v).unwrap()))
                 .collect()
         }
 
