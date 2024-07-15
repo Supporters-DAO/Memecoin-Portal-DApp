@@ -2,11 +2,11 @@ use alloc::{
     string::{String, ToString},
     vec::Vec,
 };
-use gstd::{collections::HashMap, prog::ProgramGenerator, ActorId, CodeId};
+use gstd::{exec, msg, collections::HashMap, prog::ProgramGenerator, ActorId, CodeId};
 use parity_scale_codec::{Decode, Encode};
 use primitive_types::U256;
-use sails_rtl::gstd::gservice;
-use sails_rtl::gstd::{events::EventTrigger, ExecContext};
+use sails::gstd::gservice;
+use sails::{Box, format};
 use scale_info::TypeInfo;
 
 static mut DATA: Option<MemeFactoryData> = None;
@@ -59,6 +59,7 @@ pub enum MemeError {
     Unauthorized,
     MemeExists,
     MemeNotFound,
+    InsufficientValue,
 }
 
 #[derive(Debug, Decode, Encode, TypeInfo)]
@@ -116,19 +117,11 @@ impl MemeFactoryData {
     }
 }
 
-pub struct MemeFactory<ExecContext, EventTrigger> {
-    exec_context: ExecContext,
-    event_trigger: EventTrigger,
-}
+#[derive(Clone)]
+pub struct MemeFactory();
 
-// TODO: macros should export items and dependencies by themselves
-// TODO: #[gservice] and #[gprogram] are impossible to be used in the same scope
-#[gservice]
-impl<Context, Trigger> MemeFactory<Context, Trigger>
-where
-    Context: ExecContext,
-    Trigger: EventTrigger<MemeFactoryEvent>,
-{
+#[gservice(events = MemeFactoryEvent)]
+impl MemeFactory {
     pub fn seed(config: InitConfigFactory) {
         unsafe {
             DATA = Some(MemeFactoryData {
@@ -141,11 +134,8 @@ where
         }
     }
 
-    pub fn new(exec_context: Context, event_trigger: Trigger) -> Self {
-        Self {
-            exec_context,
-            event_trigger,
-        }
+    pub fn new() -> Self {
+        Self()
     }
 
     fn check_admin(&self, data: &MemeFactoryData, id: ActorId) -> Result<(), MemeError> {
@@ -158,7 +148,11 @@ where
 
     pub async fn create_fungible_program(&mut self, init: Init) -> Result<(), MemeError> {
         let data = MemeFactoryData::get_mut();
-        let source = self.exec_context.actor_id().into();
+        let source = msg::source();
+        let ed = exec::env_vars().existential_deposit;
+        if msg::value() < ed {
+            return Err(MemeError::InsufficientValue);
+        }
         for meme_records in data.meme_coins.values() {
             for (_, meme_record) in meme_records {
                 if meme_record.name == init.name {
@@ -167,7 +161,6 @@ where
             }
         }
         let payload = ["New".encode(), init.encode()].concat();
-
         let create_program_future = ProgramGenerator::create_program_bytes_with_gas_for_reply(
             data.meme_code_id,
             payload,
@@ -176,6 +169,7 @@ where
             10_000_000_000,
         )
         .map_err(|e| MemeError::ProgramInitializationFailedWithContext(e.to_string()))?;
+
         let (address, _) = create_program_future
             .await
             .map_err(|e| MemeError::ProgramInitializationFailedWithContext(e.to_string()))?;
@@ -198,68 +192,64 @@ where
             .entry(source)
             .or_default()
             .push((data.meme_number, meme_record));
-        self.event_trigger
-            .trigger(MemeFactoryEvent::MemeCreated {
-                meme_id: data.meme_number,
-                meme_address: address,
-                init,
-            })
-            .unwrap();
+
+        let _ = self.notify_on(MemeFactoryEvent::MemeCreated {
+            meme_id: data.meme_number,
+            meme_address: address,
+            init,
+        });
 
         Ok(())
     }
 
     pub fn update_gas_for_program(&mut self, new_gas_amount: u64) -> Result<(), MemeError> {
         let data = MemeFactoryData::get_mut();
-        let source = self.exec_context.actor_id().into();
+        let source = msg::source();
 
         self.check_admin(data, source)?;
 
         data.gas_for_program = new_gas_amount;
-        self.event_trigger
-            .trigger(MemeFactoryEvent::GasUpdatedSuccessfully {
-                updated_by: source,
-                new_gas_amount,
-            })
-            .unwrap();
+
+        let _ = self.notify_on(MemeFactoryEvent::GasUpdatedSuccessfully {
+            updated_by: source,
+            new_gas_amount,
+        });
         Ok(())
     }
 
     pub fn update_code_id(&mut self, new_code_id: CodeId) -> Result<(), MemeError> {
         let data = MemeFactoryData::get_mut();
-        let source = self.exec_context.actor_id().into();
+        let source = msg::source();
 
         self.check_admin(data, source)?;
 
         data.meme_code_id = new_code_id;
-        self.event_trigger
-            .trigger(MemeFactoryEvent::CodeIdUpdatedSuccessfully {
-                updated_by: source,
-                new_code_id,
-            })
-            .unwrap();
+
+        let _ = self.notify_on(MemeFactoryEvent::CodeIdUpdatedSuccessfully {
+            updated_by: source,
+            new_code_id,
+        });
         Ok(())
     }
 
     pub fn add_admin_to_factory(&mut self, admin_actor_id: ActorId) -> Result<(), MemeError> {
         let data = MemeFactoryData::get_mut();
-        let source = self.exec_context.actor_id().into();
+        let source = msg::source();
 
         self.check_admin(data, source)?;
 
         data.admins.push(admin_actor_id);
-        self.event_trigger
-            .trigger(MemeFactoryEvent::AdminAdded {
-                updated_by: source,
-                admin_actor_id,
-            })
-            .unwrap();
+
+        let _ = self.notify_on(MemeFactoryEvent::AdminAdded {
+            updated_by: source,
+            admin_actor_id,
+        });
         Ok(())
     }
 
     pub fn remove_meme(&mut self, meme_id: MemeId) -> Result<(), MemeError> {
         let data = MemeFactoryData::get_mut();
-        let source = self.exec_context.actor_id().into();
+        let source = msg::source();
 
         self.check_admin(data, source)?;
 
@@ -280,12 +270,10 @@ where
         let address = data.id_to_address.remove(&meme_id);
         debug_assert!(address.is_some());
 
-        self.event_trigger
-            .trigger(MemeFactoryEvent::MemeRemoved {
-                removed_by: source,
-                meme_id,
-            })
-            .unwrap();
+        let _ = self.notify_on(MemeFactoryEvent::MemeRemoved {
+            removed_by: source,
+            meme_id,
+        });
 
         Ok(())
     }

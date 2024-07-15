@@ -19,18 +19,19 @@ fn init_factory(sys: &System) -> Program {
         sys,
         "../target/wasm32-unknown-unknown/debug/factory_wasm.opt.wasm",
     );
-    let fungible_code_id = sys.submit_code(
-        "../../fungible-token/target/wasm32-unknown-unknown/debug/erc20_wasm.opt.wasm",
+    let fungible_code_id = sys.submit_code_file(
+        "../../fungible-token/target/wasm32-unknown-unknown/debug/vft_wasm.opt.wasm",
     );
 
     let init_config_factory = InitConfigFactory {
-        meme_code_id: CodeId::from(fungible_code_id.into_bytes()),
+        // meme_code_id: CodeId::from(fungible_code_id.into_bytes()),
+        meme_code_id: fungible_code_id,
         factory_admin_account: vec![USER1.into()],
-        gas_for_program: 10_000_000_000,
+        gas_for_program: 20_000_000_000,
     };
     let request = ["New".encode(), init_config_factory.encode()].concat();
     println!("{:?}", request);
-    let res = factory.send_bytes(USER1, request);
+    let res = factory.send_bytes_with_value(USER1, request, 10_000_000_000_000);
     assert!(!res.main_failed());
 
     factory
@@ -40,8 +41,9 @@ fn init_factory(sys: &System) -> Program {
 fn create_meme() {
     let sys = System::new();
     sys.init_logger();
-
+    sys.mint_to(USER1, 100_000_000_000_000);
     let factory = init_factory(&sys);
+    sys.mint_to(1, 10_000_000_000_000);
 
     let init = Init {
         name: "MemeName".to_string(),
@@ -66,7 +68,8 @@ fn create_meme() {
         init.encode(),
     ]
     .concat();
-    let res = factory.send_bytes(USER1, request);
+
+    let res = factory.send_bytes_with_value(USER1, request, 10_000_000_000_000);
     assert!(!res.main_failed());
 
     let log = &res.log()[0];

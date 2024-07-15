@@ -1,4 +1,4 @@
-use gstd::{collections::HashMap, prelude::*, ActorId, Decode, Encode, TypeInfo};
+use gstd::{prelude::*, ActorId, Decode, Encode, TypeInfo};
 use primitive_types::U256;
 
 pub(crate) type Result<T, E = Error> = core::result::Result<T, E>;
@@ -9,6 +9,12 @@ pub enum Error {
     MaxSupplyReached,
     InsufficientBalance,
     Underflow,
+}
+
+pub struct AdditionalMeta {
+    pub description: String,
+    pub external_links: ExternalLinks,
+    pub max_supply: U256,
 }
 
 #[derive(Debug, Encode, Decode, TypeInfo)]
@@ -31,11 +37,4 @@ pub struct ExternalLinks {
     pub twitter: Option<String>,
     pub discord: Option<String>,
     pub tokenomics: Option<String>,
-}
-
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Encode, Decode, TypeInfo)]
-pub enum Role {
-    Admin,
-    Burner,
-    Minter,
 }
