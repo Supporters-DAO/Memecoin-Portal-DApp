@@ -22,7 +22,7 @@ const executeTransaction = async (
 	alert: AlertContainerFactory
 ) => {
 	transaction.withAccount(account.address, { signer: injector.signer })
-
+	transaction.withValue(BigInt(1e12))
 	await transaction.calculateGas(false, 100)
 
 	const { msgId, blockHash, response, txHash } = await transaction.signAndSend()
@@ -41,6 +41,8 @@ const executeTransaction = async (
 				alert.error('Meme already exists')
 			} else if ('memeNotFound' in result.err) {
 				alert.error('Meme not found')
+			} else if ('insufficientValue' in result.err) {
+				alert.error('Insufficient user balance.')
 			} else {
 				alert.error('Unknown error occurred')
 			}
