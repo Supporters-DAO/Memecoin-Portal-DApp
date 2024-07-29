@@ -40,7 +40,6 @@ export function Mint({
 			<MintModal
 				onClose={closeModal}
 				open={isModalOpen}
-				// setOpen={openModal}
 				available={available}
 				id={id}
 			/>
