@@ -69,6 +69,9 @@ export function Token({ token: { id, ...token } }: Props) {
 		(balance) => balance.coin.id === id
 	)?.balance
 
+	console.log('token.maxSupply', token.maxSupply)
+	console.log('token.circulatingSupply', token.circulatingSupply)
+
 	const availableMint =
 		parseFloat(token.maxSupply) - parseFloat(token.circulatingSupply)
 

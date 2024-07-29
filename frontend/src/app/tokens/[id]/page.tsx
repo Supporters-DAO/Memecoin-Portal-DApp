@@ -38,7 +38,7 @@ async function getData(id: string) {
 
 	const res = await fetch(EXPLORER.BACK, {
 		...options,
-		cache: 'no-store',
+		cache: 'no-cache',
 	})
 
 	if (!res.ok) {
