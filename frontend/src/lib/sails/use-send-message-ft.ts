@@ -47,12 +47,12 @@ const executeTransaction = async (
 
 	await transaction.calculateGas(false, 100)
 
-	const { msgId, blockHash, response } = await transaction.signAndSend()
+	const { msgId, blockHash, isFinalized } = await transaction.signAndSend()
 
 	console.log(`msg included in block ${blockHash}. Message id: ${msgId}`)
 
 	try {
-		const result = await response()
+		const result = await isFinalized
 
 		if (!result) {
 			alert.error('Unknown error occurred')
