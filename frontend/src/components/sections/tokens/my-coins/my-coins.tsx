@@ -5,9 +5,11 @@ import { useRouter } from 'next/navigation'
 import {
 	PaginationState,
 	getCoreRowModel,
+	getFilteredRowModel,
+	getPaginationRowModel,
+	getSortedRowModel,
 	useReactTable,
 } from '@tanstack/react-table'
-import { Input } from '@/components/ui/input'
 import { coinsTypesTableColumns } from './table.columns'
 import { DataTable } from '@/components/common/data-table'
 import { BackButton } from '@/components/common/back-button'
@@ -52,9 +54,16 @@ export const MyCoins = () => {
 		},
 		state: {
 			globalFilter,
+			pagination,
 		},
+		pageCount: Math.ceil(totalCoins / pagination.pageSize) ?? 0,
 		onGlobalFilterChange: setGlobalFilter,
 		globalFilterFn: fuzzyFilter,
+		onPaginationChange: setPagination,
+		getSortedRowModel: getSortedRowModel(),
+		getPaginationRowModel: getPaginationRowModel(),
+		getFilteredRowModel: getFilteredRowModel(),
+		manualPagination: true,
 	})
 
 	const handleRowClick = (row: any) => {

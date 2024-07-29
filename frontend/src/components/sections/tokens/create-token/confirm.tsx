@@ -10,6 +10,7 @@ import { stepAtom } from '.'
 import { Created } from './created'
 import { cn, getGatewayUrl, uploadToIpfs } from '@/lib/utils'
 import { useMessages } from '@/lib/sails/use-send-message-factory'
+import { useAuth } from '@/lib/hooks/use-auth'
 
 interface Props {
 	data: ICreateTokenForm | undefined
@@ -20,7 +21,7 @@ export const ConfirmCreate = ({ data }: Props) => {
 	const [step, setStep] = useAtom(stepAtom)
 	const [isCreated, setIsCreated] = useState(false)
 	const [imageLink, setImageLink] = useState('')
-	const { account } = useAccount()
+	const { walletAccount } = useAuth()
 	const sendMessage = useMessages()
 
 	const onCreate = async () => {
@@ -33,7 +34,7 @@ export const ConfirmCreate = ({ data }: Props) => {
 		const linkIPFSImage = await getGatewayUrl(ipfsUrl)
 		setImageLink(linkIPFSImage)
 
-		if (account && linkIPFSImage) {
+		if (walletAccount && linkIPFSImage) {
 			try {
 				const sendMessageResult = await sendMessage('createFungibleProgram', {
 					name: data.name,
@@ -50,7 +51,7 @@ export const ConfirmCreate = ({ data }: Props) => {
 					},
 					initial_supply: data.initial_supply || 0,
 					max_supply: data.max_supply || 0,
-					admin_id: account.decodedAddress,
+					admin_id: walletAccount.decodedAddress,
 				})
 
 				if (sendMessageResult) {

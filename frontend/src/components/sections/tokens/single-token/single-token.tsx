@@ -48,6 +48,7 @@ function SocialLink({ platform, href }: { platform: string; href: string }) {
 }
 
 export function Token({ token: { id, ...token } }: Props) {
+	console.log('token', token)
 	const [isOpenMintModal, setIsOpenMintModal] = useState(false)
 	const { walletAccount } = useAuth()
 	const { balances } = useFetchBalances(isOpenMintModal)
