@@ -48,7 +48,6 @@ function SocialLink({ platform, href }: { platform: string; href: string }) {
 }
 
 export function Token({ token: { id, ...token } }: Props) {
-	console.log('token', token)
 	const [isOpenMintModal, setIsOpenMintModal] = useState(false)
 	const { walletAccount } = useAuth()
 	const { balances } = useFetchBalances(isOpenMintModal)
@@ -69,9 +68,6 @@ export function Token({ token: { id, ...token } }: Props) {
 	const tokenBalance = balances?.find(
 		(balance) => balance.coin.id === id
 	)?.balance
-
-	console.log('token.maxSupply', token.maxSupply)
-	console.log('token.circulatingSupply', token.circulatingSupply)
 
 	const availableMint =
 		parseFloat(token.maxSupply) - parseFloat(token.circulatingSupply)

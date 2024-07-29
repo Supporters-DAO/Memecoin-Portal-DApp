@@ -54,7 +54,6 @@ export const useFetchToken = (id: string, trigger?: boolean) => {
 	}
 
 	useEffect(() => {
-		console.log('trigger', trigger)
 		const fetchToken = async () => {
 			try {
 				const res = await fetch(EXPLORER.BACK, {
@@ -62,7 +61,7 @@ export const useFetchToken = (id: string, trigger?: boolean) => {
 					cache: 'no-store',
 					next: { revalidate: 1 },
 				})
-				
+
 				if (!res.ok) {
 					// This will activate the closest `error.js` Error Boundary
 					throw new Error('Failed to fetch data')
