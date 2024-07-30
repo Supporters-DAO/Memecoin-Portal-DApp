@@ -4,7 +4,7 @@ import { type ProviderProps } from '@gear-js/react-hooks'
 import { Alert, alertStyles } from '@/components/ui/alert'
 import { ADDRESS } from '@/lib/consts'
 import dynamic from 'next/dynamic'
-import { ReactNode } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 
 type Props = {
 	children: ReactNode
@@ -32,6 +32,16 @@ function LazyAlertProvider({ children }: Props) {
 }
 
 export function GearApiProvider({ children }: ProviderProps) {
+	const [isReady, setIsReady] = useState(false)
+
+	useEffect(() => {
+		if (typeof window !== 'undefined') {
+			setIsReady(true)
+		}
+	}, [])
+
+	if (!isReady) return null
+
 	return (
 		<LazyApi initialArgs={{ endpoint: ADDRESS.NODE }}>
 			<LazyAlertProvider>

@@ -84,7 +84,6 @@ export const useMessages = () => {
 				| BurnPayload
 				| TransferPayload
 		) => {
-			if (!isApiReady) throw new Error('API is not initialized')
 			if (!account) throw new Error('Account is not found')
 
 			const program = new Program(api, programId)

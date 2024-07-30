@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { Silkscreen, Poppins, Press_Start_2P } from 'next/font/google'
 import { Header } from '@/components/layouts/base/header'
 import { ReactNode } from 'react'
+import { GearApiProvider } from '@/components/providers/gear-api'
 
 const silkscreen = Silkscreen({
 	display: 'swap',
@@ -47,7 +48,9 @@ export default function RootLayout({
 			className={`${silkscreen.variable} ${poppins.variable} ${pressStart2P.variable}`}
 		>
 			<body className="flex min-h-screen flex-col font-ps2p [--header-height:5.625rem] sm:[--header-height:4.375rem] lg:[--header-height:6.25rem]">
-				<Header />
+				<GearApiProvider>
+					<Header />
+				</GearApiProvider>
 				{children}
 			</body>
 		</html>

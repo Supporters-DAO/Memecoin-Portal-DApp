@@ -68,7 +68,6 @@ export const useMessages = () => {
 
 	const sendMessage = useCallback(
 		async (messageType: string, payload: Init) => {
-			if (!isApiReady) throw new Error('API is not initialized')
 			if (!account) throw new Error('Account is not found')
 
 			const programId = CONTRACT_ADDRESS.ADDRESS
