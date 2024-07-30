@@ -85,6 +85,7 @@ export const useMessages = () => {
 				| TransferPayload
 		) => {
 			if (!account) throw new Error('Account is not found')
+			if (!api) throw new Error('Api is not ready')
 
 			const program = new Program(api, programId)
 			const injector = await web3FromSource(account.meta.source)
