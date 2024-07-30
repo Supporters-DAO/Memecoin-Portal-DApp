@@ -24,11 +24,9 @@ export function WalletLazy() {
 	if (!isReady) return null
 
 	return (
-		<GearApiProvider>
-			<LazyWallet
-				walletModalHandler={setOpenState}
-				isWalletModalOpen={openState}
-			/>
-		</GearApiProvider>
+		<LazyWallet
+			walletModalHandler={setOpenState}
+			isWalletModalOpen={openState}
+		/>
 	)
 }

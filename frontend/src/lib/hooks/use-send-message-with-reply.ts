@@ -34,7 +34,6 @@ const useSendMessageWithReply = (
 		onError?: () => void
 		onFinally?: () => void
 	}) => {
-		if (!isApiReady) throw new Error('API is not initialized')
 		if (!account) throw new Error('Account is not found')
 
 		let unsub: UnsubscribePromise | undefined = undefined
