@@ -39,7 +39,7 @@ async function getData(id: string) {
 	const res = await fetch(EXPLORER.BACK, {
 		...options,
 		cache: 'no-store',
-		next: { tags: ['token'] },
+		next: { tags: ['balance', 'token'] },
 	})
 
 	if (!res.ok) {

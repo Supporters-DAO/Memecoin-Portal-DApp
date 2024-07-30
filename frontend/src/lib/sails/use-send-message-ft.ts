@@ -47,12 +47,12 @@ const executeTransaction = async (
 
 	await transaction.calculateGas(false, 100)
 
-	const { msgId, blockHash, response } = await transaction.signAndSend()
+	const { msgId, blockHash, isFinalized } = await transaction.signAndSend()
 
 	console.log(`msg included in block ${blockHash}. Message id: ${msgId}`)
 
 	try {
-		const result = await response()
+		const result = await isFinalized
 
 		if (!result) {
 			alert.error('Unknown error occurred')
@@ -106,7 +106,7 @@ export const useMessages = () => {
 				case MessageTypes.TRANSFER_TO_USERS:
 					const transferToUsersPayload = payload as TransferToUsersPayload
 					return executeMessage(
-						await program.admin.transferToUsers(
+						await program.vft.transferToUsers(
 							transferToUsersPayload.toUsers,
 							transferToUsersPayload.value
 						)
@@ -115,19 +115,19 @@ export const useMessages = () => {
 				case MessageTypes.MINT:
 					const mintPayload = payload as MintPayload
 					return executeMessage(
-						await program.admin.mint(mintPayload.to, mintPayload.value)
+						await program.vft.mint(mintPayload.to, mintPayload.value)
 					)
 
 				case MessageTypes.BURN:
 					const burnPayload = payload as BurnPayload
 					return executeMessage(
-						await program.admin.burn(burnPayload.from, burnPayload.value)
+						await program.vft.burn(burnPayload.from, burnPayload.value)
 					)
 
 				case MessageTypes.TRANSFER:
 					const transferPayload = payload as TransferPayload
 					return executeMessage(
-						await program.erc20.transfer(
+						await program.vft.transfer(
 							transferPayload.to,
 							transferPayload.value
 						)

@@ -44,7 +44,7 @@ export const useFetchBalances = (trigger?: boolean) => {
 				const response = await fetch(endpoint, {
 					...options,
 					cache: 'no-store',
-					next: { tags: ['balance'] },
+					next: { tags: ['balance', 'token'] },
 				})
 				const { data } = await response.json()
 

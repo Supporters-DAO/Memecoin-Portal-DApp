@@ -137,12 +137,18 @@ export const useFetchMyCoins = (limit = 20, offset = 0, searchQuery = '') => {
 			const otherTokens: Token[] = []
 
 			tokenList.forEach((token) => {
-				if (BigInt(token.balance) > 0) {
-					if (token.createdBy === walletAddress) {
-						myTokens.push(token)
-					} else {
-						otherTokens.push(token)
-					}
+				// if (BigInt(token.balance) > 0) {
+				// 	if (token.createdBy === walletAddress) {
+				// 		myTokens.push(token)
+				// 	} else {
+				// 		otherTokens.push(token)
+				// 	}
+				// }
+
+				if (token.createdBy === walletAddress) {
+					myTokens.push(token)
+				} else if (BigInt(token.balance) > 0) {
+					otherTokens.push(token)
 				}
 			})
 

@@ -1,5 +1,14 @@
 import { z } from 'zod'
 
+const MAX_FILE_SIZE = 5000000
+const ACCEPTED_IMAGE_TYPES = [
+	'image/jpeg',
+	'image/jpg',
+	'image/png',
+	'image/webp',
+	'image/gif',
+]
+
 export const createTokenSchema = z
 	.object({
 		name: z
@@ -9,19 +18,22 @@ export const createTokenSchema = z
 			})
 			.regex(/^([A-Za-z ]+)$/, { message: 'Only Latin letters are allowed' })
 			.min(2, { message: 'Name must be at least 2 characters' })
-			.max(20, { message: 'Name must be no more than 10 characters' }),
+			.max(10, { message: 'Name must be no more than 10 characters' }),
 		symbol: z
 			.string()
 			.regex(/^[A-Za-z]+$/, { message: 'Only Latin letters are allowed' })
 			.min(2, { message: 'Symbol must be at least 2 characters long' })
-			.max(15, { message: 'Symbol must be no more than 15 characters long' }),
-		decimals: z
-			.number()
-			.max(100, { message: 'Max number of decimals is 100' })
-			.positive()
-			.nullable()
-			.refine((val) => val !== null, { message: 'Required' })
-			.transform((value) => value ?? null),
+			.max(8, { message: 'Symbol must be no more than 8 characters long' }),
+		decimals: z.nullable(
+			z
+				.number()
+				.min(1, { message: 'Min number of decimals is 1' })
+				.max(100, { message: 'Max number of decimals is 100' })
+				.positive()
+				.nullable()
+				.refine((val) => val !== null, { message: 'Required' })
+				.transform((value) => value ?? null)
+		),
 		description: z
 			.string()
 			.regex(/^[\x00-\x7F]+$/, { message: 'Only Latin letters are allowed' })
@@ -29,13 +41,17 @@ export const createTokenSchema = z
 			.max(500, {
 				message: 'Description must be no more than 500 characters long',
 			}),
+		image: z
+			.any()
+			.refine((file) => file?.size > 0, 'Required image')
+			.refine((file) => file?.size <= MAX_FILE_SIZE, `Max image size is 5MB.`)
+			.refine(
+				(file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
+				'Only .jpg, .jpeg, .png and .webp .gif formats are supported.'
+			)
+			.transform((value) => value ?? null),
 		external_links: z.object({
-			image: z
-				.string({ required_error: 'Required' })
-				.url({ message: 'Invalid URL' }),
-			// .refine((url) => /\.jpg$|\.jpeg$|\.png$/i.test(url), { message: 'URL must be an image link (JPG or PNG)' }),
 			website: z
-				// .string()
 				.string()
 				.min(1, { message: 'Website must be at least 2 characters long' })
 				.url()
@@ -67,27 +83,37 @@ export const createTokenSchema = z
 				.or(z.literal(''))
 				.optional(),
 		}),
-		initial_supply: z
-			.number()
-			.min(2, { message: 'Initial Supply must be at least 2 characters long' })
-			.max(3000000000000, {
-				message: 'Initial Supply must be no more than 3000000000000',
-			})
-			.positive()
-			.nullable()
-			.refine((val) => val !== null, { message: 'Required' })
-			.transform((value) => value ?? null),
+		initial_supply: z.nullable(
+			z
+				.number()
+				.min(2, {
+					message: 'Initial Supply must be at least 2 characters long',
+				})
+				.max(3000000000000, {
+					message: 'Initial Supply must be no more than 3000000000000',
+				})
+				.positive()
+				.nullable()
+				.refine((val) => val !== null, { message: 'Required' })
+				.transform((value) => value ?? null)
+		),
 
-		max_supply: z
-			.number()
-			.min(2, { message: 'Max Supply must be at least 2 characters long' })
-			.max(3000000000000, {
-				message: 'Max Supply must be no more than 3000000000000',
-			})
-			.positive()
-			.nullable()
-			.refine((val) => val !== null, { message: 'Required' })
-			.transform((value) => value ?? null),
+		max_supply: z.nullable(
+			z
+				.number()
+				.min(2, { message: 'Max Supply must be at least 2 characters long' })
+				.max(3000000000000, {
+					message: 'Max Supply must be no more than 3000000000000',
+				})
+				.positive()
+				.nullable()
+				.refine((val) => val !== null, { message: 'Required' })
+				.transform((value) => value ?? null)
+		),
+	})
+	.refine((data) => data.decimals && data.decimals > 0, {
+		message: 'Decimals cannot be less than 0',
+		path: ['decimals'],
 	})
 	.refine(
 		(data) =>
@@ -116,13 +142,13 @@ export const createTokenSchema = z
 
 export type ICreateTokenForm = z.infer<typeof createTokenSchema>
 
-export const createTokenDefault = {
+export const createTokenDefault: ICreateTokenForm = {
 	name: '',
 	symbol: '',
 	decimals: null,
+	image: null,
 	description: '',
 	external_links: {
-		image: '',
 		website: '',
 		telegram: '',
 		twitter: '',
@@ -131,4 +157,4 @@ export const createTokenDefault = {
 	},
 	initial_supply: null,
 	max_supply: null,
-} satisfies ICreateTokenForm
+}
