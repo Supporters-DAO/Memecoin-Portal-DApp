@@ -36,13 +36,11 @@ export function TablePageSizing<TData>({
 						<SelectValue className="font-poppins" />
 					</SelectTrigger>
 					<SelectContent side="bottom">
-						{[limit, limit * 2, limit * 3, limit * 5, limit * 10].map(
-							(option) => (
-								<SelectItem value={String(option)} key={option}>
-									{option} per page
-								</SelectItem>
-							)
-						)}
+						{[10, 20, 30, 40, 50].map((option, i) => (
+							<SelectItem value={String(option)} key={option}>
+								{option} per page
+							</SelectItem>
+						))}
 					</SelectContent>
 				</Select>
 			</div>
