@@ -4856,9 +4856,50 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f3cb5ba0dc43242ce17de99c180e96db90b235b8a9fdc9543c96d2209116bd9f"
 
 [[package]]
-name = "sails"
-version = "0.0.1"
-source = "git+https://github.com/gear-tech/sails#78295551afcb55ac974f4d8dd749672e5c9dc225"
+name = "sails-idl-gen"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b6fe13bf8f5885aadabef526cdfac0c276755b94f719537f5fce6a5a935209e3"
+dependencies = [
+ "convert_case 0.6.0",
+ "handlebars",
+ "sails-rs",
+ "scale-info",
+ "serde",
+ "serde_json",
+ "thiserror",
+]
+
+[[package]]
+name = "sails-macros"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5725992518219afbd9b98f271e1ae54beaa0cce1ccd48ab83d2b07e4da2982e9"
+dependencies = [
+ "proc-macro-error",
+ "sails-macros-core",
+]
+
+[[package]]
+name = "sails-macros-core"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "13980a8f9d176830f68ea1a9f920eaddcce93eda5b12f1e810fe55291e93df08"
+dependencies = [
+ "const_format",
+ "convert_case 0.6.0",
+ "parity-scale-codec",
+ "proc-macro-error",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.71",
+]
+
+[[package]]
+name = "sails-rs"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b82aa6ed82e7b3884cd9274757d2c2a2c64ed96f59fcd27c684e4ca5b62bfc93"
 dependencies = [
  "futures",
  "gclient",
@@ -4874,43 +4915,6 @@ dependencies = [
  "scale-info",
  "spin",
  "thiserror-no-std",
-]
-
-[[package]]
-name = "sails-idl-gen"
-version = "0.0.1"
-source = "git+https://github.com/gear-tech/sails#78295551afcb55ac974f4d8dd749672e5c9dc225"
-dependencies = [
- "convert_case 0.6.0",
- "handlebars",
- "sails",
- "scale-info",
- "serde",
- "serde_json",
- "thiserror",
-]
-
-[[package]]
-name = "sails-macros"
-version = "0.0.1"
-source = "git+https://github.com/gear-tech/sails#78295551afcb55ac974f4d8dd749672e5c9dc225"
-dependencies = [
- "proc-macro-error",
- "sails-macros-core",
-]
-
-[[package]]
-name = "sails-macros-core"
-version = "0.0.1"
-source = "git+https://github.com/gear-tech/sails#78295551afcb55ac974f4d8dd749672e5c9dc225"
-dependencies = [
- "const_format",
- "convert_case 0.6.0",
- "parity-scale-codec",
- "proc-macro-error",
- "proc-macro2",
- "quote",
- "syn 2.0.71",
 ]
 
 [[package]]
@@ -6754,7 +6758,7 @@ dependencies = [
  "log",
  "parity-scale-codec",
  "primitive-types",
- "sails",
+ "sails-rs",
  "scale-info",
  "tokio",
 ]

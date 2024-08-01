@@ -5,8 +5,8 @@ use alloc::{
 use gstd::{exec, msg, collections::HashMap, prog::ProgramGenerator, ActorId, CodeId};
 use parity_scale_codec::{Decode, Encode};
 use primitive_types::U256;
-use sails::gstd::gservice;
-use sails::{Box, format};
+use sails_rs::gstd::service;
+use sails_rs::{Box, format};
 use scale_info::TypeInfo;
 
 static mut DATA: Option<MemeFactoryData> = None;
@@ -120,7 +120,7 @@ impl MemeFactoryData {
 #[derive(Clone)]
 pub struct MemeFactory();
 
-#[gservice(events = MemeFactoryEvent)]
+#[service(events = MemeFactoryEvent)]
 impl MemeFactory {
     pub fn seed(config: InitConfigFactory) {
         unsafe {

@@ -2,7 +2,7 @@ use super::vft;
 use super::vft::Storage;
 use collections::HashSet;
 use gstd::{exec, msg};
-use sails::{gstd::gservice, prelude::*};
+use sails_rs::{gstd::service, prelude::*};
 mod funcs;
 use crate::services;
 pub(crate) mod utils;
@@ -100,7 +100,7 @@ impl ExtendedVft {
     }
 }
 
-#[gservice(extends = vft::Service, events = Event)]
+#[service(extends = vft::Service, events = Event)]
 impl ExtendedVft {
     pub fn new() -> Self {
         Self {

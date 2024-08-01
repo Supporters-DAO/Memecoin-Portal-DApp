@@ -7,8 +7,8 @@ use gstd::{ActorId, Encode};
 
 #[tokio::test]
 async fn gclient_create_meme() -> Result<()> {
-    // let api = GearApi::dev_from_path("../target/tmp/gear").await?;
-    let api = GearApi::dev().await?;
+    let api = GearApi::dev_from_path("../target/tmp/gear").await?;
+    // let api = GearApi::dev().await?;
     let mut listener = api.subscribe().await?; // Subscribing for events.
                                                // Checking that blocks still running.
     assert!(listener.blocks_running().await?);

@@ -1,7 +1,7 @@
 use super::utils::{Error, Result, *};
 use super::vft::{funcs, utils::BalancesMap};
 use gstd::{prelude::*, ActorId};
-use sails::prelude::*;
+use sails_rs::prelude::*;
 
 pub fn mint(
     balances: &mut BalancesMap,

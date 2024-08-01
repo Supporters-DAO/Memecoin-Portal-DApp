@@ -24,14 +24,13 @@ fn init_factory(sys: &System) -> Program {
     );
 
     let init_config_factory = InitConfigFactory {
-        // meme_code_id: CodeId::from(fungible_code_id.into_bytes()),
         meme_code_id: fungible_code_id,
         factory_admin_account: vec![USER1.into()],
         gas_for_program: 20_000_000_000,
     };
     let request = ["New".encode(), init_config_factory.encode()].concat();
     println!("{:?}", request);
-    let res = factory.send_bytes_with_value(USER1, request, 10_000_000_000_000);
+    let res = factory.send_bytes_with_value(USER1, request, 0);
     assert!(!res.main_failed());
 
     factory
@@ -43,7 +42,6 @@ fn create_meme() {
     sys.init_logger();
     sys.mint_to(USER1, 100_000_000_000_000);
     let factory = init_factory(&sys);
-    sys.mint_to(1, 10_000_000_000_000);
 
     let init = Init {
         name: "MemeName".to_string(),
@@ -69,7 +67,7 @@ fn create_meme() {
     ]
     .concat();
 
-    let res = factory.send_bytes_with_value(USER1, request, 10_000_000_000_000);
+    let res = factory.send_bytes_with_value(USER1, request, 1_000_000_000_000);
     assert!(!res.main_failed());
 
     let log = &res.log()[0];
@@ -102,7 +100,7 @@ fn create_meme() {
 fn code_id_update() {
     let sys = System::new();
     sys.init_logger();
-
+    sys.mint_to(USER1, 100_000_000_000_000);
     let factory = init_factory(&sys);
 
     let new_code_id = CodeId::new([1; 32]);
@@ -131,7 +129,7 @@ fn code_id_update() {
 fn update_gas_program() {
     let sys = System::new();
     sys.init_logger();
-
+    sys.mint_to(USER1, 100_000_000_000_000);
     let factory = init_factory(&sys);
 
     let new_gas_amount = 50000u64;
@@ -160,7 +158,7 @@ fn update_gas_program() {
 fn add_admin() {
     let sys = System::new();
     sys.init_logger();
-
+    sys.mint_to(USER1, 100_000_000_000_000);
     let factory = init_factory(&sys);
 
     let admin_actor_id = ActorId::new([2; 32]);

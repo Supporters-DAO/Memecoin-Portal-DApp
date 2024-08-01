@@ -11,11 +11,11 @@ pub use service::{
     InitConfigFactory, MemeError, MemeFactoryData, MemeFactoryEvent, MemeId, MemeRecord,
 };
 
-use sails::gstd::gprogram;
+use sails_rs::gstd::program;
 
 pub struct Program;
 
-#[gprogram]
+#[program]
 impl Program {
     pub fn new(config: InitConfigFactory) -> Self {
         service::MemeFactory::seed(config);

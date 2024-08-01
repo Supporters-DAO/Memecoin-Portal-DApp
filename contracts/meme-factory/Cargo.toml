@@ -11,8 +11,8 @@ members = ["app", "wasm"]
 
 [workspace.dependencies]
 app = { path = "app" }
-sails-idl-gen = { git = "https://github.com/gear-tech/sails" }
-sails = { git = "https://github.com/gear-tech/sails" }
+sails-idl-gen = "0.2.0"
+sails-rs = "0.2.0"
 gstd = "1.4.2"
 gtest = "1.4.2"
 gclient  = "1.4.2"
