@@ -12,14 +12,12 @@ async fn gclient_create_meme() -> Result<()> {
     let mut listener = api.subscribe().await?; // Subscribing for events.
                                                // Checking that blocks still running.
     assert!(listener.blocks_running().await?);
-
     let (ft_code_id, _) = api
         .upload_code_by_path(
-            "../../fungible-token/target/wasm32-unknown-unknown/debug/erc20_wasm.opt.wasm",
+            "../../fungible-token/target/wasm32-unknown-unknown/debug/vft_wasm.opt.wasm",
         )
         .await
         .expect("Error upload code");
-
     let ft_code_id: [u8; 32] = ft_code_id.into();
 
     let init_config_factory = InitConfigFactory {
@@ -27,25 +25,22 @@ async fn gclient_create_meme() -> Result<()> {
         factory_admin_account: vec![1.into()],
         gas_for_program: 20_000_000_000,
     };
-
     let request = ["New".encode(), init_config_factory.encode()].concat();
 
     let path = "../target/wasm32-unknown-unknown/debug/factory_wasm.opt.wasm";
 
     let gas_info = api
-        .calculate_upload_gas(None, gclient::code_from_os(path)?, request.clone(), 0, true)
+        .calculate_upload_gas(None, gclient::code_from_os(path)?, request.clone(), 10_000_000_000_000, true)
         .await?;
-
     let (message_id, program_id, _hash) = api
         .upload_program_bytes(
             gclient::code_from_os(path)?,
             gclient::now_micros().to_le_bytes(),
             request,
             gas_info.min_limit,
-            0,
+            1_000_000_000_000_000,
         )
         .await?;
-
     assert!(listener.message_processed(message_id).await?.succeed());
 
     let init = Init {
@@ -71,17 +66,15 @@ async fn gclient_create_meme() -> Result<()> {
         init.encode(),
     ]
     .concat();
-
     let gas_info = api
-        .calculate_handle_gas(None, program_id, request.clone(), 0, true)
+        .calculate_handle_gas(None, program_id, request.clone(), 1_000_000_000_000, true)
         .await?;
 
     println!("request {:?}", request);
 
     let (message_id, _) = api
-        .send_message_bytes(program_id, request.clone(), gas_info.min_limit, 0)
+        .send_message_bytes(program_id, request.clone(), gas_info.min_limit, 1_000_000_000_000)
         .await?;
-
     assert!(listener.message_processed(message_id).await?.succeed());
     assert!(listener.blocks_running().await?);
 
