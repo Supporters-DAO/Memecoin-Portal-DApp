@@ -1,18 +1,12 @@
-use crate::admin::{
-    storage::AdditionalMeta,
-    utils::{Error, Result},
-};
-use crate::services::erc20::{
-    funcs,
-    utils::{AllowancesMap, BalancesMap, NonZeroU256},
-};
+use super::utils::{Error, Result, *};
+use super::vft::{funcs, utils::BalancesMap};
 use gstd::{prelude::*, ActorId};
-use primitive_types::U256;
+use sails_rs::prelude::*;
 
 pub fn mint(
     balances: &mut BalancesMap,
-    meta: &AdditionalMeta,
     total_supply: &mut U256,
+    additional_meta: &AdditionalMeta,
     to: ActorId,
     value: U256,
 ) -> Result<bool> {
@@ -23,12 +17,13 @@ pub fn mint(
     let new_total_supply = total_supply
         .checked_add(value)
         .ok_or(Error::NumericOverflow)?;
-    if new_total_supply <= meta.max_supply {
+
+    if new_total_supply <= additional_meta.max_supply {
         let new_to = funcs::balance_of(balances, to)
             .checked_add(value)
             .ok_or(Error::NumericOverflow)?;
 
-        let Ok(non_zero_new_to) = new_to.try_into() else {
+        let Some(non_zero_new_to) = NonZeroU256::new(new_to) else {
             unreachable!("Infallible since fn is noop on zero value; qed");
         };
 
@@ -36,7 +31,9 @@ pub fn mint(
     } else {
         return Err(Error::MaxSupplyReached);
     }
+
     *total_supply = new_total_supply;
+
     Ok(true)
 }
 
@@ -55,20 +52,19 @@ pub fn burn(
         .checked_sub(value)
         .ok_or(Error::InsufficientBalance)?;
 
-    if let Ok(non_zero_new_from) = new_from.try_into() {
+    if let Some(non_zero_new_from) = NonZeroU256::new(new_from) {
         balances.insert(from, non_zero_new_from);
     } else {
         balances.remove(&from);
     }
     *total_supply = new_total_supply;
-
     Ok(true)
 }
 
 pub fn transfer_to_users(
     balances: &mut BalancesMap,
     from: ActorId,
-    to: Vec<ActorId>,
+    to: &[ActorId],
     value: U256,
 ) -> Result<bool> {
     if value.is_zero() {
@@ -79,71 +75,31 @@ pub fn transfer_to_users(
         .checked_sub(value * to.len())
         .ok_or(Error::InsufficientBalance)?;
 
-    for user_id in to.clone() {
-        let new_to = funcs::balance_of(balances, user_id)
+    for user_id in to {
+        let new_to = funcs::balance_of(balances, *user_id)
             .checked_add(value)
             .ok_or(Error::NumericOverflow)?;
 
-        let Ok(non_zero_new_to) = new_to.try_into() else {
+        let Some(non_zero_new_to) = NonZeroU256::new(new_to) else {
             unreachable!("Infallible since fn is noop on zero value; qed");
         };
 
-        balances.insert(user_id, non_zero_new_to);
+        balances.insert(*user_id, non_zero_new_to);
     }
 
-    if let Ok(non_zero_new_from) = new_from.try_into() {
+    if let Some(non_zero_new_from) = NonZeroU256::new(new_from) {
         balances.insert(from, non_zero_new_from);
     } else {
         balances.remove(&from);
-    }
+    };
 
     Ok(true)
-}
-
-pub fn maps_data(
-    allowances: &AllowancesMap,
-    balances: &BalancesMap,
-) -> ((usize, usize), (usize, usize)) {
-    (
-        (allowances.len(), allowances.capacity()),
-        (balances.len(), balances.capacity()),
-    )
-}
-
-pub fn allowances_reserve(allowances: &mut AllowancesMap, additional: usize) {
-    allowances.reserve(additional)
-}
-
-pub fn balances_reserve(balances: &mut BalancesMap, additional: usize) {
-    balances.reserve(additional)
-}
-
-pub fn allowances(
-    allowances: &AllowancesMap,
-    skip: usize,
-    take: usize,
-) -> Vec<((ActorId, ActorId), NonZeroU256)> {
-    allowances
-        .iter()
-        .skip(skip)
-        .take(take)
-        .map(|(&(id1, id2), &v)| ((id1, id2), v))
-        .collect()
-}
-
-pub fn balances(balances: &BalancesMap, skip: usize, take: usize) -> Vec<(ActorId, NonZeroU256)> {
-    balances
-        .iter()
-        .skip(skip)
-        .take(take)
-        .map(|(&id, &v)| (id, v))
-        .collect()
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::admin::funcs;
+    use crate::services::extended_vft::funcs;
     use utils::*;
 
     macro_rules! assert_ok {
@@ -174,14 +130,14 @@ mod tests {
             assert_ok!(
                 funcs::mint(
                     &mut map,
-                    &additional_meta,
                     &mut total_supply,
+                    &additional_meta,
                     alice(),
                     value
                 ),
                 true
             );
-            let expected_balance: NonZeroU256 = value.try_into().unwrap();
+            let expected_balance = NonZeroU256::new(value).unwrap();
             assert_eq!(*map.get(&alice()).unwrap(), expected_balance);
             assert_eq!(total_supply, 200.into());
         }
@@ -191,8 +147,8 @@ mod tests {
             assert_ok!(
                 funcs::mint(
                     &mut map,
-                    &additional_meta,
                     &mut total_supply,
+                    &additional_meta,
                     alice(),
                     0.into()
                 ),
@@ -206,8 +162,8 @@ mod tests {
             assert_err!(
                 funcs::mint(
                     &mut map,
-                    &additional_meta,
                     &mut total_supply,
+                    &additional_meta,
                     alice(),
                     1_000_000.into()
                 ),
@@ -232,7 +188,8 @@ mod tests {
                 funcs::burn(&mut map, &mut total_supply, dave(), value),
                 true
             );
-            let expected_balance: NonZeroU256 = (U256::MAX - value).try_into().unwrap();
+            let expected_balance = NonZeroU256::new(U256::MAX - value).unwrap();
+
             assert_eq!(*map.get(&dave()).unwrap(), expected_balance);
             assert_eq!(total_supply, 0.into());
         }
@@ -268,13 +225,10 @@ mod tests {
         // # Test case #1.
         // Successful Transfer to users
         {
-            assert_ok!(
-                funcs::transfer_to_users(&mut map, dave(), to.clone(), value),
-                true
-            );
-            let expected_balance: NonZeroU256 = (U256::MAX - to_len * value).try_into().unwrap();
+            assert_ok!(funcs::transfer_to_users(&mut map, dave(), &to, value), true);
+            let expected_balance = NonZeroU256::new(U256::MAX - to_len * value).unwrap();
             assert_eq!(*map.get(&dave()).unwrap(), expected_balance);
-            let expected_balance: NonZeroU256 = value.try_into().unwrap();
+            let expected_balance = NonZeroU256::new(value).unwrap();
             assert_eq!(*map.get(&alice()).unwrap(), expected_balance);
             assert_eq!(*map.get(&bob()).unwrap(), expected_balance);
             assert_eq!(*map.get(&charlie()).unwrap(), expected_balance);
@@ -283,26 +237,17 @@ mod tests {
         // Burn with Error: InsufficientBalance
         {
             assert_err!(
-                funcs::transfer_to_users(&mut map, alice(), to, value),
+                funcs::transfer_to_users(&mut map, alice(), &to, value),
                 Error::InsufficientBalance
             );
         }
     }
 
     mod utils {
-        use super::{AdditionalMeta, AllowancesMap, BalancesMap};
-        use crate::admin::ExternalLinks;
+        use super::*;
+        use crate::services::extended_vft::utils::ExternalLinks;
+        use crate::services::vft::utils::BalancesMap;
         use gstd::{ActorId, ToString};
-        use primitive_types::U256;
-
-        pub fn allowances_map<const N: usize>(
-            content: [(ActorId, ActorId, U256); N],
-        ) -> AllowancesMap {
-            content
-                .into_iter()
-                .map(|(k1, k2, v)| ((k1, k2), v.try_into().unwrap()))
-                .collect()
-        }
 
         pub fn additional_meta() -> AdditionalMeta {
             AdditionalMeta {
@@ -322,7 +267,7 @@ mod tests {
         pub fn balances_map<const N: usize>(content: [(ActorId, U256); N]) -> BalancesMap {
             content
                 .into_iter()
-                .map(|(k, v)| (k, v.try_into().unwrap()))
+                .map(|(k, v)| (k, NonZeroU256::new(v).unwrap()))
                 .collect()
         }
 

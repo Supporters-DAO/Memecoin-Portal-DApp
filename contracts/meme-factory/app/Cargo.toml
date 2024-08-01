@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-sails-rtl.workspace = true
+sails-rs.workspace = true
 gstd.workspace = true
 primitive-types.workspace = true
 

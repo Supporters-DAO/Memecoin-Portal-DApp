@@ -11,22 +11,19 @@ pub use service::{
     InitConfigFactory, MemeError, MemeFactoryData, MemeFactoryEvent, MemeId, MemeRecord,
 };
 
-use sails_rtl::gstd::gprogram;
-use sails_rtl::gstd::{events::GStdEventTrigger, GStdExecContext};
-
-type MemeFactory = service::MemeFactory<GStdExecContext, GStdEventTrigger<MemeFactoryEvent>>;
+use sails_rs::gstd::program;
 
 pub struct Program;
 
-#[gprogram]
+#[program]
 impl Program {
     pub fn new(config: InitConfigFactory) -> Self {
-        MemeFactory::seed(config);
+        service::MemeFactory::seed(config);
         Self
     }
 
     // Expose hosted service
-    pub fn meme_factory(&self) -> MemeFactory {
-        MemeFactory::new(GStdExecContext::new(), GStdEventTrigger::new())
+    pub fn meme_factory(&self) -> service::MemeFactory {
+        service::MemeFactory::new()
     }
 }
