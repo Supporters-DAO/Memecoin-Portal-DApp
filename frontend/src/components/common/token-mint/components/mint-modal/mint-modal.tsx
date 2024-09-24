@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 
 import { Sprite } from '@/components/ui/sprite'
 import { Dialog } from '@headlessui/react'
@@ -10,41 +10,54 @@ import { Input } from '@/components/ui/input'
 import { useMessages } from '@/lib/sails/use-send-message-ft'
 import { useAuth } from '@/lib/hooks/use-auth'
 import action from '@/app/actions'
+import { formatUnits, parseUnits } from '@/lib/utils'
 
 type Props = {
 	onClose: () => void
 	open: boolean
 	id: `0x${string}`
-	available: number
+	available: bigint
+	decimals: number
 }
 
-export const MintModal = ({ onClose, open, id, available }: Props) => {
+export const MintModal = ({
+	onClose,
+	open,
+	id,
+	available,
+	decimals,
+}: Props) => {
 	const { walletAccount } = useAuth()
 	const [isPending, setIsPending] = useState(false)
-	const [inputAmount, setInputAmount] = useState<number>()
+	const [inputAmount, setInputAmount] = useState('')
 	const sendMessage = useMessages()
 
+	const value = useMemo(
+		() => parseUnits(inputAmount || '0', decimals),
+		[decimals, inputAmount]
+	)
+
 	const onMintTokens = async () => {
-		if (inputAmount && walletAccount) {
-			setIsPending(true)
+		if (!value || !walletAccount) return
 
-			const sendMessageResult = await sendMessage('mint', id, {
-				value: inputAmount,
-				to: walletAccount.decodedAddress,
-			}).finally(() => {
-				setInputAmount(undefined)
-				setIsPending(false)
-			})
+		setIsPending(true)
 
-			if (sendMessageResult) {
-				action('token')
-				onClose()
-			}
-		}
+		const sendMessageResult = await sendMessage('mint', id, {
+			value: value.toString(),
+			to: walletAccount.decodedAddress,
+		}).finally(() => {
+			setInputAmount('')
+			setIsPending(false)
+		})
+
+		if (!sendMessageResult) return
+
+		action('token')
+		onClose()
 	}
 
 	const disableBurnButton =
-		!inputAmount || inputAmount <= 0 || isPending || inputAmount > available
+		!value || value <= 0 || isPending || value > available
 
 	return (
 		<div>
@@ -90,11 +103,13 @@ export const MintModal = ({ onClose, open, id, available }: Props) => {
 											label="Amount"
 											placeholder="Set amount"
 											type="number"
-											onChange={(e) => setInputAmount(Number(e.target.value))}
+											onChange={(e) => setInputAmount(e.target.value)}
 										/>
 										<div className={styles.available}>
 											Available:
-											<span className={styles.availableCount}>{available.toLocaleString('us')}</span>
+											<span className={styles.availableCount}>
+												{formatUnits(available, decimals)}
+											</span>
 										</div>
 									</div>
 									<div className={styles.button}>

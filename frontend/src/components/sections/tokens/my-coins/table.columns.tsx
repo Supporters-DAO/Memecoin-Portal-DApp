@@ -2,7 +2,7 @@ import { ColumnDef } from '@tanstack/react-table'
 import { type AlertContainerFactory, useAlert } from '@gear-js/react-hooks'
 import Image from 'next/image'
 
-import { compactFormatNumber, copyToClipboard, prettyWord } from '@/lib/utils'
+import { copyToClipboard, formatUnits, prettyWord } from '@/lib/utils'
 import { Sprite } from '@/components/ui/sprite'
 import {
 	DropdownMenu,
@@ -13,7 +13,6 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { useFetchBalances } from '@/lib/hooks/use-fetch-balances'
 import { Token } from '@/lib/hooks/use-fetch-my-coins'
 import { Mint } from '@/components/common/token-mint'
 
@@ -78,7 +77,10 @@ export const coinsTypesTableColumns: ColumnDef<Token>[] = [
 		id: 'initialSupply',
 		cell: (info) => (
 			<div className="text-right">
-				{compactFormatNumber(Number(info.row.original.initialSupply))}
+				{formatUnits(
+					BigInt(info.row.original.initialSupply),
+					info.row.original.decimals
+				)}
 			</div>
 		),
 		header: () => (
@@ -91,7 +93,10 @@ export const coinsTypesTableColumns: ColumnDef<Token>[] = [
 		id: 'maxSupply',
 		cell: (info) => (
 			<div className="text-right">
-				{compactFormatNumber(Number(info.row.original.maxSupply))}
+				{formatUnits(
+					BigInt(info.row.original.maxSupply),
+					info.row.original.decimals
+				)}
 			</div>
 		),
 		header: () => (
@@ -104,7 +109,10 @@ export const coinsTypesTableColumns: ColumnDef<Token>[] = [
 		id: 'circulatingSupply',
 		cell: (info) => (
 			<div className="text-right">
-				{compactFormatNumber(Number(info.row.original.circulatingSupply))}
+				{formatUnits(
+					BigInt(info.row.original.circulatingSupply),
+					info.row.original.decimals
+				)}
 			</div>
 		),
 		header: () => (
@@ -118,10 +126,9 @@ export const coinsTypesTableColumns: ColumnDef<Token>[] = [
 		cell: (info) => (
 			<div className="text-right">
 				{(
-					(Number(info.row.original.distributed) /
-						Number(info.row.original.maxSupply)) *
-					100
-				).toFixed(2)}
+					(BigInt(info.row.original.distributed) * BigInt(100)) /
+					BigInt(info.row.original.maxSupply)
+				).toString()}
 				%
 			</div>
 		),
@@ -134,9 +141,7 @@ export const coinsTypesTableColumns: ColumnDef<Token>[] = [
 		accessorFn: (row) => row.holders,
 		id: 'holders',
 		cell: (info) => (
-			<div className="text-right">
-				{Number(info.row.original.holders).toLocaleString('us')}
-			</div>
+			<div className="text-right">{info.row.original.holders}</div>
 		),
 		header: () => (
 			<div className="group flex items-center justify-center">Holders</div>
@@ -157,7 +162,10 @@ export const coinsTypesTableColumns: ColumnDef<Token>[] = [
 		id: 'Balance',
 		cell: (info) => (
 			<div className="flex items-center justify-center gap-3 text-center">
-				{compactFormatNumber(Number(info.row.original.balance))}
+				{formatUnits(
+					BigInt(info.row.original.balance),
+					info.row.original.decimals
+				)}
 			</div>
 		),
 		header: () => (
@@ -173,8 +181,9 @@ export const coinsTypesTableColumns: ColumnDef<Token>[] = [
 			Buttons(
 				info.row.original.isAdmin,
 				info.row.original.id,
-				parseFloat(info.row.original.maxSupply) -
-					parseFloat(info.row.original.circulatingSupply)
+				BigInt(info.row.original.maxSupply) -
+					BigInt(info.row.original.circulatingSupply),
+				info.row.original.decimals
 			),
 
 		enableSorting: false,
@@ -194,7 +203,12 @@ function TokenId(id: `0x${string}`) {
 	)
 }
 
-function Buttons(isAdmin: boolean, id: `0x${string}`, availableMint: number) {
+function Buttons(
+	isAdmin: boolean,
+	id: `0x${string}`,
+	availableMint: bigint,
+	decimals: number
+) {
 	const [isOpenMintModal, setIsOpenMintModal] = useState(false)
 	const [open, setOpen] = useState(false)
 	const router = useRouter()
@@ -204,6 +218,7 @@ function Buttons(isAdmin: boolean, id: `0x${string}`, availableMint: number) {
 			<Mint
 				isMintModalOpen={isOpenMintModal}
 				available={availableMint}
+				decimals={decimals}
 				id={id}
 				mintModalHandler={setIsOpenMintModal}
 			/>

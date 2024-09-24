@@ -17,7 +17,7 @@ import {
 	AccordionTrigger,
 } from '@/components/ui/accordion'
 import { useFetchBalances } from '@/lib/hooks/use-fetch-balances'
-import { compactFormatNumber, copyToClipboard, prettyWord } from '@/lib/utils'
+import { copyToClipboard, formatUnits, prettyWord } from '@/lib/utils'
 
 import * as Separator from '@radix-ui/react-separator'
 import {
@@ -37,7 +37,8 @@ type ContentLayoutProps = {
 
 type ButtonsProps = {
 	id: `0x${string}`
-	availableMint: number
+	availableMint: bigint
+	decimals: number
 }
 
 export function MobileList({ data }: ContentLayoutProps) {
@@ -58,6 +59,9 @@ export function MobileList({ data }: ContentLayoutProps) {
 				data.map((i: Token) => {
 					const balance = balances.find((b) => b.coin.id === i.id)?.balance
 					const isAdmin = i.admins.find((i) => i === account?.decodedAddress)
+
+					const format = (value: string) =>
+						formatUnits(BigInt(value), i.decimals)
 
 					return (
 						<Accordion
@@ -97,9 +101,7 @@ export function MobileList({ data }: ContentLayoutProps) {
 										<div>
 											<span className="block text-sm">{i.name}</span>
 											<div className="flex gap-1 text-sm">
-												{balance && (
-													<span>{compactFormatNumber(Number(balance))}</span>
-												)}
+												{balance && <span>{format(balance)}</span>}
 												<span>{i.symbol}</span>
 											</div>
 										</div>
@@ -109,9 +111,9 @@ export function MobileList({ data }: ContentLayoutProps) {
 											<Buttons
 												id={i.id}
 												availableMint={
-													parseFloat(i.maxSupply) -
-													parseFloat(i.circulatingSupply)
+													BigInt(i.maxSupply) - BigInt(i.circulatingSupply)
 												}
+												decimals={i.decimals}
 											/>
 										)}
 										<span className="flex size-7.5 shrink-0 transform-gpu self-start rounded-full px-1.5 pb-[5px] pt-[7px] transition-transform duration-300 group-radix-state-open:rotate-180">
@@ -129,28 +131,28 @@ export function MobileList({ data }: ContentLayoutProps) {
 												Initial Supply
 											</span>
 											<span className="text-[#FDFDFD]">
-												{compactFormatNumber(Number(i.initialSupply))}
+												{format(i.initialSupply)}
 											</span>
 										</div>
 										<div className="flex justify-between">
 											<span className="text-[#FDFDFD]/[80%]">Max Supply</span>
 											<span className="text-[#FDFDFD]">
-												{compactFormatNumber(Number(i.maxSupply))}
+												{format(i.maxSupply)}
 											</span>
 										</div>
 										<div className="flex justify-between">
 											<span className="text-[#FDFDFD]/[80%]">Circ. Supply</span>
 											<span className="text-[#FDFDFD]">
-												{compactFormatNumber(Number(i.circulatingSupply))}
+												{format(i.circulatingSupply)}
 											</span>
 										</div>
 										<div className="flex justify-between">
 											<span className="text-[#FDFDFD]/[80%]">Distributed</span>
 											<span className="text-[#FDFDFD]">
 												{(
-													(Number(i.distributed) / Number(i.maxSupply)) *
-													100
-												).toFixed(2)}
+													(BigInt(i.distributed) * BigInt(100)) /
+													BigInt(i.maxSupply)
+												).toString()}
 												%
 											</span>
 										</div>
@@ -198,7 +200,7 @@ export function MobileList({ data }: ContentLayoutProps) {
 	)
 }
 
-function Buttons({ id, availableMint }: ButtonsProps) {
+function Buttons({ id, availableMint, decimals }: ButtonsProps) {
 	const [isOpenMintModal, setIsOpenMintModal] = useState(false)
 	const [open, setOpen] = useState(false)
 	const router = useRouter()
@@ -208,6 +210,7 @@ function Buttons({ id, availableMint }: ButtonsProps) {
 			<Mint
 				isMintModalOpen={isOpenMintModal}
 				available={availableMint}
+				decimals={decimals}
 				id={id}
 				mintModalHandler={setIsOpenMintModal}
 			/>

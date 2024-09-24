@@ -65,9 +65,9 @@ export function AllCoins({ className }: Props) {
 									<p className="font-silkscreen text-[12px]/[15px] text-[#8B2786] md:text-[18px]/[1.4]">
 										Distributed:{' '}
 										{(
-											(Number(coin.distributed) / Number(coin.maxSupply)) *
-											100
-										).toFixed(2)}
+											(BigInt(coin.distributed) * BigInt(100)) /
+											BigInt(coin.maxSupply)
+										).toString()}
 										%
 									</p>
 								</div>

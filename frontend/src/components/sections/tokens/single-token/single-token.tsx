@@ -5,7 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 
 import { Sprite } from '@/components/ui/sprite'
-import { copyToClipboard, prettyWord } from '@/lib/utils'
+import { copyToClipboard, formatUnits, prettyWord } from '@/lib/utils'
 import { useAlert } from '@gear-js/react-hooks'
 import { BackButton } from '@/components/common/back-button'
 import { HexString } from '@gear-js/api'
@@ -69,14 +69,20 @@ export function Token({ token: { id, ...token } }: Props) {
 		(balance) => balance.coin.id === id
 	)?.balance
 
+	const formattedBalance = formatUnits(
+		BigInt(tokenBalance || '0'),
+		token.decimals
+	)
+
 	const availableMint =
-		parseFloat(token.maxSupply) - parseFloat(token.circulatingSupply)
+		BigInt(token.maxSupply) - BigInt(token.circulatingSupply)
 
 	return (
 		<section>
 			<Mint
 				isMintModalOpen={isOpenMintModal}
 				available={availableMint}
+				decimals={token.decimals}
 				id={id}
 				mintModalHandler={setIsOpenMintModal}
 			/>
@@ -106,9 +112,7 @@ export function Token({ token: { id, ...token } }: Props) {
 							{token.name}
 						</h2>
 						<div className="mt-2 flex flex-col gap-0 font-poppins text-[24px] font-semibold text-white/[80%] max-sm:text-[14px] md:mt-0 md:flex-row md:gap-2">
-							{tokenBalance && (
-								<span>{parseFloat(tokenBalance).toLocaleString('us')}</span>
-							)}
+							{tokenBalance && <span>{formattedBalance}</span>}
 							<span>{token.symbol}</span>
 						</div>
 					</div>
@@ -145,9 +149,7 @@ export function Token({ token: { id, ...token } }: Props) {
 								<span className="font-poppins text-[12px] font-semibold text-[#FDFDFD]/[80%]">
 									Holders
 								</span>{' '}
-								<p className="ml-2 text-[x-small]">
-									{Number(token.holders).toLocaleString('us')}
-								</p>
+								<p className="ml-2 text-[x-small]">{token.holders}</p>
 							</div>
 						</div>
 						<div className="w-full bg-[#FDFDFD]/[2%]">
@@ -156,7 +158,7 @@ export function Token({ token: { id, ...token } }: Props) {
 									Circulating supply
 								</span>{' '}
 								<p className="ml-2 text-[x-small]">
-									{Number(token.circulatingSupply).toLocaleString('us')}
+									{formatUnits(BigInt(token.circulatingSupply), token.decimals)}
 								</p>
 							</div>
 						</div>
@@ -167,9 +169,9 @@ export function Token({ token: { id, ...token } }: Props) {
 								</span>{' '}
 								<p className="ml-2 text-[x-small]">
 									{(
-										(Number(token.distributed) / Number(token.maxSupply)) *
-										100
-									).toFixed(2)}
+										(BigInt(token.distributed) * BigInt(100)) /
+										BigInt(token.maxSupply)
+									).toString()}
 									%
 								</p>
 							</div>
@@ -180,7 +182,7 @@ export function Token({ token: { id, ...token } }: Props) {
 									Minted
 								</span>{' '}
 								<p className="ml-2 text-[x-small]">
-									{Number(token.minted).toLocaleString('us')}
+									{formatUnits(BigInt(token.minted), token.decimals)}
 								</p>
 							</div>
 						</div>
@@ -190,7 +192,7 @@ export function Token({ token: { id, ...token } }: Props) {
 									Burned
 								</span>{' '}
 								<p className="ml-2 text-[x-small]">
-									{Number(token.burned).toLocaleString('us')}
+									{formatUnits(BigInt(token.burned), token.decimals)}
 								</p>
 							</div>
 						</div>
@@ -200,7 +202,7 @@ export function Token({ token: { id, ...token } }: Props) {
 									Initial Supply
 								</span>{' '}
 								<p className="ml-2 text-[x-small]">
-									{Number(token.initialSupply).toLocaleString('us')}
+									{formatUnits(BigInt(token.initialSupply), token.decimals)}
 								</p>
 							</div>
 						</div>
@@ -210,7 +212,7 @@ export function Token({ token: { id, ...token } }: Props) {
 									Max Supply
 								</span>{' '}
 								<p className="ml-2 text-[x-small]">
-									{Number(token.maxSupply).toLocaleString('us')}
+									{formatUnits(BigInt(token.maxSupply), token.decimals)}
 								</p>
 							</div>
 						</div>
@@ -219,9 +221,7 @@ export function Token({ token: { id, ...token } }: Props) {
 								<span className="font-poppins text-[12px] font-semibold text-[#FDFDFD]/[80%]">
 									Decimals
 								</span>{' '}
-								<p className="ml-2 text-[x-small]">
-									{Number(token.decimals).toLocaleString('us')}
-								</p>
+								<p className="ml-2 text-[x-small]">{token.decimals}</p>
 							</div>
 						</div>
 					</div>
@@ -248,7 +248,7 @@ export function Token({ token: { id, ...token } }: Props) {
 						</div>
 					</div>
 					<div className="my-5 flex items-center gap-3 max-sm:w-full  max-sm:justify-between max-sm:gap-1">
-						{tokenBalance && parseFloat(tokenBalance) > 0 && walletAccount && (
+						{tokenBalance && BigInt(tokenBalance) > 0 && walletAccount && (
 							<Link href={`/tokens/${id}/send/`}>
 								<button className="btn items-center py-3 font-medium max-sm:w-25 max-sm:px-2">
 									Send
@@ -265,7 +265,7 @@ export function Token({ token: { id, ...token } }: Props) {
 										Mint Tokens
 									</button>
 								)}
-								{tokenBalance && parseFloat(tokenBalance) > 0 && (
+								{tokenBalance && BigInt(tokenBalance) > 0 && (
 									<Link href={`/tokens/${id}/burn/`}>
 										<button className="btn items-center border-2 !border-[#2E3B55] bg-[#0F1B34] py-3 font-medium text-[#FDFDFD] max-sm:w-25 max-sm:px-2">
 											Burn

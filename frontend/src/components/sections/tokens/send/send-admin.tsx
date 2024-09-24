@@ -1,12 +1,12 @@
 'use client'
 
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { HexString, decodeAddress } from '@gear-js/api'
 
 import { Sprite } from '@/components/ui/sprite'
 import { ScrollArea } from '@/components/common/scroll-area'
 import { Input } from '@/components/ui/input'
-import { isValidHexString } from '@/lib/utils'
+import { isValidHexString, parseUnits } from '@/lib/utils'
 
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/hooks/use-auth'
@@ -16,9 +16,10 @@ import { useMessages } from '@/lib/sails/use-send-message-ft'
 type Props = {
 	id: HexString
 	tokenBalance: string
+	decimals: number
 }
 
-export const SendAdmin = ({ id, tokenBalance }: Props) => {
+export const SendAdmin = ({ id, tokenBalance, decimals }: Props) => {
 	const { walletAccount } = useAuth()
 	const router = useRouter()
 
@@ -27,7 +28,12 @@ export const SendAdmin = ({ id, tokenBalance }: Props) => {
 	const [isPending, setIsPending] = useState(false)
 	const [addresses, setAddresses] = useState<HexString[]>([])
 	const [inputValue, setInputValue] = useState<HexString | ''>('')
-	const [inputAmount, setInputAmount] = useState<number>()
+	const [inputAmount, setInputAmount] = useState('')
+
+	const value = useMemo(
+		() => parseUnits(inputAmount || '0', decimals),
+		[inputAmount, decimals]
+	)
 
 	const isScrollable = (addresses?.length || 0) > 6
 
@@ -82,28 +88,23 @@ export const SendAdmin = ({ id, tokenBalance }: Props) => {
 	}
 
 	const onSendCoins = async () => {
-		if (
-			inputAmount &&
-			walletAccount &&
-			inputAmount <= Number(tokenBalance)
-		) {
-			setIsPending(true)
-			const sendMessageResult = await sendMessage('transferToUsers', id, {
-				value: inputAmount,
-				toUsers: [...addresses],
-			})
+		if (!value || !walletAccount || value > BigInt(tokenBalance)) return
 
-			if (sendMessageResult) {
-				setIsPending(false)
-				setAddresses([])
-				setInputAmount(undefined)
-				action('token')
-				action('balance')
-				router.push(`/tokens/${id}`)
-			} else {
-				setIsPending(false)
-			}
-		}
+		setIsPending(true)
+
+		const sendMessageResult = await sendMessage('transferToUsers', id, {
+			value: value.toString(),
+			toUsers: [...addresses],
+		})
+
+		if (!sendMessageResult) return setIsPending(false)
+
+		setIsPending(false)
+		setAddresses([])
+		setInputAmount('')
+		action('token')
+		action('balance')
+		router.push(`/tokens/${id}`)
 	}
 
 	return (
@@ -138,17 +139,17 @@ export const SendAdmin = ({ id, tokenBalance }: Props) => {
 					label="Amount"
 					placeholder="Set amount"
 					type="number"
-					onChange={(e) => setInputAmount(Number(e.target.value))}
+					onChange={(e) => setInputAmount(e.target.value)}
 				/>
 			</div>
 			<button
 				className="btn mx-auto mt-5 flex w-full justify-center py-4 font-ps2p disabled:bg-[#D0D3D9]"
 				disabled={
 					addresses.length === 0 ||
-					!inputAmount ||
-					inputAmount <= 0 ||
+					!value ||
+					value <= 0 ||
 					isPending ||
-					!(inputAmount <= Number(tokenBalance))
+					!(value <= BigInt(tokenBalance))
 				}
 				onClick={onSendCoins}
 			>

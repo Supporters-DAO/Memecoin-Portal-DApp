@@ -5,10 +5,10 @@ import Image from 'next/image'
 import { useAtom } from 'jotai'
 
 import { ICreateTokenForm } from './schema'
-import { useAccount } from '@gear-js/react-hooks'
+import { useAlert } from '@gear-js/react-hooks'
 import { stepAtom } from '.'
 import { Created } from './created'
-import { cn, getGatewayUrl, uploadToIpfs } from '@/lib/utils'
+import { cn, getGatewayUrl, parseUnits, uploadToIpfs } from '@/lib/utils'
 import { useMessages } from '@/lib/sails/use-send-message-factory'
 import { useAuth } from '@/lib/hooks/use-auth'
 
@@ -18,11 +18,12 @@ interface Props {
 
 export const ConfirmCreate = ({ data }: Props) => {
 	const [isPending, setIsPending] = useState(false)
-	const [step, setStep] = useAtom(stepAtom)
+	const [, setStep] = useAtom(stepAtom)
 	const [isCreated, setIsCreated] = useState(false)
 	const [imageLink, setImageLink] = useState('')
 	const { walletAccount } = useAuth()
 	const sendMessage = useMessages()
+	const alert = useAlert()
 
 	const onCreate = async () => {
 		setIsPending(true)
@@ -31,15 +32,29 @@ export const ConfirmCreate = ({ data }: Props) => {
 		let imageFile = data.image
 
 		const [ipfsUrl] = await uploadToIpfs([imageFile])
-		const linkIPFSImage = await getGatewayUrl(ipfsUrl)
+		const linkIPFSImage = getGatewayUrl(ipfsUrl)
 		setImageLink(linkIPFSImage)
 
 		if (walletAccount && linkIPFSImage) {
 			try {
+				const decimals = data.decimals || 0
+
+				// parsing here and not in the schema,
+				// because the schema values are being set to come back to previous step
+				const inititalSupply = parseUnits(
+					data.initial_supply?.toString() || '0',
+					decimals
+				).toString()
+
+				const maxSupply = parseUnits(
+					data.max_supply?.toString() || '0',
+					decimals
+				).toString()
+
 				const sendMessageResult = await sendMessage('createFungibleProgram', {
 					name: data.name,
 					symbol: data.symbol,
-					decimals: data.decimals || 0,
+					decimals,
 					description: data.description,
 					external_links: {
 						image: linkIPFSImage,
@@ -49,8 +64,8 @@ export const ConfirmCreate = ({ data }: Props) => {
 						discord: data?.external_links?.discord || null,
 						tokenomics: data?.external_links?.tokenomics || null,
 					},
-					initial_supply: data.initial_supply || 0,
-					max_supply: data.max_supply || 0,
+					initial_supply: inititalSupply,
+					max_supply: maxSupply,
 					admin_id: walletAccount.decodedAddress,
 				})
 
@@ -58,7 +73,11 @@ export const ConfirmCreate = ({ data }: Props) => {
 					setIsCreated(true)
 				}
 			} catch (error) {
+				const errorMessage =
+					error instanceof Error ? error.message : String(error)
+
 				console.error('Error sending message:', error)
+				alert.error('Error sending message: ' + errorMessage)
 			} finally {
 				setIsPending(false)
 			}
@@ -112,7 +131,7 @@ export const ConfirmCreate = ({ data }: Props) => {
 										width={100}
 										height={100}
 										unoptimized={true}
-										className="h-25 w-25 rounded-full object-cover"
+										className="size-25 rounded-full object-cover"
 										onError={(e) => {
 											const target = e.target as HTMLImageElement
 											target.onerror = null // prevents looping

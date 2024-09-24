@@ -2,7 +2,7 @@ import { ColumnDef } from '@tanstack/react-table'
 import { type AlertContainerFactory, useAlert } from '@gear-js/react-hooks'
 import Image from 'next/image'
 
-import { compactFormatNumber, copyToClipboard, prettyWord } from '@/lib/utils'
+import { copyToClipboard, formatUnits, prettyWord } from '@/lib/utils'
 import { Sprite } from '@/components/ui/sprite'
 import { Token } from '@/lib/hooks/use-fetch-coins'
 
@@ -62,7 +62,10 @@ export const coinsTypesTableColumns: ColumnDef<Token>[] = [
 		id: 'initialSupply',
 		cell: (info) => (
 			<div className="text-right">
-				{compactFormatNumber(Number(info.row.original.initialSupply))}
+				{formatUnits(
+					BigInt(info.row.original.initialSupply),
+					info.row.original.decimals
+				)}
 			</div>
 		),
 		header: () => (
@@ -75,7 +78,10 @@ export const coinsTypesTableColumns: ColumnDef<Token>[] = [
 		id: 'maxSupply',
 		cell: (info) => (
 			<div className="text-right">
-				{compactFormatNumber(Number(info.row.original.maxSupply))}
+				{formatUnits(
+					BigInt(info.row.original.maxSupply),
+					info.row.original.decimals
+				)}
 			</div>
 		),
 		header: () => (
@@ -88,7 +94,10 @@ export const coinsTypesTableColumns: ColumnDef<Token>[] = [
 		id: 'circulatingSupply',
 		cell: (info) => (
 			<div className="text-right">
-				{compactFormatNumber(Number(info.row.original.circulatingSupply))}
+				{formatUnits(
+					BigInt(info.row.original.circulatingSupply),
+					info.row.original.decimals
+				)}
 			</div>
 		),
 		header: () => (
@@ -102,10 +111,9 @@ export const coinsTypesTableColumns: ColumnDef<Token>[] = [
 		cell: (info) => (
 			<div className="text-right">
 				{(
-					(Number(info.row.original.distributed) /
-						Number(info.row.original.maxSupply)) *
-					100
-				).toFixed(2)}
+					(BigInt(info.row.original.distributed) * BigInt(100)) /
+					BigInt(info.row.original.maxSupply)
+				).toString()}
 				%
 			</div>
 		),
@@ -118,9 +126,7 @@ export const coinsTypesTableColumns: ColumnDef<Token>[] = [
 		accessorFn: (row) => row.holders,
 		id: 'holders',
 		cell: (info) => (
-			<div className="text-right">
-				{Number(info.row.original.holders).toLocaleString('us')}
-			</div>
+			<div className="text-right">{info.row.original.holders}</div>
 		),
 		header: () => (
 			<div className="group flex items-center justify-center">Holders</div>
