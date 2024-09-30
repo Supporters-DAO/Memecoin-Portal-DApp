@@ -1,25 +1,30 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { HexString, decodeAddress } from '@gear-js/api'
 
 import { Input } from '@/components/ui/input'
-import { isValidHexString } from '@/lib/utils'
+import { isValidHexString, parseUnits } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
 import action from '@/app/actions'
 import { useMessages } from '@/lib/sails/use-send-message-ft'
 
 type Props = {
 	id: HexString
-	from: HexString
+	decimals: number
 }
 
-export const SendUser = ({ id, from }: Props) => {
+export const SendUser = ({ id, decimals }: Props) => {
 	const router = useRouter()
 
 	const [isPending, setIsPending] = useState(false)
 	const [address, setAddress] = useState<string | HexString>()
-	const [inputAmount, setInputAmount] = useState<number>(0)
+	const [inputAmount, setInputAmount] = useState('')
+
+	const value = useMemo(
+		() => parseUnits(inputAmount || '0', decimals),
+		[decimals, inputAmount]
+	)
 
 	const sendMessage = useMessages()
 
@@ -28,21 +33,21 @@ export const SendUser = ({ id, from }: Props) => {
 	}
 
 	const onSendCoins = async () => {
-		if (address && inputAmount && isValidHexString(decodeAddress(address))) {
-			setIsPending(true)
-			const sendMessageResult = await sendMessage('transfer', id, {
-				value: inputAmount,
-				to: decodeAddress(address),
-			}).finally(() => setIsPending(false))
+		if (!address || !value || !isValidHexString(decodeAddress(address))) return
 
-			if (sendMessageResult) {
-				setAddress(undefined)
-				setInputAmount(0)
-				action('token')
-				action('balance')
-				router.push(`/tokens/${id}`)
-			}
-		}
+		setIsPending(true)
+		const sendMessageResult = await sendMessage('transfer', id, {
+			value: value.toString(),
+			to: decodeAddress(address),
+		}).finally(() => setIsPending(false))
+
+		if (!sendMessageResult) return
+
+		setAddress(undefined)
+		setInputAmount('')
+		action('token')
+		action('balance')
+		router.push(`/tokens/${id}`)
 	}
 
 	return (
@@ -59,14 +64,12 @@ export const SendUser = ({ id, from }: Props) => {
 					label="Amount"
 					placeholder="Set amount"
 					type="number"
-					onChange={(e) => setInputAmount(Number(e.target.value))}
+					onChange={(e) => setInputAmount(e.target.value)}
 				/>
 			</div>
 			<button
 				className="btn mx-auto mt-5 w-1/2 py-4 font-ps2p disabled:bg-[#D0D3D9]"
-				disabled={
-					address?.length === 0 || !inputAmount || inputAmount <= 0 || isPending
-				}
+				disabled={address?.length === 0 || !value || value <= 0 || isPending}
 				onClick={onSendCoins}
 			>
 				{isPending ? (

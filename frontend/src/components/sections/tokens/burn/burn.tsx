@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { HexString } from '@gear-js/api'
 
 import { Input } from '@/components/ui/input'
@@ -14,6 +14,7 @@ import action from '@/app/actions'
 import { useRouter } from 'next/navigation'
 import { TooltipContainer } from '@/components/ui/tooltip'
 import { Sprite } from '@/components/ui/sprite'
+import { formatUnits, parseUnits } from '@/lib/utils'
 
 export interface IToken {
 	admins: HexString[]
@@ -21,6 +22,7 @@ export interface IToken {
 	name: string
 	symbol: string
 	createdBy: HexString
+	decimals: number
 }
 
 type Props = {
@@ -33,41 +35,47 @@ export const BurnCoin = ({ token }: Props) => {
 	const [isPending, setIsPending] = useState(false)
 	const { balances } = useFetchBalances(isPending)
 
-	const [inputAmount, setInputAmount] = useState<number | undefined>(0)
+	const [inputAmount, setInputAmount] = useState('')
 	const sendMessage = useMessages()
 
+	const { decimals } = token
 	const tokenBalance = balances.find((b) => b.coin.id === token.id)?.balance
-
+	const formattedBalance = formatUnits(BigInt(tokenBalance || '0'), decimals)
 	const isAdmin = walletAccount?.decodedAddress === token.createdBy
+
+	const value = useMemo(
+		() => parseUnits(inputAmount || '0', decimals),
+		[inputAmount, decimals]
+	)
 
 	if (!isAdmin) return <Hero404 />
 
 	const onSendCoins = async () => {
-		if (inputAmount) {
-			setIsPending(true)
+		if (!value) return
 
-			const sendMessageResult = await sendMessage('burn', token.id, {
-				value: inputAmount,
-				from: walletAccount.decodedAddress,
-			}).finally(() => {
-				setInputAmount(undefined)
-				setIsPending(false)
-			})
+		setIsPending(true)
 
-			if (sendMessageResult) {
-				action('token')
-				action('balance')
-				router.push(`/tokens/${token.id}`)
-			}
-		}
+		const sendMessageResult = await sendMessage('burn', token.id, {
+			value: value.toString(),
+			from: walletAccount.decodedAddress,
+		}).finally(() => {
+			setInputAmount('')
+			setIsPending(false)
+		})
+
+		if (!sendMessageResult) return
+
+		action('token')
+		action('balance')
+		router.push(`/tokens/${token.id}`)
 	}
 
 	const disableBurnButton =
-		!inputAmount ||
-		inputAmount <= 0 ||
+		!value ||
+		value <= 0 ||
 		isPending ||
-		(tokenBalance && parseFloat(tokenBalance) <= 0) ||
-		(tokenBalance && inputAmount > parseFloat(tokenBalance))
+		(tokenBalance && BigInt(tokenBalance) <= 0) ||
+		(tokenBalance && value > BigInt(tokenBalance))
 
 	return (
 		<div className="ju my-10 flex items-start max-sm:flex-col">
@@ -77,11 +85,10 @@ export const BurnCoin = ({ token }: Props) => {
 					<h1 className="text-[28px] text-primary max-sm:text-[16px]">Burn</h1>
 				</div>
 
-				<div className="flex w-[660px] flex-col gap-6 rounded-[40px] bg-blue-light p-10 max-sm:py-10 max-sm:px-4 max-sm:w-full max-sm:rounded-[20px]">
+				<div className="flex w-[660px] flex-col gap-6 rounded-[40px] bg-blue-light p-10 max-sm:w-full max-sm:rounded-[20px] max-sm:px-4 max-sm:py-10">
 					<h3 className="text-center uppercase">{token.name}</h3>
 					<p className="text-center font-poppins text-[16px] font-medium text-primary">
-						{tokenBalance && parseFloat(tokenBalance).toLocaleString('us')}{' '}
-						{token.symbol}
+						{formattedBalance} {token.symbol}
 					</p>
 
 					<div className="flex flex-col gap-3 font-poppins">
@@ -108,7 +115,7 @@ export const BurnCoin = ({ token }: Props) => {
 									label=""
 									placeholder="Set amount"
 									type="number"
-									onChange={(e) => setInputAmount(Number(e.target.value))}
+									onChange={(e) => setInputAmount(e.target.value)}
 									className="w-full"
 									value={inputAmount || ''}
 								/>
@@ -116,7 +123,7 @@ export const BurnCoin = ({ token }: Props) => {
 									<button
 										className="mt-1 rounded-lg bg-[#2E3B55] px-6 py-3"
 										onClick={() => {
-											setInputAmount(Number(tokenBalance))
+											setInputAmount(formattedBalance)
 										}}
 									>
 										All

@@ -11,7 +11,8 @@ export type ClassNameProps = {
 type Props = {
 	isMintModalOpen?: boolean
 	mintModalHandler?: (bool: boolean) => void
-	available: number
+	available: bigint
+	decimals: number
 	id: `0x${string}`
 }
 
@@ -19,6 +20,7 @@ export function Mint({
 	isMintModalOpen,
 	mintModalHandler,
 	available,
+	decimals,
 	id,
 }: Props) {
 	const { isAccountReady } = useAccount()
@@ -36,13 +38,12 @@ export function Mint({
 	if (!isAccountReady) return null
 
 	return (
-		<>
-			<MintModal
-				onClose={closeModal}
-				open={isModalOpen}
-				available={available}
-				id={id}
-			/>
-		</>
+		<MintModal
+			onClose={closeModal}
+			open={isModalOpen}
+			available={available}
+			decimals={decimals}
+			id={id}
+		/>
 	)
 }
