@@ -9,6 +9,8 @@ import { getLocalStorage } from "./processing/storage/local.storage";
 import { BatchService } from "./processing/batch.service";
 import { getMemeFactoryEventsParser } from "./types/factory.events";
 import { getCoinEventsParser } from "./types/coin.events";
+import { DnsService, getDnsService } from "./dns/dns.service";
+import { config } from "./config";
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -23,11 +25,15 @@ function getBlockDate(
 }
 
 processor.run(new TypeormDatabase(), async (ctx) => {
+  const dnsService = await getDnsService(config.dnsApiUrl);
   const localStorage = await getLocalStorage(ctx.store);
+  const batchService = new BatchService(ctx.store);
   const entitiesService = new EntitiesService(
     localStorage,
-    new BatchService(ctx.store)
+    batchService,
+    dnsService,
   );
+  await entitiesService.init();
   const memeFactoryParser = await getMemeFactoryEventsParser();
   const coinParser = await getCoinEventsParser();
   const processing = new EventsProcessing(
@@ -61,7 +67,17 @@ processor.run(new TypeormDatabase(), async (ctx) => {
         messageId: id,
         txHash: id,
       };
-      if (localStorage.getFactory().address === source) {
+      const dnsEvent = await dnsService.handleEvent(item);
+      if (dnsEvent && dnsEvent.address === config.dnsProgramName) {
+        const factory = await localStorage.getFactory();
+        if (factory) {
+          factory.address = dnsEvent.address;
+          localStorage.setFactory(factory);
+          batchService.addFactory(factory);
+        }
+      }
+      const factoryAddress = await dnsService.getAddressByName(config.dnsProgramName);
+      if (factoryAddress === source) {
         await processing.handleFactoryEvent(payload, eventInfo);
       } else {
         const coin = await localStorage.getCoin(source);

@@ -9,12 +9,24 @@ import { IStorage } from "./storage/storage.inteface";
 import { BatchService } from "./batch.service";
 import { v4 as uuidv4 } from "uuid";
 import { NullAddress } from "../consts";
+import { DnsService } from "../dns/dns.service";
+import { config } from "../config";
 
 export class EntitiesService {
   constructor(
     private readonly storage: IStorage,
-    private readonly batchService: BatchService
+    private readonly batchService: BatchService,
+    private readonly dnsService: DnsService
   ) {}
+
+  async init() {
+    const factory = await this.storage.getFactory();
+    const dnsAddress = await this.dnsService.getAddressByName(config.dnsProgramName);
+    if (dnsAddress && factory.address !== dnsAddress) {
+      factory.address = dnsAddress;
+      await this.storage.setFactory(factory);
+    }
+  }
 
   async saveAll() {
     await this.batchService.saveAll();
@@ -22,6 +34,11 @@ export class EntitiesService {
 
   getFactory(): Factory {
     return this.storage.getFactory();
+  }
+
+  setFactory(factory: Factory) {
+    this.storage.setFactory(factory);
+    this.batchService.addFactory(factory);
   }
 
   async getCoin(contract: string) {
