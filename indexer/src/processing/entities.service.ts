@@ -24,7 +24,7 @@ export class EntitiesService {
     const dnsAddress = await this.dnsService.getAddressByName(config.dnsProgramName);
     if (dnsAddress && factory.address !== dnsAddress) {
       factory.address = dnsAddress;
-      await this.storage.setFactory(factory);
+      await this.setFactory(factory);
     }
   }
 
