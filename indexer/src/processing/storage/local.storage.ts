@@ -41,6 +41,10 @@ export class LocalStorage implements IStorage {
     return this.factory!;
   }
 
+  setFactory(factory: Factory) {
+    this.factory = factory;
+  }
+
   setStore(store: Store) {
     this.store = store;
     this.coins = {};
