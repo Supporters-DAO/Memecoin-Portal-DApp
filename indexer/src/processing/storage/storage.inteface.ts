@@ -5,7 +5,9 @@ export interface IStorage {
   setFactory(factory: Factory): void;
 
   getCoin(address: string): Promise<Coin | undefined>;
+  getByMemeId(id: string): Promise<Coin | undefined>;
   updateCoin(coin: Coin): Promise<void>;
+  removeCoin(coin: Coin): Promise<void>;
 
   getAccountBalance(
     address: string,

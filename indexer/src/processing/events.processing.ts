@@ -21,12 +21,14 @@ import { TransferredHandler } from "./coin/transferred.handler";
 import { TransferredToUsersHandler } from "./coin/transferred-to-users.handler";
 import { BurnedHandler } from "./coin/burned.handler";
 import { MintedHandler } from "./coin/minted.handler";
+import { MemeRemovedHandler } from "./factory/meme-removed.handler";
 
 const factoryEventsToHandler: Record<
   FactoryEventType,
   IFactoryEventHandler | undefined
 > = {
   [FactoryEventType.MemeCreated]: new MemeCreatedHandler(),
+  [FactoryEventType.MemeRemoved]: new MemeRemovedHandler(),
 };
 
 const coinEventsToHandler: Record<

@@ -1,5 +1,5 @@
-import { Event } from '../processor';
-import { DnsEventsParser } from './dns.events';
+import { Event } from "../processor";
+import { DnsEventsParser } from "./dns.events";
 
 const FETCH_INTERVAL = 1000 * 60 * 5; // 5 minutes
 
@@ -39,7 +39,7 @@ export class DnsService {
       throw new Error(`[dns] Address not found for ${name}`);
     }
     console.log(
-      `[dns] getAddressByName: address for ${name} fetched: ${address}`,
+      `[dns] getAddressByName: address for ${name} fetched: ${address}`
     );
     this.nameToAddressMap.set(name, address);
     return address;
@@ -47,7 +47,7 @@ export class DnsService {
 
   async handleEvent(event: Event) {
     if (!this.dnsContract) {
-      throw new Error('[dns] DNS contract not initialized');
+      throw new Error("[dns] DNS contract not initialized");
     }
     const {
       message: { source, payload },
@@ -60,7 +60,7 @@ export class DnsService {
       return;
     }
     console.log(
-      `[dns] ${dnsEvent.type} event detected, program id: ${dnsEvent.name} -> ${dnsEvent.program}`,
+      `[dns] ${dnsEvent.type} event detected, program id: ${dnsEvent.name} -> ${dnsEvent.program}`
     );
     this.nameToAddressMap.set(dnsEvent.name, dnsEvent.program);
     return {

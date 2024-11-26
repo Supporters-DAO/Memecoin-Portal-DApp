@@ -30,7 +30,7 @@ export type DnsEvent = ProgramIdChangedEvent;
 type ContractInfoChangedPayload = {
   name: string;
   contract_info: ContractInfo;
-}
+};
 
 export class DnsEventsParser {
   private sails?: Sails;
