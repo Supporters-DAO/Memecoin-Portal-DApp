@@ -21,7 +21,9 @@ export class EntitiesService {
 
   async init() {
     const factory = await this.storage.getFactory();
-    const dnsAddress = await this.dnsService.getAddressByName(config.dnsProgramName);
+    const dnsAddress = await this.dnsService.getAddressByName(
+      config.dnsProgramName
+    );
     if (dnsAddress && factory.address !== dnsAddress) {
       factory.address = dnsAddress;
       await this.setFactory(factory);
@@ -43,6 +45,15 @@ export class EntitiesService {
 
   async getCoin(contract: string) {
     return this.storage.getCoin(contract);
+  }
+
+  async getCoinByMemeId(memeId: string) {
+    return this.storage.getByMemeId(memeId);
+  }
+
+  async removeCoin(coin: Coin) {
+    await this.storage.removeCoin(coin);
+    this.batchService.removeCoin(coin);
   }
 
   async getAccountBalance(

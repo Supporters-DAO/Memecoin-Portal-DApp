@@ -31,7 +31,7 @@ processor.run(new TypeormDatabase(), async (ctx) => {
   const entitiesService = new EntitiesService(
     localStorage,
     batchService,
-    dnsService,
+    dnsService
   );
   await entitiesService.init();
   const memeFactoryParser = await getMemeFactoryEventsParser();
@@ -76,7 +76,9 @@ processor.run(new TypeormDatabase(), async (ctx) => {
           batchService.addFactory(factory);
         }
       }
-      const factoryAddress = await dnsService.getAddressByName(config.dnsProgramName);
+      const factoryAddress = await dnsService.getAddressByName(
+        config.dnsProgramName
+      );
       if (factoryAddress === source) {
         await processing.handleFactoryEvent(payload, eventInfo);
       } else {

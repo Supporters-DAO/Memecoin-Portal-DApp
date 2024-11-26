@@ -1,5 +1,11 @@
 import { Store } from "@subsquid/typeorm-store";
-import { AccountBalance, Coin, Factory, MemcoinFactoryEvent, Transfer } from "../model";
+import {
+  AccountBalance,
+  Coin,
+  Factory,
+  MemcoinFactoryEvent,
+  Transfer,
+} from "../model";
 
 export class BatchService {
   private factory: Factory | null = null;
@@ -7,6 +13,8 @@ export class BatchService {
   private transfers: Transfer[] = [];
   private events: MemcoinFactoryEvent[] = [];
   private accountBalances: AccountBalance[] = [];
+
+  private coinsToRemove: Coin[] = [];
 
   constructor(private readonly store: Store) {}
 
@@ -20,6 +28,23 @@ export class BatchService {
       this.store.save(this.transfers),
       this.store.save(this.events),
     ]);
+    if (this.coinsToRemove.length) {
+      await Promise.all(
+        this.coinsToRemove.map(async (c) => {
+          const transfers = await this.store.find(Transfer, {
+            where: { coin: c },
+          });
+          const balances = await this.store.find(AccountBalance, {
+            where: { coin: c },
+          });
+          await Promise.all([
+            this.store.remove(transfers),
+            this.store.remove(balances),
+            this.store.remove(c),
+          ]);
+        })
+      );
+    }
     this.clearAll();
   }
 
@@ -27,6 +52,7 @@ export class BatchService {
     this.coins = [];
     this.transfers = [];
     this.events = [];
+    this.coinsToRemove = [];
     this.factory = null;
   }
 
@@ -49,6 +75,8 @@ export class BatchService {
   addFactory(factory: Factory) {
     this.factory = factory;
   }
+
+  removeCoin(coin: Coin) {}
 
   private safelyPush(entity: string, value: any) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
