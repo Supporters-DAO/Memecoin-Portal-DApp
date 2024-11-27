@@ -76,7 +76,9 @@ export class BatchService {
     this.factory = factory;
   }
 
-  removeCoin(coin: Coin) {}
+  removeCoin(coin: Coin) {
+    this.coinsToRemove.push(coin);
+  }
 
   private safelyPush(entity: string, value: any) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
