@@ -9,7 +9,7 @@ import {
   Extrinsic as _Extrinsic,
 } from "@subsquid/substrate-processor";
 import { config } from "./config";
-import { hostname } from 'os';
+import { hostname } from "os";
 
 export const processor = new SubstrateBatchProcessor()
   .setRpcEndpoint({
@@ -17,7 +17,7 @@ export const processor = new SubstrateBatchProcessor()
     rateLimit: config.rateLimit,
     headers: {
       "User-Agent": hostname(),
-    }
+    },
   })
   .addEvent({
     name: ["Gear.UserMessageSent"],
