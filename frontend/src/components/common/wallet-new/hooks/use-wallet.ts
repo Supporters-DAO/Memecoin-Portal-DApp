@@ -1,19 +1,25 @@
-import { useAccount } from '@gear-js/react-hooks';
-import { useState } from 'react';
-import { WALLET } from '../consts';
-import { WalletId } from '../types';
+import { useAccount } from '@gear-js/react-hooks'
+import { useEffect, useState } from 'react'
+import { WALLET } from '../consts'
+import { WalletId } from '../types'
 
 function useWallet() {
-  const { account, accounts } = useAccount();
-  const [walletId, setWalletId] = useState(account?.meta.source as WalletId | undefined);
+	const { wallets, account } = useAccount()
 
-  const resetWalletId = () => setWalletId(undefined);
-  const getWalletAccounts = (id: WalletId) => accounts?.filter(({ meta }) => meta.source === id);
+	const defaultWalletId = account?.meta.source as WalletId | undefined
+	const [walletId, setWalletId] = useState(defaultWalletId)
 
-  const wallet = walletId && WALLET[walletId];
-  const walletAccounts = walletId && getWalletAccounts(walletId);
+	const wallet = walletId ? WALLET[walletId] : undefined
+	const walletAccounts =
+		wallets && walletId ? wallets[walletId].accounts : undefined
 
-  return { wallet, walletAccounts, setWalletId, resetWalletId, getWalletAccounts };
+	useEffect(() => {
+		setWalletId(defaultWalletId)
+	}, [defaultWalletId])
+
+	const resetWalletId = () => setWalletId(undefined)
+
+	return { wallet, walletId, walletAccounts, setWalletId, resetWalletId }
 }
 
-export { useWallet };
+export { useWallet }
