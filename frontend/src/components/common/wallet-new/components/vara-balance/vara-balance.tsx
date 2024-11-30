@@ -19,10 +19,15 @@ export function VaraBalance({ className }: Props) {
 	const { isAccountReady } = useAccount()
 
 	const { getFormattedBalance } = useBalanceFormat()
-	const balances = useDeriveBalancesAll(account?.decodedAddress)
+	const { data: balances } = useDeriveBalancesAll({
+		address: account?.decodedAddress,
+		watch: true,
+	})
 	const balance =
-		isApiReady && balances?.freeBalance
-			? getFormattedBalance(balances.freeBalance.toString())
+		isApiReady && balances
+			? getFormattedBalance(
+					(balances.transferable || balances.availableBalance).toString()
+				)
 			: undefined
 
 	return isAccountReady && balance ? (

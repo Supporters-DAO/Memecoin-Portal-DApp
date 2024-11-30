@@ -4,7 +4,6 @@ import {
 	useAlert,
 	useApi,
 } from '@gear-js/react-hooks'
-import { web3FromSource } from '@polkadot/extension-dapp'
 import { useCallback } from 'react'
 import { Program } from './meme-ft'
 import { TransactionBuilder } from 'sails-js'
@@ -40,10 +39,9 @@ type TransferPayload = {
 const executeTransaction = async (
 	transaction: TransactionBuilder<boolean>,
 	account: Account,
-	injector: any,
 	alert: AlertContainerFactory
 ) => {
-	transaction.withAccount(account.address, { signer: injector.signer })
+	transaction.withAccount(account.address, { signer: account.signer })
 
 	await transaction.calculateGas(false, 100)
 
@@ -88,7 +86,6 @@ export const useMessages = () => {
 			if (!api) throw new Error('Api is not ready')
 
 			const program = new Program(api, programId)
-			const injector = await web3FromSource(account.meta.source)
 
 			const executeMessage = async (
 				transactionBuilder: TransactionBuilder<boolean>
@@ -96,7 +93,6 @@ export const useMessages = () => {
 				const resultTransaction = await executeTransaction(
 					transactionBuilder,
 					account,
-					injector,
 					alert
 				)
 				return resultTransaction

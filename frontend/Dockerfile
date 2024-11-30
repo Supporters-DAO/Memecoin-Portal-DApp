@@ -5,16 +5,20 @@ RUN apk add --no-cache libc6-compat
 
 WORKDIR /app
 
+# Install pnpm globally
+RUN npm install -g pnpm
+
 # Install dependencies based on the preferred package manager
-COPY package.json yarn.lock* ./
+COPY package.json pnpm-lock.yaml .
 RUN \
-if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
+if [ -f pnpm-lock.yaml ]; then pnpm install --frozen-lockfile; \
 else echo "Lockfile not found." && exit 1; \
 fi
 
 # Rebuild the source code only when needed
 FROM node:18-alpine AS builder
 WORKDIR /app
+RUN npm install -g pnpm
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
@@ -34,10 +38,7 @@ ENV NEXT_PUBLIC_IPFS_GETAWAY=${NEXT_PUBLIC_IPFS_GETAWAY}
 ENV NEXT_TELEMETRY_DISABLED 1
 ENV NODE_TLS_REJECT_UNAUTHORIZED 0
 
-RUN yarn build
-
-# If using npm comment out above and use below instead
-# RUN npm run build
+RUN pnpm build
 
 # Production image, copy all the files and run next
 FROM node:18-alpine AS runner

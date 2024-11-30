@@ -5,7 +5,6 @@ import {
 	useApi,
 } from '@gear-js/react-hooks'
 import { CONTRACT_ADDRESS } from '../consts'
-import { web3FromSource } from '@polkadot/extension-dapp'
 import { useCallback } from 'react'
 import { Program, Init, MemeError } from './meme-factory'
 import { TransactionBuilder } from 'sails-js'
@@ -18,10 +17,9 @@ export enum MessageTypes {
 const executeTransaction = async (
 	transaction: TransactionBuilder<{ ok: null } | { err: MemeError }>,
 	account: Account,
-	injector: any,
 	alert: AlertContainerFactory
 ) => {
-	transaction.withAccount(account.address, { signer: injector.signer })
+	transaction.withAccount(account.address, { signer: account.signer })
 	transaction.withValue(BigInt(1e12))
 	await transaction.calculateGas(false, 100)
 
@@ -74,7 +72,6 @@ export const useMessages = () => {
 			const programId = CONTRACT_ADDRESS.ADDRESS
 
 			const program = new Program(api, programId)
-			const injector = await web3FromSource(account.meta.source)
 
 			const executeMessage = async (
 				transactionBuilder: TransactionBuilder<
@@ -84,7 +81,6 @@ export const useMessages = () => {
 				const resultTransaction = await executeTransaction(
 					transactionBuilder,
 					account,
-					injector,
 					alert
 				)
 				return resultTransaction
