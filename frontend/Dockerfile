@@ -9,7 +9,7 @@ WORKDIR /app
 RUN npm install -g pnpm
 
 # Install dependencies based on the preferred package manager
-COPY package.json pnpm-lock.yaml ./  # Adjust for pnpm lock file
+COPY package.json pnpm-lock.yaml .
 RUN \
 if [ -f pnpm-lock.yaml ]; then pnpm install --frozen-lockfile; \
 else echo "Lockfile not found." && exit 1; \
