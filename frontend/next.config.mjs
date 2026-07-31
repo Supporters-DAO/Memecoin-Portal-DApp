@@ -8,11 +8,9 @@ const withBundleAnalyzer = BundleAnalyzer({
 
 const require = createRequire(import.meta.url)
 
-if (!process.env.NEXT_PUBLIC_IPFS_GETAWAY) {
-	throw new Error('NEXT_PUBLIC_IPFS_GETAWAY must be set')
-}
-
-const gatewayUrl = new URL(process.env.NEXT_PUBLIC_IPFS_GETAWAY)
+const gatewayUrl = process.env.NEXT_PUBLIC_IPFS_GETAWAY
+	? new URL(process.env.NEXT_PUBLIC_IPFS_GETAWAY)
+	: null
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -28,14 +26,16 @@ const nextConfig = {
 	},
 
 	images: {
-		remotePatterns: [
-			{
-				protocol: gatewayUrl.protocol.replace(':', ''),
-				hostname: gatewayUrl.hostname,
-				port: gatewayUrl.port || undefined,
-				pathname: `${gatewayUrl.pathname.replace(/\/$/, '') || ''}/**`,
-			},
-		],
+		remotePatterns: gatewayUrl
+			? [
+					{
+						protocol: gatewayUrl.protocol.replace(':', ''),
+						hostname: gatewayUrl.hostname,
+						port: gatewayUrl.port || undefined,
+						pathname: `${gatewayUrl.pathname.replace(/\/$/, '') || ''}/**`,
+					},
+				]
+			: [],
 	},
 }
 
