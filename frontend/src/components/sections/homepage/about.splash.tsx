@@ -21,6 +21,7 @@ export function AboutSplash({}: Props) {
 				alt="Coin Image"
 				width={720}
 				height={540}
+				unoptimized
 				className="size-full object-cover"
 			/>
 		</motion.div>

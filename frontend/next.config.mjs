@@ -16,6 +16,20 @@ const gatewayUrl = process.env.NEXT_PUBLIC_IPFS_GETAWAY
 const nextConfig = {
 	reactStrictMode: true,
 	output: 'standalone',
+	async headers() {
+		return [
+			{
+				source:
+					'/((?!_next/static|_next/image|images/|favicon.ico|robots.txt|sitemap.xml).*)',
+				headers: [
+					{
+						key: 'Cache-Control',
+						value: 'no-store',
+					},
+				],
+			},
+		]
+	},
 	webpack: (config) => {
 		// fix for:
 		// Module parse failed: 'import' and 'export' may appear only with 'sourceType: module'
