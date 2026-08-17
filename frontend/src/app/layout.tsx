@@ -34,11 +34,11 @@ const siteConfig = {
 
 export const metadata: Metadata = {
 	title: {
-		default: 'Tokenator - Launch Any Token on Vara',
+		default: 'Tokenator - Deploy a VFT on Vara',
 		template: `%s | ${siteConfig.name}`,
 	},
 	description:
-		'Deploy any fungible token on Vara Network in minutes - no code needed. Memecoins, utility tokens, DAO tokens, rewards. Free to launch, list on RivrDEX.',
+		'Deploy a VFT smart contract to Vara Network in minutes. No code. Yours forever. After launch, list your token on RivrDEX - the native DEX on Vara Network.',
 }
 
 export default function RootLayout({

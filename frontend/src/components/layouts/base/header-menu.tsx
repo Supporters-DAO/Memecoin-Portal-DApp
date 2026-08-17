@@ -68,12 +68,12 @@ export function HeaderMenu({ className }: Props) {
 
 					<DropdownMenuItem asChild>
 						<Link
-							href="https://app.rivrdex.io"
+							href="https://app.rivrdex.io/"
 							target="_blank"
 							rel="noreferrer"
 							className="flex-col items-start gap-2"
 						>
-							<span>List on RivrDEX [Mainnet]</span>
+							<span>List on RivrDEX Mainnet</span>
 							<span className="text-[10px]">(coming soon)</span>
 						</Link>
 					</DropdownMenuItem>
@@ -84,7 +84,7 @@ export function HeaderMenu({ className }: Props) {
 							target="_blank"
 							rel="noreferrer"
 						>
-							List on RivrDEX [Testnet]
+							List on RivrDEX Testnet
 						</Link>
 					</DropdownMenuItem>
 				</DropdownMenuContent>

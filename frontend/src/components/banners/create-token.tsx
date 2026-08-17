@@ -17,29 +17,29 @@ export function CreateTokenBanner({ className }: Props) {
 						<h2 className="normal text-[18px] leading-loose drop-shadow-[0_6px_0_#242424] md:text-[32px] lg:leading-none">
 							Launch your token - free
 						</h2>
-						<div className="font-silkscreen mt-5 text-[16px] drop-shadow-[0_2px_0_#242424] md:mt-4 md:text-[20px]">
-							<p>
+						<div className="font-silkscreen mt-5 max-w-3xl text-[16px] drop-shadow-[0_2px_0_#242424] md:mt-4 md:text-[20px]">
+							<p className="leading-relaxed">
 								Deploy a VFT smart contract to Vara Network in minutes. No code.
 								Yours forever.
 							</p>
-							<p>
+							<p className="mt-4 leading-relaxed">
 								After launch, list your token on{' '}
 								<Link
-									href="https://app.rivrdex.io"
-									className="underline"
+									href="https://app.rivrdex.io/"
+									className="text-primary underline decoration-2 underline-offset-4 transition-opacity hover:opacity-80"
 									target="_blank"
 									rel="noreferrer"
 								>
-									RivrDEX [Mainnet]
+									RivrDEX Mainnet
 								</Link>{' '}
 								(coming soon) or{' '}
 								<Link
-									href="https://stg-app.rivrdex.io"
-									className="underline"
+									href="https://stg-app.rivrdex.io/"
+									className="text-primary underline decoration-2 underline-offset-4 transition-opacity hover:opacity-80"
 									target="_blank"
 									rel="noreferrer"
 								>
-									RivrDEX [Testnet]
+									RivrDEX Testnet
 								</Link>{' '}
 								- the native DEX on Vara Network.
 							</p>
