@@ -91,12 +91,8 @@ const LINKS = [
 				url: '/tokens/create',
 			},
 			{
-				title: 'List on RivrDEX Mainnet (coming soon)',
+				title: 'List on RivrDEX',
 				url: 'https://app.rivrdex.io/',
-			},
-			{
-				title: 'List on RivrDEX Testnet',
-				url: 'https://stg-app.rivrdex.io/',
 			},
 		],
 	},
